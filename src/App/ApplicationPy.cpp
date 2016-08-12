@@ -35,6 +35,7 @@
 #include "Document.h"
 #include "DocumentPy.h"
 #include "DocumentObserverPython.h"
+#include "MaterialDatabase.h"
 
 // FreeCAD Base header
 #include <Base/Interpreter.h>
@@ -139,6 +140,9 @@ PyMethodDef Application::Methods[] = {
     {"removeDocumentObserver",  (PyCFunction) Application::sRemoveDocObserver, METH_VARARGS,
      "removeDocumentObserver() -> None\n\n"
      "Remove an added document observer."},
+    {"getMaterialDatabase",  (PyCFunction) Application::sGetMaterialDatabase  ,1,
+     "getMaterialDatabase() -> MaterialDatabase\n\n"
+     "Get the application's material database."},
     {"setLogLevel",          (PyCFunction) Application::sSetLogLevel, METH_VARARGS,
      "setLogLevel(tag, level) -- Set the log level for a string tag.\n"
      "'level' can either be string 'Log', 'Msg', 'Wrn', 'Error', or an integer value"},
@@ -671,6 +675,14 @@ PyObject* Application::sRemoveDocObserver(PyObject * /*self*/, PyObject *args)
         DocumentObserverPython::removeObserver(Py::Object(o));
         Py_Return;
     } PY_CATCH;
+}
+
+PyObject* Application::sGetMaterialDatabase(PyObject * /*self*/, PyObject *args,PyObject * /*kwd*/)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
+        return NULL;                       // NULL triggers exception
+
+    return App::GetApplication().getMaterialDatabase().getPyObject();
 }
 
 PyObject *Application::sSetLogLevel(PyObject * /*self*/, PyObject *args)
