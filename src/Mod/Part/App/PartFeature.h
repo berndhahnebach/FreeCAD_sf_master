@@ -29,6 +29,7 @@
 #include <App/GeoFeature.h>
 #include <App/FeaturePython.h>
 #include <App/PropertyGeo.h>
+#include <App/PropertyPartMaterial.h>
 // includes for findAllFacesCutBy()
 #include <TopoDS_Face.hxx>
 #include <BRep_Builder.hxx>
@@ -54,6 +55,7 @@ public:
     virtual ~Feature();
 
     PropertyPartShape Shape;
+    App::PropertyPartMaterial Material;
 
     /** @name methods override feature */
     //@{

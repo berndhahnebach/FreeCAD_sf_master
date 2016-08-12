@@ -985,8 +985,8 @@ void LinkView::setMaterial(int index, const App::Material *material) {
             pcLinkRoot->removeColorOverride();
             return;
         }
-        App::Color c = material->diffuseColor;
-        c.a = material->transparency;
+        App::Color c = material->getDiffuseColor();
+        c.a = material->getTransparency();
         pcLinkRoot->setColorOverride(c);
         for(int i=0;i<getSize();++i)
             setMaterial(i,0);
@@ -998,8 +998,8 @@ void LinkView::setMaterial(int index, const App::Material *material) {
             info.pcRoot->removeColorOverride();
             return;
         }
-        App::Color c = material->diffuseColor;
-        c.a = material->transparency;
+        App::Color c = material->getDiffuseColor();
+        c.a = material->getTransparency();
         info.pcRoot->setColorOverride(c);
     }
 }
@@ -1609,10 +1609,13 @@ ViewProviderLink::ViewProviderLink()
 
     ADD_PROPERTY_TYPE(OverrideMaterial, (false), " Link", App::Prop_None, "Override linked object's material");
 
+#if 0
+    // EK: FIXME
     App::Material mat(App::Material::DEFAULT);
     mat.diffuseColor.setPackedValue(ViewParams::instance()->getDefaultLinkColor());
     ADD_PROPERTY_TYPE(ShapeMaterial, (mat), " Link", App::Prop_None, 0);
     ShapeMaterial.setStatus(App::Property::MaterialEdit, true);
+#endif    
 
     ADD_PROPERTY_TYPE(DrawStyle,((long int)0), " Link", App::Prop_None, "");
     static const char* DrawStyleEnums[]= {"None","Solid","Dashed","Dotted","Dashdot",NULL};
@@ -1627,8 +1630,9 @@ ViewProviderLink::ViewProviderLink()
     ADD_PROPERTY_TYPE(PointSize,(lwidth), " Link", App::Prop_None, "");
     PointSize.setConstraints(&sizeRange);
 
-    ADD_PROPERTY(MaterialList,());
-    MaterialList.setStatus(App::Property::NoMaterialListEdit, true);
+    // EK: FIXME
+    //ADD_PROPERTY(MaterialList,());
+    //MaterialList.setStatus(App::Property::NoMaterialListEdit, true);
 
     ADD_PROPERTY(OverrideMaterialList,());
     ADD_PROPERTY(OverrideColorList,());
@@ -1875,7 +1879,7 @@ void ViewProviderLink::updateDataPrivate(App::LinkBaseExtension *ext, const App:
             const auto &elements = ext->_getElementListValue();
             // elements is about to be collapsed, preserve the materials
             if(elements.size()) {
-                std::vector<App::Material> materials;
+                std::vector<App::Material*> materials;
                 boost::dynamic_bitset<> overrideMaterials;
                 overrideMaterials.resize(elements.size(),false);
                 bool overrideMaterial = false;
@@ -1890,7 +1894,8 @@ void ViewProviderLink::updateDataPrivate(App::LinkBaseExtension *ext, const App:
                     overrideMaterial = overrideMaterial || vp->OverrideMaterial.getValue();
                     hasMaterial = overrideMaterial || hasMaterial 
                         || vp->ShapeMaterial.getValue()!=ShapeMaterial.getValue();
-                    materials.push_back(vp->ShapeMaterial.getValue());
+                    // EK: FIXME
+                    //materials.push_back(vp->ShapeMaterial.getValue());
                     overrideMaterials[i] = vp->OverrideMaterial.getValue();
                 }
                 if(!overrideMaterial)
@@ -1901,7 +1906,7 @@ void ViewProviderLink::updateDataPrivate(App::LinkBaseExtension *ext, const App:
                 if(!hasMaterial)
                     materials.clear();
                 MaterialList.setStatus(App::Property::User3,true);
-                MaterialList.setValue(materials);
+                MaterialList.setValues(materials);
                 MaterialList.setStatus(App::Property::User3,false);
                 
                 linkView->setSize(ext->_getElementCountValue());
@@ -2010,12 +2015,12 @@ void ViewProviderLink::checkIcon(const App::LinkBaseExtension *ext) {
 
 void ViewProviderLink::applyMaterial() {
     if(OverrideMaterial.getValue())
-        linkView->setMaterial(-1,&ShapeMaterial.getValue());
+        linkView->setMaterial(-1,ShapeMaterial.getValue());
     else {
         for(int i=0;i<linkView->getSize();++i) {
             if(MaterialList.getSize()>i && 
                OverrideMaterialList.getSize()>i && OverrideMaterialList[i])
-                linkView->setMaterial(i,&MaterialList[i]);
+                linkView->setMaterial(i,MaterialList[i]);
             else
                 linkView->setMaterial(i,0);
         }
@@ -2767,8 +2772,8 @@ std::map<std::string, App::Color> ViewProviderLink::getElementColors(const char 
     std::string wildcard(subname);
     if(wildcard == "Face" || wildcard == "Face*" || wildcard.empty()) {
         if(wildcard.size()==4 || OverrideMaterial.getValue()) {
-            App::Color c = ShapeMaterial.getValue().diffuseColor;
-            c.a = ShapeMaterial.getValue().transparency;
+            App::Color c = ShapeMaterial.getValue()->getDiffuseColor();
+            c.a = ShapeMaterial.getValue()->getTransparency();
             colors["Face"] = c;
             if(wildcard.size()==4)
                 return colors;
@@ -2806,8 +2811,8 @@ std::map<std::string, App::Color> ViewProviderLink::getElementColors(const char 
         auto vp = this;
         while(1) {
             if(wildcard!=ViewProvider::hiddenMarker() && vp->OverrideMaterial.getValue()) {
-                auto color = ShapeMaterial.getValue().diffuseColor;
-                color.a = ShapeMaterial.getValue().transparency;
+                auto color = ShapeMaterial.getValue()->getDiffuseColor();
+                color.a = ShapeMaterial.getValue()->getTransparency();
                 colors.emplace(wildcard,color);
             }
             auto link = vp->getObject()->getLinkedObject(false);
@@ -2832,8 +2837,8 @@ std::map<std::string, App::Color> ViewProviderLink::getElementColors(const char 
                         break;
                     if(!overrides[i])
                         continue;
-                    auto color = mat.diffuseColor;
-                    color.a = mat.transparency;
+                    auto color = mat->getDiffuseColor();
+                    color.a = mat->getTransparency();
                     colors.emplace(std::to_string(i)+"."+wildcard,color);
                 }
             }
@@ -2976,11 +2981,9 @@ void ViewProviderLink::setElementColors(const std::map<std::string, App::Color> 
         OverrideColorList.setValues(colors);
     }
     if(hasFaceColor) {
-        auto mat = ShapeMaterial.getValue();
-        mat.diffuseColor = faceColor;
-        mat.transparency = faceColor.a;
         ShapeMaterial.setStatus(App::Property::User3,true);
-        ShapeMaterial.setValue(mat);
+        ShapeMaterial.setDiffuseColor(faceColor);
+        ShapeMaterial.setTransparency(faceColor.a);
         ShapeMaterial.setStatus(App::Property::User3,false);
     }
     OverrideMaterial.setValue(hasFaceColor);

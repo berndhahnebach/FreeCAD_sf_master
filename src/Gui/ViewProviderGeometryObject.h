@@ -91,6 +91,7 @@ protected:
     /// get called by the container whenever a property has been changed
     void onChanged(const App::Property* prop);
     void setSelectable(bool Selectable=true);
+    bool cow(App::PropertyMaterial &prop);
 
     virtual unsigned long getBoundColor() const;
 

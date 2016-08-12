@@ -107,6 +107,8 @@
 
 #include <App/Application.h>
 #include <App/Document.h>
+#include <App/Material.h>
+#include <App/MaterialDatabase.h>
 
 #include <Gui/SoFCUnifiedSelection.h>
 #include <Gui/SoFCSelectionAction.h>
@@ -254,17 +256,13 @@ ViewProviderPartExt::ViewProviderPartExt()
     lowerLimit = std::max(lowerLimit, Precision::Confusion());
     tessRange.LowerBound = lowerLimit;
 
-    App::Material mat;
-    mat.ambientColor.set(0.2f,0.2f,0.2f);
-    mat.diffuseColor.set(r,g,b);
-    mat.specularColor.set(0.0f,0.0f,0.0f);
-    mat.emissiveColor.set(0.0f,0.0f,0.0f);
-    mat.shininess = 1.0f;
-    mat.transparency = 0.0f;
+    // Get default material so we have something; it will be overridden in the onChanged method when we have a change in an actual object
+    App::Material * mat = App::GetApplication().getMaterialDatabase().getMaterial("DEFAULT");
+    
     ADD_PROPERTY(LineMaterial,(mat));
     ADD_PROPERTY(PointMaterial,(mat));
-    ADD_PROPERTY(LineColor,(mat.diffuseColor));
-    ADD_PROPERTY(PointColor,(mat.diffuseColor));
+    ADD_PROPERTY(LineColor,(mat->getDiffuseColor()));
+    ADD_PROPERTY(PointColor,(mat->getDiffuseColor()));
     ADD_PROPERTY(PointColorArray, (PointColor.getValue()));
     ADD_PROPERTY(DiffuseColor,(ShapeColor.getValue()));
     ADD_PROPERTY(LineColorArray,(LineColor.getValue()));
@@ -302,13 +300,11 @@ ViewProviderPartExt::ViewProviderPartExt()
     pcLineBind->ref();
     pcLineMaterial = new SoMaterial;
     pcLineMaterial->ref();
-    LineMaterial.touch();
 
     pcPointBind = new SoMaterialBinding();
     pcPointBind->ref();
     pcPointMaterial = new SoMaterial;
     pcPointMaterial->ref();
-    PointMaterial.touch();
 
     pcLineStyle = new SoDrawStyle();
     pcLineStyle->ref();
@@ -323,8 +319,6 @@ ViewProviderPartExt::ViewProviderPartExt()
     pShapeHints = new SoShapeHints;
     pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
     pShapeHints->ref();
-    Lighting.touch();
-    DrawStyle.touch();
 
     sPixmap = "Tree_Part";
     loadParameter();
@@ -347,6 +341,35 @@ ViewProviderPartExt::~ViewProviderPartExt()
     lineset->unref();
     nodeset->unref();
 }
+
+#if 0    
+    App::MaterialSource * source = pcFeat->getDocument()->getMaterialDatabase().getMaterialSource("Document");
+    
+    App::Material * lmat = source->getOrCreateMaterial((std::string(pcFeat->getNameInDocument()) + "-line-material").c_str());
+    lmat->setProperty("Father", std::string("DEFAULT"));
+
+    App::Material * pmat = source->getOrCreateMaterial((std::string(pcFeat->getNameInDocument()) + "-point-material").c_str());
+    pmat->setProperty("Father", std::string("DEFAULT"));
+
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
+    unsigned long lcol = hGrp->GetUnsigned("DefaultShapeLineColor",421075455UL); // dark grey (25,25,25)
+    float r = ((lcol >> 24) & 0xff) / 255.0;
+    float g = ((lcol >> 16) & 0xff) / 255.0;
+    float b = ((lcol >> 8) & 0xff) / 255.0;
+
+
+    pmat->setDiffuseColor(App::Color(r, g, b));
+    lmat->setDiffuseColor(App::Color(r, g, b));
+
+    // Assign materials
+    LineMaterial.setValue(lmat);
+    PointMaterial.setValue(pmat);
+    DiffuseColor.setValue(ShapeColor.getValue());
+    LineColorArray.setValue(LineColor.getValue());
+    LineColor.setValue(lmat->getDiffuseColor());
+    PointColor.setValue(pmat->getDiffuseColor());
+    PointColorArray.setValue(PointColor.getValue());
+#endif    
 
 void ViewProviderPartExt::onChanged(const App::Property* prop)
 {
@@ -372,40 +395,54 @@ void ViewProviderPartExt::onChanged(const App::Property* prop)
         pcPointStyle->pointSize = PointSize.getValue();
     }
     else if (prop == &LineColor) {
+        const App::Material * Mat = LineMaterial.getValue();
         const App::Color& c = LineColor.getValue();
+
         pcLineMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-        if (c != LineMaterial.getValue().diffuseColor)
+        if (Mat && c != Mat->getDiffuseColor()) {
+            cow(LineMaterial);
             LineMaterial.setDiffuseColor(c);
+        }
         LineColorArray.setValue(LineColor.getValue());
     }
     else if (prop == &PointColor) {
+        const App::Material * Mat = PointMaterial.getValue();
         const App::Color& c = PointColor.getValue();
+
         pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-        if (c != PointMaterial.getValue().diffuseColor)
+        if (Mat && c != Mat->getDiffuseColor()) {
+            cow(PointMaterial);
             PointMaterial.setDiffuseColor(c);
+        }
         PointColorArray.setValue(PointColor.getValue());
     }
     else if (prop == &LineMaterial) {
-        const App::Material& Mat = LineMaterial.getValue();
-        if (LineColor.getValue() != Mat.diffuseColor)
-            LineColor.setValue(Mat.diffuseColor);
-        pcLineMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-        pcLineMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
-        pcLineMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-        pcLineMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-        pcLineMaterial->shininess.setValue(Mat.shininess);
-        pcLineMaterial->transparency.setValue(Mat.transparency);
+        const App::Material * Mat = LineMaterial.getValue();
+
+        if (Mat) {
+            if (LineColor.getValue() != Mat->getDiffuseColor())
+                LineColor.setValue(Mat->getDiffuseColor());
+            pcLineMaterial->ambientColor.setValue(Mat->getAmbientColor().r,Mat->getAmbientColor().g,Mat->getAmbientColor().b);
+            pcLineMaterial->diffuseColor.setValue(Mat->getDiffuseColor().r,Mat->getDiffuseColor().g,Mat->getDiffuseColor().b);
+            pcLineMaterial->specularColor.setValue(Mat->getSpecularColor().r,Mat->getSpecularColor().g,Mat->getSpecularColor().b);
+            pcLineMaterial->emissiveColor.setValue(Mat->getEmissiveColor().r,Mat->getEmissiveColor().g,Mat->getEmissiveColor().b);
+            pcLineMaterial->shininess.setValue(Mat->getShininess());
+            pcLineMaterial->transparency.setValue(Mat->getTransparency());
+        }
     }
     else if (prop == &PointMaterial) {
-        const App::Material& Mat = PointMaterial.getValue();
-        if (PointColor.getValue() != Mat.diffuseColor)
-            PointColor.setValue(Mat.diffuseColor);
-        pcPointMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-        pcPointMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
-        pcPointMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-        pcPointMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-        pcPointMaterial->shininess.setValue(Mat.shininess);
-        pcPointMaterial->transparency.setValue(Mat.transparency);
+        const App::Material * Mat = PointMaterial.getValue();
+
+        if (Mat) {
+            if (PointColor.getValue() != Mat->getDiffuseColor())
+                PointColor.setValue(Mat->getDiffuseColor());
+            pcPointMaterial->ambientColor.setValue(Mat->getAmbientColor().r,Mat->getAmbientColor().g,Mat->getAmbientColor().b);
+            pcPointMaterial->diffuseColor.setValue(Mat->getDiffuseColor().r,Mat->getDiffuseColor().g,Mat->getDiffuseColor().b);
+            pcPointMaterial->specularColor.setValue(Mat->getSpecularColor().r,Mat->getSpecularColor().g,Mat->getSpecularColor().b);
+            pcPointMaterial->emissiveColor.setValue(Mat->getEmissiveColor().r,Mat->getEmissiveColor().g,Mat->getEmissiveColor().b);
+            pcPointMaterial->shininess.setValue(Mat->getShininess());
+            pcPointMaterial->transparency.setValue(Mat->getTransparency());
+        }
     }
     else if (prop == &PointColorArray) {
         setHighlightedPoints(PointColorArray.getValues());
@@ -422,26 +459,29 @@ void ViewProviderPartExt::onChanged(const App::Property* prop)
         DiffuseColor.setValue(ShapeColor.getValue());
     }
     else if (prop == &Transparency) {
-        const App::Material& Mat = ShapeMaterial.getValue();
-        long value = (long)(100*Mat.transparency);
-        if (value != Transparency.getValue()) {
-            float trans = Transparency.getValue()/100.0f;
-            if (pcFaceBind->value.getValue() == SoMaterialBinding::PER_PART) {
-                int cnt = pcShapeMaterial->diffuseColor.getNum();
-                pcShapeMaterial->transparency.setNum(cnt);
-                float *t = pcShapeMaterial->transparency.startEditing();
-                for (int i=0; i<cnt; i++)
-                    t[i] = trans;
-                pcShapeMaterial->transparency.finishEditing();
-            }
-            else {
-                pcShapeMaterial->transparency = trans;
-            }
+        const App::Material* Mat = ShapeMaterial.getValue();
 
-            App::PropertyContainer* parent = ShapeMaterial.getContainer();
-            ShapeMaterial.setContainer(0);
-            ShapeMaterial.setTransparency(trans);
-            ShapeMaterial.setContainer(parent);
+        if (Mat) {
+            long value = (long)(100*Mat->getTransparency());
+            if (value != Transparency.getValue()) {
+                float trans = Transparency.getValue()/100.0f;
+                if (pcFaceBind->value.getValue() == SoMaterialBinding::PER_PART) {
+                    int cnt = pcShapeMaterial->diffuseColor.getNum();
+                    pcShapeMaterial->transparency.setNum(cnt);
+                    float *t = pcShapeMaterial->transparency.startEditing();
+                    for (int i=0; i<cnt; i++)
+                        t[i] = trans;
+                    pcShapeMaterial->transparency.finishEditing();
+                }
+                else {
+                    pcShapeMaterial->transparency = trans;
+                }
+
+                App::PropertyContainer* parent = ShapeMaterial.getContainer();
+                ShapeMaterial.setContainer(0);
+                ShapeMaterial.setTransparency(trans);
+                ShapeMaterial.setContainer(parent);
+            }
         }
     }
     else if (prop == &Lighting) {
@@ -483,6 +523,32 @@ void ViewProviderPartExt::attach(App::DocumentObject *pcFeat)
     // call parent attach method
     ViewProviderGeometryObject::attach(pcFeat);
 
+    App::Material * default_mat = App::GetApplication().getMaterialDatabase().getMaterial("DEFAULT");
+
+    ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
+    unsigned long lcol = hGrp->GetUnsigned("DefaultShapeLineColor",421075455UL); // dark grey (25,25,25)
+    float r = ((lcol >> 24) & 0xff) / 255.0;
+    float g = ((lcol >> 16) & 0xff) / 255.0;
+    float b = ((lcol >> 8) & 0xff) / 255.0;
+
+    // Assign materials
+    LineMaterial.setValue(default_mat);
+    if (default_mat->getDiffuseColor() != App::Color(r, g, b)) {
+        cow(LineMaterial);
+        LineMaterial.setDiffuseColor(App::Color(r, g, b));
+    }
+
+    lcol = hGrp->GetUnsigned("DefaultShapeVertexColor",421075455UL); // dark grey (25,25,25)
+    r = ((lcol >> 24) & 0xff) / 255.0;
+    g = ((lcol >> 16) & 0xff) / 255.0;
+    b = ((lcol >> 8) & 0xff) / 255.0;
+    
+    PointMaterial.setValue(default_mat);
+    if (default_mat->getDiffuseColor() != App::Color(r, g, b)) {
+        cow(PointMaterial);
+        PointMaterial.setDiffuseColor(App::Color(r, g, b));
+    }
+    
     // Workaround for #0000433, i.e. use SoSeparator instead of SoGroup
     auto* pcNormalRoot = new SoSeparator();
     auto* pcFlatRoot = new SoSeparator();
@@ -726,10 +792,10 @@ void ViewProviderPartExt::setHighlightedFaces(const std::vector<App::Material>& 
         SbColor* ec = pcShapeMaterial->emissiveColor.startEditing();
 
         for (int i = 0; i < size; i++) {
-            dc[i].setValue(colors[i].diffuseColor.r, colors[i].diffuseColor.g, colors[i].diffuseColor.b);
-            ac[i].setValue(colors[i].ambientColor.r, colors[i].ambientColor.g, colors[i].ambientColor.b);
-            sc[i].setValue(colors[i].specularColor.r, colors[i].specularColor.g, colors[i].specularColor.b);
-            ec[i].setValue(colors[i].emissiveColor.r, colors[i].emissiveColor.g, colors[i].emissiveColor.b);
+            dc[i].setValue(colors[i].getDiffuseColor().r, colors[i].getDiffuseColor().g, colors[i].getDiffuseColor().b);
+            ac[i].setValue(colors[i].getAmbientColor().r, colors[i].getAmbientColor().g, colors[i].getAmbientColor().b);
+            sc[i].setValue(colors[i].getSpecularColor().r, colors[i].getSpecularColor().g, colors[i].getSpecularColor().b);
+            ec[i].setValue(colors[i].getEmissiveColor().r, colors[i].getEmissiveColor().g, colors[i].getEmissiveColor().b);
         }
 
         pcShapeMaterial->diffuseColor.finishEditing();
@@ -739,10 +805,10 @@ void ViewProviderPartExt::setHighlightedFaces(const std::vector<App::Material>& 
     }
     else if (colors.size() == 1) {
         pcFaceBind->value = SoMaterialBinding::OVERALL;
-        pcShapeMaterial->diffuseColor.setValue(colors[0].diffuseColor.r, colors[0].diffuseColor.g, colors[0].diffuseColor.b);
-        pcShapeMaterial->ambientColor.setValue(colors[0].ambientColor.r, colors[0].ambientColor.g, colors[0].ambientColor.b);
-        pcShapeMaterial->specularColor.setValue(colors[0].specularColor.r, colors[0].specularColor.g, colors[0].specularColor.b);
-        pcShapeMaterial->emissiveColor.setValue(colors[0].emissiveColor.r, colors[0].emissiveColor.g, colors[0].emissiveColor.b);
+        pcShapeMaterial->diffuseColor.setValue(colors[0].getDiffuseColor().r, colors[0].getDiffuseColor().g, colors[0].getDiffuseColor().b);
+        pcShapeMaterial->ambientColor.setValue(colors[0].getAmbientColor().r, colors[0].getAmbientColor().g, colors[0].getAmbientColor().b);
+        pcShapeMaterial->specularColor.setValue(colors[0].getSpecularColor().r, colors[0].getSpecularColor().g, colors[0].getSpecularColor().b);
+        pcShapeMaterial->emissiveColor.setValue(colors[0].getEmissiveColor().r, colors[0].getEmissiveColor().g, colors[0].getEmissiveColor().b);
     }
 }
 

@@ -49,6 +49,7 @@ class ApplicationObserver;
 class Property;
 class AutoTransaction;
 class ExtensionContainer;
+class MaterialDatabase;
 
 enum GetLinkOption {
     /// Get all links (both directly and in directly) linked to the given object
@@ -60,7 +61,6 @@ enum GetLinkOption {
     /// Get only external links, no effect if GetLinkRecursive
     GetLinkExternal = 8,
 };
-
 
 /** The Application
  *  The root of the whole application
@@ -347,6 +347,9 @@ public:
     std::map<std::string, std::string> getExportFilters(void) const;
     //@}
 
+    /** Material database */
+    MaterialDatabase & getMaterialDatabase();
+
     /** @name Init, Destruct an Access methods */
     //@{
     static void init(int argc, char ** argv);
@@ -502,6 +505,7 @@ private:
 
     static PyObject *sSetLogLevel       (PyObject *self,PyObject *args);
     static PyObject *sGetLogLevel       (PyObject *self,PyObject *args);
+    static PyObject* sGetMaterialDatabase(PyObject *self, PyObject *args);
 
     static PyObject *sCheckLinkDepth    (PyObject *self,PyObject *args);
     static PyObject *sGetLinksTo        (PyObject *self,PyObject *args);
@@ -576,6 +580,7 @@ private:
     int _activeTransactionID;
     int _activeTransactionGuard;
     bool _activeTransactionTmpName;
+    std::shared_ptr<MaterialDatabase> _pMaterialDatbase;
 
     static Base::ConsoleObserverStd  *_pConsoleObserverStd;
     static Base::ConsoleObserverFile *_pConsoleObserverFile;

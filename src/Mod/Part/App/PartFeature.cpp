@@ -83,6 +83,7 @@ PROPERTY_SOURCE(Part::Feature, App::GeoFeature)
 Feature::Feature(void)
 {
     ADD_PROPERTY(Shape, (TopoDS_Shape()));
+    ADD_PROPERTY_TYPE(Material, (App::PropertyPartMaterial()), nullptr, App::Prop_NoRecompute, nullptr);
 }
 
 Feature::~Feature()

@@ -23,7 +23,11 @@
 
 #include "PreCompiled.h"
 
+#include <boost/any.hpp>
+
 #include "App/Material.h"
+#include "App/Application.h"
+#include "App/MaterialDatabase.h"
 
 // inclusion of the generated files (generated out of MaterialPy.xml)
 #include "MaterialPy.h"
@@ -31,6 +35,8 @@
 
 using namespace App;
 
+#if 0
+// EK: FIXME
 PyObject *MaterialPy::PyMake(struct _typeobject *, PyObject *, PyObject *)  // Python wrapper
 {
     // create a new instance of MaterialPy and the Twin object
@@ -79,12 +85,15 @@ int MaterialPy::PyInit(PyObject* args, PyObject* kwds)
     return 0;
 }
 
+#endif
+
 // returns a string which represents the object e.g. when printed in python
 std::string MaterialPy::representation(void) const
 {
     return std::string("<Material object>");
 }
 
+#if 0
 PyObject* MaterialPy::set(PyObject * args)
 {
     char *pstr;
@@ -99,113 +108,26 @@ PyObject* MaterialPy::set(PyObject * args)
 Py::Tuple MaterialPy::getAmbientColor(void) const
 {
     Py::Tuple tuple(4);
-    tuple.setItem(0, Py::Float(getMaterialPtr()->ambientColor.r));
-    tuple.setItem(1, Py::Float(getMaterialPtr()->ambientColor.g));
-    tuple.setItem(2, Py::Float(getMaterialPtr()->ambientColor.b));
-    tuple.setItem(3, Py::Float(getMaterialPtr()->ambientColor.a));
+    tuple.setItem(0, Py::Float(getMaterialPtr()->getAmbientColor().r));
+    tuple.setItem(1, Py::Float(getMaterialPtr()->getAmbientColor().g));
+    tuple.setItem(2, Py::Float(getMaterialPtr()->getAmbientColor().b));
+    tuple.setItem(3, Py::Float(getMaterialPtr()->getAmbientColor().a));
     return tuple;
 }
 
 void MaterialPy::setAmbientColor(Py::Tuple arg)
 {
-    Color c;
-    c.r = (float)Py::Float(arg.getItem(0));
-    c.g = (float)Py::Float(arg.getItem(1));
-    c.b = (float)Py::Float(arg.getItem(2));
-    if (arg.size() == 4)
-    c.a = (float)Py::Float(arg.getItem(3));
-    getMaterialPtr()->ambientColor = c;
+  // EK: FIXME
+}
+#endif
+
+PyObject *MaterialPy::getCustomAttributes(const char* attr) const
+{
+    return getMaterialPtr()->getPropertyAsPyObject(attr);
 }
 
-Py::Tuple MaterialPy::getDiffuseColor(void) const
+int MaterialPy::setCustomAttributes(const char* attr, PyObject* obj)
 {
-    Py::Tuple tuple(4);
-    tuple.setItem(0, Py::Float(getMaterialPtr()->diffuseColor.r));
-    tuple.setItem(1, Py::Float(getMaterialPtr()->diffuseColor.g));
-    tuple.setItem(2, Py::Float(getMaterialPtr()->diffuseColor.b));
-    tuple.setItem(3, Py::Float(getMaterialPtr()->diffuseColor.a));
-    return tuple;
-}
-
-void MaterialPy::setDiffuseColor(Py::Tuple arg)
-{
-    Color c;
-    c.r = (float)Py::Float(arg.getItem(0));
-    c.g = (float)Py::Float(arg.getItem(1));
-    c.b = (float)Py::Float(arg.getItem(2));
-    if (arg.size() == 4)
-    c.a = (float)Py::Float(arg.getItem(3));
-    getMaterialPtr()->diffuseColor = c;
-}
-
-Py::Tuple MaterialPy::getEmissiveColor(void) const
-{
-    Py::Tuple tuple(4);
-    tuple.setItem(0, Py::Float(getMaterialPtr()->emissiveColor.r));
-    tuple.setItem(1, Py::Float(getMaterialPtr()->emissiveColor.g));
-    tuple.setItem(2, Py::Float(getMaterialPtr()->emissiveColor.b));
-    tuple.setItem(3, Py::Float(getMaterialPtr()->emissiveColor.a));
-    return tuple;
-}
-
-void MaterialPy::setEmissiveColor(Py::Tuple arg)
-{
-    Color c;
-    c.r = (float)Py::Float(arg.getItem(0));
-    c.g = (float)Py::Float(arg.getItem(1));
-    c.b = (float)Py::Float(arg.getItem(2));
-    if (arg.size() == 4)
-    c.a = (float)Py::Float(arg.getItem(3));
-    getMaterialPtr()->emissiveColor = c;
-}
-
-Py::Tuple MaterialPy::getSpecularColor(void) const
-{
-    Py::Tuple tuple(4);
-    tuple.setItem(0, Py::Float(getMaterialPtr()->specularColor.r));
-    tuple.setItem(1, Py::Float(getMaterialPtr()->specularColor.g));
-    tuple.setItem(2, Py::Float(getMaterialPtr()->specularColor.b));
-    tuple.setItem(3, Py::Float(getMaterialPtr()->specularColor.a));
-    return tuple;
-}
-
-void MaterialPy::setSpecularColor(Py::Tuple arg)
-{
-    Color c;
-    c.r = (float)Py::Float(arg.getItem(0));
-    c.g = (float)Py::Float(arg.getItem(1));
-    c.b = (float)Py::Float(arg.getItem(2));
-    if (arg.size() == 4)
-    c.a = (float)Py::Float(arg.getItem(3));
-    getMaterialPtr()->specularColor = c;
-}
-
-Py::Float MaterialPy::getShininess(void) const
-{
-    return Py::Float(getMaterialPtr()->shininess);
-}
-
-void MaterialPy::setShininess(Py::Float arg)
-{
-    getMaterialPtr()->shininess = (float)arg;
-}
-
-Py::Float MaterialPy::getTransparency(void) const
-{
-    return Py::Float(getMaterialPtr()->transparency);
-}
-
-void MaterialPy::setTransparency(Py::Float arg)
-{
-    getMaterialPtr()->transparency = (float)arg;
-}
-
-PyObject *MaterialPy::getCustomAttributes(const char* /*attr*/) const
-{
-    return 0;
-}
-
-int MaterialPy::setCustomAttributes(const char* /*attr*/, PyObject* /*obj*/)
-{
+    getMaterialPtr()->setPropertyFromPyObject(attr, obj);
     return 0;
 }

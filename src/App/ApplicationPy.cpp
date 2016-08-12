@@ -35,6 +35,7 @@
 #include "DocumentPy.h"
 #include "DocumentObserverPython.h"
 #include "DocumentObjectPy.h"
+#include "MaterialDatabase.h"
 
 // FreeCAD Base header
 #include <Base/Interpreter.h>
@@ -184,6 +185,10 @@ PyMethodDef Application::Methods[] = {
      "There is an active sequencer during document restore and recomputation. User may\n"
      "abort the operation by pressing the ESC key. Once detected, this function will\n"
      "trigger a BaseExceptionFreeCADAbort exception."},
+    {"getMaterialDatabase",  (PyCFunction) Application::sGetMaterialDatabase  ,1,
+     "getMaterialDatabase() -> MaterialDatabase\n\n"
+     "Get the application's material database."},
+
     {NULL, NULL, 0, NULL}		/* Sentinel */
 };
 
@@ -966,4 +971,12 @@ PyObject *Application::sCheckAbort(PyObject * /*self*/, PyObject *args)
         Base::Sequencer().checkAbort();
         Py_Return;
     }PY_CATCH
+}
+
+PyObject* Application::sGetMaterialDatabase(PyObject * /*self*/, PyObject *args)
+{
+    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
+        return nullptr;                       // nullptr triggers exception
+
+    return App::GetApplication().getMaterialDatabase().getPyObject();
 }

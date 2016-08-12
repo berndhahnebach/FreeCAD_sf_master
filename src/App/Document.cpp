@@ -71,6 +71,7 @@ recompute path. Also, it enables more complicated dependencies beyond trees.
 #include <boost/algorithm/string.hpp>
 
 #include <boost/graph/adjacency_list.hpp>
+#include <memory>
 #include <boost/graph/subgraph.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/strong_components.hpp>
@@ -98,6 +99,8 @@ recompute path. Also, it enables more complicated dependencies beyond trees.
 #include "MergeDocuments.h"
 #include "ExpressionParser.h"
 #include <App/DocumentPy.h>
+#include <App/MaterialDatabase.h>
+#include <App/DocumentMaterialSource.h>
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -189,6 +192,8 @@ struct DocumentP
 #endif //USE_OLD_DAG
     std::multimap<const App::DocumentObject*, 
         std::unique_ptr<App::DocumentObjectExecReturn> > _RecomputeLog;
+
+    std::unique_ptr<MaterialDatabase> materialDatabase;
 
     DocumentP() {
         static std::random_device _RD;
@@ -1523,7 +1528,6 @@ Document::Document(const char *name)
     ADD_PROPERTY_TYPE(Company,(AuthorComp.c_str()),0,Prop_None,"Additional tag to save the name of the company");
     ADD_PROPERTY_TYPE(Comment,(""),0,Prop_None,"Additional tag to save a comment");
     ADD_PROPERTY_TYPE(Meta,(),0,Prop_None,"Map with additional meta information");
-    ADD_PROPERTY_TYPE(Material,(),0,Prop_None,"Map with material properties");
     // create the uuid for the document
     Base::Uuid id;
     ADD_PROPERTY_TYPE(Id,(""),0,Prop_None,"ID of the document");
@@ -1595,6 +1599,8 @@ Document::Document(const char *name)
         "Link of the tip object of the document");
     ADD_PROPERTY_TYPE(TipName,(""),0,PropertyType(Prop_Hidden|Prop_ReadOnly),
         "Link of the tip object of the document");
+
+    ADD_PROPERTY_TYPE(Materials, (), 0, PropertyType(Prop_Hidden), "Material source");
     Uid.touch();
 }
 
@@ -4641,4 +4647,16 @@ bool Document::mustExecute() const
         if ((*It)->isTouched() || (*It)->mustExecute()==1)
             return true;
     return false;
+}
+
+App::MaterialDatabase &Document::getMaterialDatabase()
+{
+    if (!d->materialDatabase) {
+        MaterialDatabase * parent = &App::GetApplication().getMaterialDatabase();
+
+        d->materialDatabase = std::unique_ptr<MaterialDatabase>(new MaterialDatabase(parent));
+        d->materialDatabase->addMaterialSource(Materials.getValue());
+    }
+
+    return *d->materialDatabase;
 }

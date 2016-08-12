@@ -165,6 +165,11 @@ SET(Document_CPP_SRCS
     TransactionalObject.cpp
     VRMLObject.cpp
     MaterialObject.cpp
+    MaterialDatabase.cpp
+    MaterialSource.cpp
+    DefaultMaterialSource.cpp
+    FileMaterialSource.cpp
+    DocumentMaterialSource.cpp
     MergeDocuments.cpp
     TextDocument.cpp
     Link.cpp
@@ -206,6 +211,11 @@ SET(Document_HPP_SRCS
     TransactionalObject.h
     VRMLObject.h
     MaterialObject.h
+    MaterialDatabase.h
+    MaterialSource.h
+    DefaultMaterialSource.h
+    FileMaterialSource.h
+    DocumentMaterialSource.h
     MergeDocuments.h
     TextDocument.h
     Link.h
@@ -220,29 +230,37 @@ SOURCE_GROUP("Document" FILES ${Document_SRCS})
 SET(Properties_CPP_SRCS
     DynamicProperty.cpp
     ObjectIdentifier.cpp
+    MaterialStack.cpp
+    MaterialComposition.cpp
     Property.cpp
     PropertyContainer.cpp
     PropertyContainerPyImp.cpp
     PropertyFile.cpp
     PropertyGeo.cpp
     PropertyLinks.cpp
+    PropertyPartMaterial.cpp
     PropertyPythonObject.cpp
     PropertyStandard.cpp
     PropertyUnits.cpp
     PropertyExpressionEngine.cpp
+    PropertyDocumentMaterialSource.cpp
 )
 SET(Properties_HPP_SRCS
     DynamicProperty.h
     ObjectIdentifier.h
+    MaterialStack.h
+    MaterialComposition.h
     Property.h
     PropertyContainer.h
     PropertyFile.h
     PropertyGeo.h
     PropertyLinks.h
+    PropertyPartMaterial.h
     PropertyPythonObject.h
     PropertyStandard.h
     PropertyUnits.h
     PropertyExpressionEngine.h
+    PropertyDocumentMaterialSource.h
 )
 SET(Properties_SRCS
     ${Properties_CPP_SRCS}

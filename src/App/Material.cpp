@@ -27,129 +27,146 @@
 # include <cstring>
 #endif
 
+#include <boost/format.hpp>
+#include <assert.h>
 #include <Base/Exception.h>
 #include "Material.h"
+#include "MaterialPy.h"
+#include "MaterialSource.h"
+#include "MaterialDatabase.h"
 
 using namespace App;
 
+static int ambientColorId = -1;
+static int diffuseColorId = -1;
+static int specularColorId = -1;
+static int emissiveColorId = -1;
+static int shininessId = -1;
+static int transparencyId = -1;
+static int nameId = -1;
 
 //===========================================================================
 // Material
 //===========================================================================
-Material::Material(void)
-{
-    setType(STEEL);
-    setType(USER_DEFINED);
-}
 
-Material::Material(const char* MatName)
+Material::Material(const MaterialSource * matSource, const std::vector<boost::any> &properties)
+ : _matSource(matSource)
+ , _matProperties(properties)
 {
-    set(MatName);
-}
-
-Material::Material(const MaterialType MatType)
-{
-    setType(MatType);
+    assert(matSource != nullptr);
+    setInternalIds();
+    PythonObject = new MaterialPy(this);
 }
 
 Material::~Material() 
 {
 }
 
-void Material::set(const char* MatName)
+void Material::setInternalIds()
 {
-    if (strcmp("Brass",MatName) == 0 ) {
-        setType(BRASS);
-    }
-    else if (strcmp("Bronze",MatName) == 0 ) {
-        setType(BRONZE);
-    }
-    else if (strcmp("Copper",MatName) == 0 ) {
-        setType(COPPER);
-    }
-    else if (strcmp("Gold",MatName) == 0 ) {
-//      ambientColor.set(0.3f,0.1f,0.1f);
-//    diffuseColor.set(0.8f,0.7f,0.2f);
-//    specularColor.set(0.4f,0.3f,0.1f);
-//    shininess = .4f;
-//    transparency = .0f;
-////    ambientColor.set(0.3f,0.1f,0.1f);
-////    diffuseColor.set(0.22f,0.15f,0.00f);
-////    specularColor.set(0.71f,0.70f,0.56f);
-////    shininess = .16f;
-////    transparency = .0f;
-////    ambientColor.set(0.24725f, 0.1995f, 0.0745f);
-////    diffuseColor.set(0.75164f, 0.60648f, 0.22648f);
-////    specularColor.set(0.628281f, 0.555802f, 0.366065f);
-////    shininess = .16f;
-////    transparency = .0f;
-        setType(GOLD);
-    }
-    else if (strcmp("Pewter",MatName) == 0 ) {
-        setType(PEWTER);
-    }
-    else if (strcmp("Plaster",MatName) == 0 ) {
-        setType(PLASTER);
-    }
-    else if (strcmp("Plastic",MatName) == 0 ) {
-        setType(PLASTIC);
-    }
-    else if (strcmp("Silver",MatName) == 0 ) {
-        setType(SILVER);
-    }
-    else if (strcmp("Steel",MatName) == 0 ) {
-        setType(STEEL);
-    }
-    else if (strcmp("Stone",MatName) == 0 ) {
-//    ambientColor.set(0.0f,0.0f,0.0f);
-//    diffuseColor.set(0.0f,0.0f,0.0f);
-//    specularColor.set(0.4f,0.3f,0.1f);
-//    shininess = .4f;
-//    transparency = .0f;
-        setType(STONE);
-    }
-    else if (strcmp("Shiny plastic",MatName) == 0 ) {
-        setType(SHINY_PLASTIC);
-    }
-    else if (strcmp("Satin",MatName) == 0 ) {
-        setType(SATIN);
-    }
-    else if (strcmp("Metalized",MatName) == 0 ) {
-        setType(METALIZED);
-    }
-    else if (strcmp("Neon GNC",MatName) == 0 ) {
-        setType(NEON_GNC);
-    }
-    else if (strcmp("Chrome",MatName) == 0 ) {
-        setType(CHROME);
-    }
-    else if (strcmp("Aluminium",MatName) == 0 ) {
-        setType(ALUMINIUM);
-    }
-    else if (strcmp("Obsidian",MatName) == 0 ) {
-        setType(OBSIDIAN);
-    }
-    else if (strcmp("Neon PHC",MatName) == 0 ) {
-        setType(NEON_PHC);
-    }
-    else if (strcmp("Jade",MatName) == 0 ) {
-        setType(JADE);
-    }
-    else if (strcmp("Ruby",MatName) == 0 ) {
-        setType(RUBY);
-    }
-    else if (strcmp("Emerald",MatName) == 0 ) {
-        setType(EMERALD);
-    }
-    else if (strcmp("Default",MatName) == 0 ) {
-        setType(DEFAULT);
-    }
+    if (ambientColorId == -1)
+        ambientColorId = getPropertyId("AmbientColor");
+    if (diffuseColorId == -1)
+        diffuseColorId = getPropertyId("DiffuseColor");
+    if (specularColorId == -1)
+        specularColorId = getPropertyId("SpecularColor");
+    if (emissiveColorId == -1)
+        emissiveColorId = getPropertyId("EmissiveColor");
+    if (shininessId == -1)
+        shininessId = getPropertyId("Shininess");
+    if (transparencyId == -1)
+        transparencyId = getPropertyId("Transparency");
+    if (nameId == -1)
+        nameId = getPropertyId("Name");
+}
+
+const boost::any &Material::getProperty(const char *propName) const
+{
+    int id = getPropertyId(propName);
+
+    return getProperty(id);
+}
+
+void Material::setProperty(const char *propName, const boost::any &value)
+{
+    setProperty(getPropertyId(propName), value);
+}
+
+const char * Material::getPropertyName(int id) const
+{
+    return _matSource->getPropertyName(id);
+}
+
+void Material::setProperty(int id, const boost::any &value)
+{
+    if (id < 0)
+        throw Base::RuntimeError("Cannot set property: Invalid property id");
+
+    if (_matSource->isReadOnly())
+        throw Base::RuntimeError(str(boost::format("Unable to set property %1%: material source is read-only.") % getPropertyName(id)));
+
+    if (static_cast<size_t>(id) >= _matProperties.size())
+        _matProperties.resize(static_cast<size_t>(id) + 1);
+
+    _matProperties[static_cast<size_t>(id)] = value;
+}
+
+void Material::setProperties(const std::vector<boost::any> &properties)
+{
+    _matProperties = properties;
+}
+
+void Material::removeProperty(const char *propName)
+{
+    removeProperty(getPropertyId(propName));
+}
+
+void Material::removeProperty(int id)
+{
+    if (id < 0)
+        throw Base::RuntimeError("Cannot remove property: Invalid property id");
+    if (static_cast<size_t>(id) < _matProperties.size())
+        _matProperties.resize(static_cast<size_t>(id) + 1);
+
+    _matProperties[static_cast<size_t>(id)] = deleted_property_t();
+}
+
+int Material::getPropertyId(const char *propName) const
+{
+    if (_matSource)
+        return _matSource->getPropertyId(propName);
+    else
+        return -1;
+}
+
+const boost::any &Material::getProperty(int id) const
+{
+    if (id < 0)
+        throw Base::RuntimeError("Cannot get property: Invalid property ID");
     else {
-        setType(USER_DEFINED);
+        static boost::any empty;
+        const boost::any & value = static_cast<size_t>(id) < _matProperties.size() ?_matProperties[static_cast<size_t>(id)] : empty;
+
+        // If value is empty, ask the Father material
+        if (value.empty()) {
+            size_t fatherId = static_cast<size_t>(getPropertyId("Father"));
+            const boost::any & fatherProp = fatherId < _matProperties.size() ?_matProperties[fatherId] : empty;
+
+            if (!fatherProp.empty()) {
+                Material * father = getDatabase()->getMaterial(boost::any_cast<std::string>(fatherProp).c_str());
+
+                if (father)
+                    return father->getProperty(id);
+            }
+        }
+        else if (value.type() == typeid(deleted_property_t))
+            return empty;
+
+        return value;
     }
 }
 
-void Material::setType(const MaterialType MatType)
+PyObject *Material::getPropertyAsPyObject(const char *propName) const
 {
     _matType = MatType;
     switch (MatType)
@@ -333,4 +350,91 @@ void Material::setType(const MaterialType MatType)
         transparency = 0.0000f;
         break;
     }
+    return _matSource->toPyObject(propName, getProperty(propName));
+}
+
+void Material::setPropertyFromPyObject(const char *propName, const PyObject *value)
+{
+    boost::any anyvalue(_matSource->fromPyObject(propName, value));
+    setProperty(propName, anyvalue);
+}
+
+bool Material::canUndo() const
+{
+    return _matSource->canUndo();
+}
+
+std::string Material::getName() const
+{
+    return boost::any_cast<std::string>(_matProperties[static_cast<size_t>(nameId)]);
+}
+
+Color Material::getAmbientColor() const
+{
+    return boost::any_cast<Color>(getProperty(ambientColorId));
+}
+
+void Material::setAmbientColor(const Color &color)
+{
+    setProperty(ambientColorId, color);
+}
+
+Color Material::getDiffuseColor() const
+{
+    return boost::any_cast<Color>(getProperty(diffuseColorId));
+}
+
+void Material::setDiffuseColor(const Color &color)
+{
+    setProperty(diffuseColorId, color);
+}
+
+Color Material::getSpecularColor() const
+{
+    return boost::any_cast<Color>(getProperty(specularColorId));
+}
+
+void Material::setSpecularColor(const Color &color)
+{
+    setProperty(specularColorId, color);
+}
+
+Color Material::getEmissiveColor() const
+{
+    return boost::any_cast<Color>(getProperty(emissiveColorId));
+}
+
+void Material::setEmissiveColor(const Color &color)
+{
+    setProperty(emissiveColorId, color);
+}
+
+float Material::getShininess() const
+{
+    return boost::any_cast<float>(getProperty(shininessId));
+}
+
+void Material::setShininess(float value)
+{
+    setProperty(shininessId, value);
+}
+
+float Material::getTransparency() const
+{
+    return boost::any_cast<float>(getProperty(transparencyId));
+}
+
+void Material::setTransparency(float value)
+{
+    setProperty(transparencyId, value);
+}
+
+PyObject *Material::getPyObject()
+{
+    return Py::new_reference_to(PythonObject);
+}
+
+App::MaterialDatabase *Material::getDatabase() const {
+    return _matSource->getDatabase();
+>>>>>>> Better Material support for solid objects.
 }

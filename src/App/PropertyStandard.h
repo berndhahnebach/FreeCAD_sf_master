@@ -936,17 +936,20 @@ public:
     
     /** Sets the property 
      */
-    void setValue(const Material &mat);
+    void setValue(Material *mat);
+
     void setAmbientColor(const Color& col);
     void setDiffuseColor(const Color& col);
     void setSpecularColor(const Color& col);
     void setEmissiveColor(const Color& col);
     void setShininess(float);
     void setTransparency(float);
+
+    void resolveMaterial(App::MaterialDatabase & database);
     
     /** This method returns a string representation of the property
      */
-    const Material &getValue(void) const;
+    const Material *getValue(void) const;
 
     virtual PyObject *getPyObject(void);
     virtual void setPyObject(PyObject *);
@@ -962,12 +965,13 @@ public:
     virtual unsigned int getMemSize (void) const{return sizeof(_cMat);}
     
 private:
-    Material _cMat;
+    std::string _Name;
+    Material * _cMat;
 };
 
 /** Material properties
 */
-class AppExport PropertyMaterialList : public PropertyListsT<Material>
+class AppExport PropertyMaterialList : public PropertyListsT<Material*>
 {
     TYPESYSTEM_HEADER_WITH_OVERRIDE();
 
@@ -999,8 +1003,26 @@ public:
     virtual void Paste(const Property &from) override;
     virtual unsigned int getMemSize(void) const override;
 
+    /** Sets the property
+    */
+    void setValue(Material*);
+
+    /// index operator
+    Material* operator[] (const int idx) const { return _lValueList.operator[] (idx); }
+
+    void  set1Value(const int idx, Material* value){ _lValueList.operator[] (idx) = value; }
+
+    void setValues(const std::vector<Material *> &values);
+    const std::vector<Material*> &getValues(void) const{ return _lValueList; }
+    
+    void setSize(int newSize);
+    int getSize() const;
+    void setPyObject(PyObject *value);
 protected:
-    Material getPyValue(PyObject *) const override;
+    Material* getPyValue(PyObject *) const override;
+
+private:
+    std::vector<Material*> _lValueList;
 };
 
 
@@ -1029,6 +1051,7 @@ public:
 
 protected:
     std::shared_ptr<Base::Persistence> _pObject;
+
 };
 
 } // namespace App

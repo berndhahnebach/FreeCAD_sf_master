@@ -129,7 +129,8 @@
 #include <Gui/Document.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/ViewProviderLink.h>
-
+#include <App/Material.h>
+#include <App/MaterialDatabase.h>
 
 FC_LOG_LEVEL_INIT("Import", true, true)
 
@@ -342,11 +343,15 @@ private:
         if(vp->OverrideMaterialList.getSize()<=index)
             vp->OverrideMaterialList.setSize(index+1);
         vp->OverrideMaterialList.set1Value(index,true);
-        App::Material mat(App::Material::DEFAULT);
+
+        App::MaterialSource * source = obj->getDocument()->getMaterialDatabase().getMaterialSource("Document");
+        App::Material * new_mat = source->getOrCreateMaterial((std::string(obj->getNameInDocument()) + "-link-material").c_str());
+        new_mat->setProperty("Father", "DEFAULT");
+        
         if(vp->MaterialList.getSize()<=index)
-            vp->MaterialList.setSize(index+1,mat);
-        mat.diffuseColor = color;
-        vp->MaterialList.set1Value(index,mat);
+            vp->MaterialList.setSize(index + 1);
+        new_mat->setDiffuseColor(color);
+        vp->MaterialList.set1Value(index,new_mat);
     }
     virtual void applyElementColors(App::DocumentObject *obj, 
             const std::map<std::string,App::Color> &colors) override 

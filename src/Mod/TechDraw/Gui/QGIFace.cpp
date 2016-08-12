@@ -712,7 +712,7 @@ void QGIFace::getParameters(void)
 
     hGrp = App::GetApplication().GetUserParameter()
         .GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("Mod/TechDraw/Colors");
-    App::Color temp = hGrp->GetUnsigned("FaceColor",0xffffffff);
+    App::Color temp = App::Color(hGrp->GetUnsigned("FaceColor",0xffffffff));
     setFillColor(temp.asValue<QColor>());
 
     hGrp = App::GetApplication().GetUserParameter()
