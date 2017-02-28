@@ -20,7 +20,8 @@ INSTALL(
         convert2TetGen.py
         importCcxDatResults.py
         importCcxFrdResults.py
-        importInpMesh.py
+	importFenicsMesh.py
+	importInpMesh.py
         importVTKResults.py
         importZ88Mesh.py
         importZ88O2Results.py
