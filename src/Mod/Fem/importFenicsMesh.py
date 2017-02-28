@@ -25,13 +25,21 @@ __title__ = "FreeCAD Fenics mesh writer"
 __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 
+
+# TODO: check for second order elements
+# TODO: export mesh functions (to be defined, cell functions, vertex functions, facet functions)
+
+
 ## @package importFenicsMesh
 #  \ingroup FEM
 #  \brief FreeCAD Fenics Mesh writer for FEM workbench
 
 import FreeCAD
+import FemMeshTools
+
 import os
-from lxml import etree # parsing xml files and exporting
+import itertools
+from lxml import etree  # parsing xml files and exporting
 
 # Template copied from importZ88Mesh.py. Thanks Bernd!
 ########## generic FreeCAD import and export methods ##########
@@ -56,8 +64,7 @@ def insert(filename, docname):
     except NameError:
         doc = FreeCAD.newDocument(docname)
     FreeCAD.ActiveDocument = doc
-    FreeCAD.Console.PrintError("Not yet implemented")
-    # import_fenics_mesh(filename)
+    import_fenics_mesh(filename)
 
 
 def export(objectslist, filename):
@@ -76,6 +83,9 @@ def export(objectslist, filename):
 
 # Helper
 
+########## Export Section ###################
+
+
 def get_FemMeshObjectDimension(fem_mesh_obj):
     """ Count all entities in an abstract sense, to distinguish which dimension the mesh is
         (i.e. linemesh, facemesh, volumemesh)
@@ -93,12 +103,13 @@ def get_FemMeshObjectDimension(fem_mesh_obj):
 
     return dim
 
+
 def get_FemMeshObjectElementTypes(fem_mesh_obj, remove_zero_element_entries=True):
     """
         Spit out all elements in the mesh with their appropriate dimension.
     """
     FreeCAD_element_names = ["Node", "Edge", "Hexa", "Polygon", "Polyhedron",
-            "Prism", "Pyramid", "Quadrangle", "Tetra", "Triangle"]
+                             "Prism", "Pyramid", "Quadrangle", "Tetra", "Triangle"]
     FreeCAD_element_dims = [0, 1, 3, 2, 3, 3, 3, 2, 3, 2]
 
     elements_list_with_zero = [(eval("fem_mesh_obj.FemMesh." + s + "Count"), s, d) for (s, d) in zip(FreeCAD_element_names, FreeCAD_element_dims)]
@@ -108,8 +119,8 @@ def get_FemMeshObjectElementTypes(fem_mesh_obj, remove_zero_element_entries=True
     else:
         elements_list = elements_list_with_zero
 
-
     return elements_list
+
 
 def get_MaxDimElementFromList(elem_list):
     """
@@ -118,14 +129,12 @@ def get_MaxDimElementFromList(elem_list):
     elem_list.sort(key=lambda (num, s, d): d)
     return elem_list[-1]
 
+
 def write_fenics_mesh(fem_mesh_obj, outputfile):
     """
         For the export, we only have to use the highest dimensional entities and their
         vertices to be exported. (For second order elements, we have to delete the mid element nodes.)
     """
-    # TODO: check for second order elements
-    # TODO: export mesh functions (to be defined, cell functions, vertex functions, facet functions)
-
 
     FreeCAD_to_Fenics_dict = {
             "Triangle": "triangle",
@@ -139,7 +148,6 @@ def write_fenics_mesh(fem_mesh_obj, outputfile):
             "Prism": "unknown", "Pyramid": "unknown",
             }
 
-
     print("Converting " + fem_mesh_obj.Label + " to fenics XML File")
     print("Dimension of mesh: %d" % (get_FemMeshObjectDimension(fem_mesh_obj),))
 
@@ -148,16 +156,16 @@ def write_fenics_mesh(fem_mesh_obj, outputfile):
     celltype_in_mesh = get_MaxDimElementFromList(elements_in_mesh)
     (num_cells, cellname_fc, dim_cell) = celltype_in_mesh
     cellname_fenics = FreeCAD_to_Fenics_dict[cellname_fc]
-    print("Celltype in mesh -> %s and its Fenics name: %s" % (str(celltype_in_mesh),cellname_fenics))
+    print("Celltype in mesh -> %s and its Fenics name: %s" % (str(celltype_in_mesh), cellname_fenics))
 
     root = etree.Element("dolfin", dolfin="http://fenicsproject.org")
     meshchild = etree.SubElement(root, "mesh", celltype=cellname_fenics, dim=str(dim_cell))
     vertices = etree.SubElement(meshchild, "vertices", size=str(fem_mesh_obj.FemMesh.NodeCount))
 
-    for (nodeind, fc_vec) in fem_mesh_obj.FemMesh.Nodes.iteritems(): # python2
+    for (nodeind, fc_vec) in fem_mesh_obj.FemMesh.Nodes.iteritems():
         etree.SubElement(vertices, "vertex", index=str(nodeind-1),
-                # FC starts from 1, fenics starts from 0 to size-1
-                x=str(fc_vec[0]), y=str(fc_vec[1]), z=str(fc_vec[2]))
+                         # FC starts from 1, fenics starts from 0 to size-1
+                         x=str(fc_vec[0]), y=str(fc_vec[1]), z=str(fc_vec[2]))
 
     cells = etree.SubElement(meshchild, "cells", size=str(num_cells))
     if dim_cell == 3:
@@ -185,3 +193,194 @@ def write_fenics_mesh(fem_mesh_obj, outputfile):
     fp = pyopen(outputfile, "w")
     fp.write(etree.tostring(root, pretty_print=True))
     fp.close()
+
+############ Import Section ############
+
+
+def import_fenics_mesh(filename, analysis=None):
+    '''insert a FreeCAD FEM Mesh object in the ActiveDocument
+    '''
+    mesh_data = read_fenics_mesh(filename)
+    mesh_name = os.path.basename(os.path.splitext(filename)[0])
+    femmesh = FemMeshTools.make_femmesh(mesh_data)
+    if femmesh:
+        mesh_object = FreeCAD.ActiveDocument.addObject('Fem::FemMeshObject', mesh_name)
+        mesh_object.FemMesh = femmesh
+
+
+def read_fenics_mesh(xmlfilename):
+
+    def read_mesh_block(mesh_block):
+        '''
+            Reading mesh block from XML file.
+            The mesh block only contains cells and vertices.
+        '''
+        dim = int(mesh_block.get("dim"))
+        cell_type = mesh_block.get("celltype")
+
+        vertex_size = 0
+
+        print("Mesh dimension: %d" % (dim,))
+        print("Mesh cell type: %s" % (cell_type,))
+
+        cells_parts_dim = {'point': {0: 1},
+                           'interval': {0: 2, 1: 1},
+                           'triangle': {0: 3, 1: 3, 2: 1},
+                           'tetrahedron': {0: 4, 1: 6, 2: 4, 3: 1},
+                           'quadrilateral': {0: 4, 1: 4, 2: 1},
+                           'hexahedron': {0: 8, 1: 12, 2: 6, 3: 1}}
+
+        find_vertices = mesh_block.find("vertices")
+        find_cells = mesh_block.find("cells")
+
+        nodes_dict = {}
+        cell_dict = {}
+
+        if find_vertices is None:
+            print("No vertices found!")
+        else:
+            vertex_size = int(find_vertices.attrib.get("size"))
+            print("Reading %d vertices" % (vertex_size,))
+
+            for vertex in find_vertices:
+                ind = int(vertex.get("index"))
+
+                if vertex.tag.lower() == 'vertex':
+                    node_x = float(vertex.get("x"))
+                    node_y = float(vertex.get("y"))
+                    node_z = float(vertex.get("z"))
+
+                    [node_x, node_y, node_z] = [float(vertex.get(coord)) for coord in ["x", "y", "z"]]
+
+                    nodes_dict[ind+1] = FreeCAD.Vector(node_x, node_y, node_z)
+                    # increase node index by one, since fenics starts at 0, FreeCAD at 1
+                    # print("%d %f %f %f" % (ind, node_x, node_y, node_z))
+                else:
+                    print("found strange vertex tag: %s" % (vertex.tag,))
+
+        if find_cells is None:
+            print("No cells found!")
+        else:
+            print("Reading %d cells" % (int(find_cells.attrib.get("size")),))
+            for cell in find_cells:
+                ind = int(cell.get("index"))
+
+                if cell.tag.lower() != cell_type.lower():
+                    print("Strange mismatch between cell type %s and cell tag %s" % (cell_type, cell.tag.lower()))
+                num_vertices = cells_parts_dim[cell_type][0]
+
+                vtupel = tuple([int(cell.get("v"+str(vnum)))+1 for vnum in range(num_vertices)])
+                # generate "v0", "v1", ... from dimension lookup table
+                # increase numbers by one to match FC numbering convention
+
+                cell_dict[ind+1] = vtupel
+
+                # valtupel = tuple([ind] + list(vtupel))
+                # print(("%d " + ("%d "*len(vtupel))) % valtupel)
+
+        return (nodes_dict, cell_dict, cell_type)
+
+    def generate_lower_dimensional_structures(nodes, cell_dict, cell_type):
+
+        Fenics_to_FreeCAD_dict = {
+            "triangle": "tria3",
+            "tetrahedron": "tetra4",
+            "hexahedron": "hexa8",
+            "interval": "seg2",
+            "quadrilateral": "quad4",
+        }
+
+        element_dict = {}
+        element_counter = {}
+
+        for (key, val) in Fenics_to_FreeCAD_dict.iteritems():
+            element_dict[val] = {}
+            element_counter[key] = 0  # count every distinct element and sub element type
+
+        def addtupletodict(di, tpl, counter):
+            sortedtpl = tuple(sorted(tpl))
+            if di.get(sortedtpl) is None:
+                di[sortedtpl] = counter
+                counter += 1
+            return counter
+
+        def invertdict(dic):
+            invdic = {}
+            for (key, it) in dic.iteritems():
+                invdic[it] = key
+            return invdic
+
+        num_vert_dict = {'interval': 2,
+                         'triangle': 3,
+                         'tetrahedron': 4,
+                         'hexahedron': 8,
+                         'quadrilateral': 4}
+        lower_dims_dict = {'interval': [],
+                           'triangle': ['interval'],
+                           'tetrahedron': ['triangle', 'interval'],
+                           'hexahedron': ['quadrilateral', 'interval'],
+                           'quadrilateral': ['interval']}
+
+        for (cell_index, cell) in cell_dict.iteritems():
+            cell_lower_dims = lower_dims_dict[cell_type]
+            element_counter[cell_type] += 1
+            element_dict[Fenics_to_FreeCAD_dict[cell_type]][cell] = element_counter[cell_type]
+            for ld in cell_lower_dims:
+                for vertextuple in itertools.combinations(cell, num_vert_dict[ld]):
+                    element_counter[ld] = addtupletodict(
+                                                        element_dict[Fenics_to_FreeCAD_dict[ld]],
+                                                        vertextuple,
+                                                        element_counter[ld])
+
+        length_counter = len(nodes)
+        for (key, val_dict) in element_dict.iteritems():
+            # to ensure distinct indices for FreeCAD
+            for (vkey, it) in val_dict.iteritems():
+                val_dict[vkey] = it + length_counter
+            length_counter += len(val_dict)
+            # inverse of the dict (dict[key] = val -> dict[val] = key)
+            element_dict[key] = invertdict(val_dict)
+
+        # print("nodes")
+        # for n in nodes.iteritems():
+        #     print(n)
+        # print("seg2")
+        # for e in element_dict['seg2'].iteritems():
+        #     print(e)
+        # print("tria3")
+        # for tr in element_dict['tria3'].iteritems():
+        #     print(tr)
+        # print("tet4")
+        # for tet in element_dict['tetra4'].iteritems():
+        #     print(tet)
+
+        return element_dict
+
+    # FEM data how it is expected from FreeCAD
+
+    nodes = {}
+
+    element_dict = {}
+
+    tree = etree.parse(xmlfilename)
+    root = tree.getroot()
+
+    if root.tag.lower() != "dolfin":
+        print("Strange root tag, should be dolfin!")
+
+    find_mesh = root.find("mesh")
+    if find_mesh is not None:  # these are consistency checks of the XML structure
+        print("Mesh found")
+        (nodes, cells_dict, cell_type) = read_mesh_block(find_mesh)
+        element_dict = generate_lower_dimensional_structures(nodes, cells_dict, cell_type)
+    else:
+        print("No mesh found")
+
+    if root.find("data") is not None:
+        print("Internal mesh data found")
+
+    return {'Nodes': nodes,
+            'Hexa8Elem': {}, 'Penta6Elem': {}, 'Tetra4Elem': element_dict['tetra4'], 'Tetra10Elem': {},
+            'Penta15Elem': {}, 'Hexa20Elem': {}, 'Tria3Elem': element_dict['tria3'], 'Tria6Elem': {},
+            'Quad4Elem': element_dict['quad4'], 'Quad8Elem': {}, 'Seg2Elem': element_dict['seg2']
+            }
