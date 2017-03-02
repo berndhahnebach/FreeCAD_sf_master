@@ -282,9 +282,9 @@ def read_fenics_mesh(xmlfilename):
                 # valtupel = tuple([ind] + list(vtupel))
                 # print(("%d " + ("%d "*len(vtupel))) % valtupel)
 
-        return (nodes_dict, cell_dict, cell_type)
+        return (nodes_dict, cell_dict, cell_type, dim)
 
-    def generate_lower_dimensional_structures(nodes, cell_dict, cell_type):
+    def generate_lower_dimensional_structures(nodes, cell_dict, cell_type, dim):
 
         def correct_volume_det(element_dict):
             '''
@@ -292,18 +292,33 @@ def read_fenics_mesh(xmlfilename):
                 all have the same volume (<0?)
                 sign (is necessary to avoid negative
                 Jacobian errors).
-                Works only with tet4 elements at the moment
+                Works only with tet4 and tri3 elements at the moment
             '''
-            for (ind, tet) in element_dict['tetra4'].iteritems():
-                v0 = nodes[tet[0]]
-                v1 = nodes[tet[1]]
-                v2 = nodes[tet[2]]
-                v3 = nodes[tet[3]]
-                a = v1 - v0
-                b = v2 - v0
-                c = v3 - v0
-                if a.dot(b.cross(c)) > 0:
-                    element_dict['tetra4'][ind] = (tet[1], tet[0], tet[2], tet[3])
+            if dim == 3:
+                for (ind, tet) in element_dict['tetra4'].iteritems():
+                    v0 = nodes[tet[0]]
+                    v1 = nodes[tet[1]]
+                    v2 = nodes[tet[2]]
+                    v3 = nodes[tet[3]]
+                    a = v1 - v0
+                    b = v2 - v0
+                    c = v3 - v0
+                    if a.dot(b.cross(c)) > 0:
+                        element_dict['tetra4'][ind] = (tet[1], tet[0], tet[2], tet[3])
+            if dim == 2:
+                nz = FreeCAD.Vector(0., 0., 1.)
+                for (ind, tria) in element_dict['tria3'].iteritems():
+                    v0 = nodes[tria[0]]
+                    v1 = nodes[tria[1]]
+                    v2 = nodes[tria[2]]
+                    
+                    a = v1 - v0
+                    b = v2 - v0
+                    
+                    if nz.dot(a.cross(b)) < 0:
+                        element_dict['tria3'][ind] = (tria[1], tria[0], tria[2])
+                
+                
 
         element_dict = {}
         element_counter = {}
@@ -376,8 +391,8 @@ def read_fenics_mesh(xmlfilename):
     find_mesh = root.find("mesh")
     if find_mesh is not None:  # these are consistency checks of the XML structure
         print("Mesh found")
-        (nodes, cells_dict, cell_type) = read_mesh_block(find_mesh)
-        element_dict = generate_lower_dimensional_structures(nodes, cells_dict, cell_type)
+        (nodes, cells_dict, cell_type, dim) = read_mesh_block(find_mesh)
+        element_dict = generate_lower_dimensional_structures(nodes, cells_dict, cell_type, dim)
     else:
         print("No mesh found")
 
