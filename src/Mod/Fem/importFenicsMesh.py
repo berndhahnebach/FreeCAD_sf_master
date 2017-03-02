@@ -21,7 +21,7 @@
 # ***************************************************************************
 from __future__ import print_function
 
-__title__ = "FreeCAD Fenics mesh writer"
+__title__ = "FreeCAD Fenics mesh reader and writer"
 __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 
@@ -32,7 +32,7 @@ __url__ = "http://www.freecadweb.org"
 
 ## @package importFenicsMesh
 #  \ingroup FEM
-#  \brief FreeCAD Fenics Mesh writer for FEM workbench
+#  \brief FreeCAD Fenics Mesh reader and writer for FEM workbench
 
 import FreeCAD
 import FemMeshTools
@@ -308,7 +308,7 @@ def read_fenics_mesh(xmlfilename):
         element_dict = {}
         element_counter = {}
 
-        #  TODO: remove upper level lookup
+        # TODO: remove upper level lookup
         for (key, val) in Fenics_to_FreeCAD_dict.iteritems():
             element_dict[val] = {}
             element_counter[key] = 0  # count every distinct element and sub element type
@@ -363,7 +363,7 @@ def read_fenics_mesh(xmlfilename):
 
     nodes = {}
     element_dict = {}
-    #  TODO: remove two times initialization
+    # TODO: remove two times initialization
     for val in Fenics_to_FreeCAD_dict.itervalues():
         element_dict[val] = {}
 
