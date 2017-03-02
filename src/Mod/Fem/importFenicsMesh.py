@@ -210,6 +210,14 @@ def import_fenics_mesh(filename, analysis=None):
 
 def read_fenics_mesh(xmlfilename):
 
+    Fenics_to_FreeCAD_dict = {
+        "triangle": "tria3",
+        "tetrahedron": "tetra4",
+        "hexahedron": "hexa8",
+        "interval": "seg2",
+        "quadrilateral": "quad4",
+    }
+
     def read_mesh_block(mesh_block):
         '''
             Reading mesh block from XML file.
@@ -246,11 +254,7 @@ def read_fenics_mesh(xmlfilename):
                 ind = int(vertex.get("index"))
 
                 if vertex.tag.lower() == 'vertex':
-                    node_x = float(vertex.get("x"))
-                    node_y = float(vertex.get("y"))
-                    node_z = float(vertex.get("z"))
-
-                    [node_x, node_y, node_z] = [float(vertex.get(coord)) for coord in ["x", "y", "z"]]
+                    [node_x, node_y, node_z] = [float(vertex.get(coord, 0.)) for coord in ["x", "y", "z"]]
 
                     nodes_dict[ind+1] = FreeCAD.Vector(node_x, node_y, node_z)
                     # increase node index by one, since fenics starts at 0, FreeCAD at 1
@@ -282,17 +286,29 @@ def read_fenics_mesh(xmlfilename):
 
     def generate_lower_dimensional_structures(nodes, cell_dict, cell_type):
 
-        Fenics_to_FreeCAD_dict = {
-            "triangle": "tria3",
-            "tetrahedron": "tetra4",
-            "hexahedron": "hexa8",
-            "interval": "seg2",
-            "quadrilateral": "quad4",
-        }
+        def correct_volume_det(element_dict):
+            '''
+                Checks whether the cell elements
+                all have the same volume (<0?)
+                sign (is necessary to avoid negative
+                Jacobian errors).
+                Works only with tet4 elements at the moment
+            '''
+            for (ind, tet) in element_dict['tetra4'].iteritems():
+                v0 = nodes[tet[0]]
+                v1 = nodes[tet[1]]
+                v2 = nodes[tet[2]]
+                v3 = nodes[tet[3]]
+                a = v1 - v0
+                b = v2 - v0
+                c = v3 - v0
+                if a.dot(b.cross(c)) > 0:
+                    element_dict['tetra4'][ind] = (tet[1], tet[0], tet[2], tet[3])
 
         element_dict = {}
         element_counter = {}
 
+        #  TODO: remove upper level lookup
         for (key, val) in Fenics_to_FreeCAD_dict.iteritems():
             element_dict[val] = {}
             element_counter[key] = 0  # count every distinct element and sub element type
@@ -341,26 +357,15 @@ def read_fenics_mesh(xmlfilename):
             # inverse of the dict (dict[key] = val -> dict[val] = key)
             element_dict[key] = invertdict(val_dict)
 
-        # print("nodes")
-        # for n in nodes.iteritems():
-        #     print(n)
-        # print("seg2")
-        # for e in element_dict['seg2'].iteritems():
-        #     print(e)
-        # print("tria3")
-        # for tr in element_dict['tria3'].iteritems():
-        #     print(tr)
-        # print("tet4")
-        # for tet in element_dict['tetra4'].iteritems():
-        #     print(tet)
+        correct_volume_det(element_dict)
 
         return element_dict
 
-    # FEM data how it is expected from FreeCAD
-
     nodes = {}
-
     element_dict = {}
+    #  TODO: remove two times initialization
+    for val in Fenics_to_FreeCAD_dict.itervalues():
+        element_dict[val] = {}
 
     tree = etree.parse(xmlfilename)
     root = tree.getroot()
