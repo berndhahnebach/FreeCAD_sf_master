@@ -311,14 +311,10 @@ def read_fenics_mesh(xmlfilename):
                     v0 = nodes[tria[0]]
                     v1 = nodes[tria[1]]
                     v2 = nodes[tria[2]]
-                    
                     a = v1 - v0
                     b = v2 - v0
-                    
                     if nz.dot(a.cross(b)) < 0:
                         element_dict['tria3'][ind] = (tria[1], tria[0], tria[2])
-                
-                
 
         element_dict = {}
         element_counter = {}
