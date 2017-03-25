@@ -64,6 +64,10 @@ SET(FemScripts_SRCS
     convert2TetGen.py
     importCcxDatResults.py
     importCcxFrdResults.py
+    importFenicsXML.py
+    exportFenicsXML.py
+    importFenicsXDMF.py
+    exportFenicsXDMF.py
     importFenicsMesh.py
     importInpMesh.py
     importToolsFem.py

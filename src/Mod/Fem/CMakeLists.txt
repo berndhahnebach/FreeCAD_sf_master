@@ -20,7 +20,11 @@ INSTALL(
         convert2TetGen.py
         importCcxDatResults.py
         importCcxFrdResults.py
-        importFenicsMesh.py
+	importFenicsXML.py
+	exportFenicsXML.py
+	importFenicsXDMF.py
+	exportFenicsXDMF.py
+	importFenicsMesh.py
         importInpMesh.py
         importToolsFem.py
         importVTKResults.py
