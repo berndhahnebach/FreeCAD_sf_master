@@ -25,10 +25,6 @@ __title__ = "FreeCAD Fenics mesh reader and writer"
 __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 
-
-
-
-
 ## @package importFenicsMesh
 #  \ingroup FEM
 #  \brief FreeCAD Fenics Mesh reader and writer for FEM workbench
@@ -41,7 +37,6 @@ import importFenicsXML
 import exportFenicsXML
 import importFenicsXDMF
 import exportFenicsXDMF
-
 
 
 # Template copied from importZ88Mesh.py. Thanks Bernd!
@@ -70,7 +65,6 @@ def insert(filename, docname):
     import_fenics_mesh(filename)
 
 
-
 def export(objectslist, fileString):
     "called when freecad exports a file"
     if len(objectslist) != 1:
@@ -88,7 +82,8 @@ def export(objectslist, fileString):
         elif fileExtension.lower() == '.xdmf':
             exportFenicsXDMF.write_fenics_mesh_xdmf(obj, fileString)
 
-    #write_fenics_mesh(obj, filename)
+    # write_fenics_mesh(obj, filename)
+
 
 def import_fenics_mesh(filename, analysis=None):
     '''insert a FreeCAD FEM Mesh object in the ActiveDocument
@@ -101,14 +96,3 @@ def import_fenics_mesh(filename, analysis=None):
     if femmesh:
         mesh_object = FreeCAD.ActiveDocument.addObject('Fem::FemMeshObject', mesh_name)
         mesh_object.FemMesh = femmesh
-
-
-
-########## module specific methods ##########
-# Helper
-
-########## Export Section ###################
-
-
-
-############ Import Section ############

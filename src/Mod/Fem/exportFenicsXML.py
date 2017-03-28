@@ -33,6 +33,7 @@ __url__ = "http://www.freecadweb.org"
 from importToolsFem import get_FemMeshObjectDimension, get_FemMeshObjectElementTypes, get_MaxDimElementFromList
 from lxml import etree  # parsing xml files and exporting
 
+
 def write_fenics_mesh_xml(fem_mesh_obj, outputfile):
     """
         For the export, we only have to use the highest dimensional entities and their
@@ -40,7 +41,6 @@ def write_fenics_mesh_xml(fem_mesh_obj, outputfile):
     """
 
     # TODO: check for second order elements (what to do? deny export or reduce element order?)
-
 
     FreeCAD_to_Fenics_dict = {
         "Triangle": "triangle",

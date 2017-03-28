@@ -29,13 +29,6 @@ __url__ = "http://www.freecadweb.org"
 #  \ingroup FEM
 #  \brief FreeCAD Fenics Mesh XDMF reader for FEM workbench
 
-
-import FreeCAD
-import importToolsFem
-from lxml import etree  # parsing xml files and exporting
-import itertools
-
-
 def read_fenics_mesh_xdmf(xdmffilename):
 
     print("Not operational, yet")
