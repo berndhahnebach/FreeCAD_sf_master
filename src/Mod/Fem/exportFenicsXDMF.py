@@ -1,3 +1,36 @@
+# ***************************************************************************
+# *                                                                         *
+# *   Copyright (c) 2017 - Johannes Hartung <j.hartung@gmx.net>             *
+# *                                                                         *
+# *   This program is free software; you can redistribute it and/or modify  *
+# *   it under the terms of the GNU Lesser General Public License (LGPL)    *
+# *   as published by the Free Software Foundation; either version 2 of     *
+# *   the License, or (at your option) any later version.                   *
+# *   for detail see the LICENCE text file.                                 *
+# *                                                                         *
+# *   This program is distributed in the hope that it will be useful,       *
+# *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+# *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+# *   GNU Library General Public License for more details.                  *
+# *                                                                         *
+# *   You should have received a copy of the GNU Library General Public     *
+# *   License along with this program; if not, write to the Free Software   *
+# *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
+# *   USA                                                                   *
+# *                                                                         *
+# ***************************************************************************
+from __future__ import print_function
+
+__title__ = "FreeCAD Fenics XDMF mesh writer"
+__author__ = "Johannes Hartung"
+__url__ = "http://www.freecadweb.org"
+
+## @package exportFenicsXDMF
+#  \ingroup FEM
+#  \brief FreeCAD Fenics Mesh XDMF writer for FEM workbench
+
+
+
 from importToolsFem import get_FemMeshObjectDimension, get_FemMeshObjectElementTypes, get_MaxDimElementFromList, get_FemMeshObjectOrder
 from lxml import etree  # parsing xml files and exporting
 import numpy as np
@@ -5,6 +38,15 @@ import numpy as np
 ENCODING_ASCII='ASCII'
 ENCODING_HDF5='HDF5'
 
+# TODO: export mesh functions (to be defined, cell functions, vertex functions, facet functions)
+# TODO: integrate cell function
+# TODO: generalize order check
+# TODO: remove random cell function from output
+# TODO: check pyopen for other files
+# TODO: for xml export reduce mesh to 1st order
+
+# we need numpy functions to later access and process large data sets in a fast manner
+# also the hd5 support only works with together with numpy
 
 def numpy_array_to_str(npa):
     res = ""
@@ -82,7 +124,7 @@ def write_fenics_mesh_volumes_xdmf(fem_mesh_obj, topologynode, rd, encoding=ENCO
     topologynode.set("NumberOfElements", str(num_cells))
     topologynode.set("NodesPerElement", str(nodes_per_element))
 
-    fc_cells = fem_mesh_obj.FemMesh.Volumes # dim abhaengig
+    fc_cells = fem_mesh_obj.FemMesh.Volumes # TODO: dim abhaengig
     nodeindices = [(rd[ind] for ind in fem_mesh_obj.FemMesh.getElementNodes(fc_volume_ind)) for (fen_ind, fc_volume_ind) in enumerate(fc_cells)] # stimmen nicht
 	# FC starts after all other entities, fenics start from 0 to size-1
 
@@ -143,10 +185,14 @@ def write_fenics_mesh_xdmf(fem_mesh_obj, outputfile, encoding=ENCODING_ASCII):
     grid = etree.SubElement(domain, "Grid", Name="mesh", GridType="Uniform")
     topology = etree.SubElement(grid, "Topology")
     geometry = etree.SubElement(grid, "Geometry")
-    attribute = etree.SubElement(grid, "Attribute")
+
+    # attribute = etree.SubElement(grid, "Attribute") #  for cell functions
+
     recalc_dict = write_fenics_mesh_points_xdmf(fem_mesh_obj, geometry, encoding=encoding)
     write_fenics_mesh_volumes_xdmf(fem_mesh_obj, topology, recalc_dict, encoding=encoding)
-    write_fenics_mesh_cellfunctions(fem_mesh_obj, {}, attribute, encoding=encoding)
+
+    # TODO: improve cell functions support
+    # write_fenics_mesh_cellfunctions(fem_mesh_obj, {}, attribute, encoding=encoding)
 
     fp = open(outputfile, "w")
     fp.write('''<?xml version="1.0"?>\n<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>\n''')

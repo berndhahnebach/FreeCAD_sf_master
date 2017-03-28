@@ -34,19 +34,28 @@ import numpy as np
 
 def get_FemMeshObjectOrder(fem_mesh_obj):
     """
-        Get element order
+        Gets element order. Element order counting based on number of nodes on edges.
+        Edge with 2 nodes -> linear elements, Edge with 3 nodes -> quadratic elements, and so on.
+        No edges in mesh -> not determined. (Is this possible? Seems to be a very degenerate case.)
+        If there are edges with different number of nodes appearing, return list of orders.
     """
-    # TODO: do not rely on mesher object properties!
+    presumable_order = None
 
-    if 'SecondOrder' in fem_mesh_obj.PropertiesList:
-        resdict_netgen = {False: 1, True: 2}
-        return resdict_netgen[fem_mesh_obj.SecondOrder]
-    elif 'ElementOrder' in fem_mesh_obj.PropertiesList:
-        resdict_gmsh = {"1st": 1, "2nd": 2}
-        return resdict_gmsh[fem_mesh_obj.ElementOrder]
+    edges = fem_mesh_obj.FemMesh.Edges
+
+    if edges != ():
+        edges_length_set = list({len(fem_mesh_obj.FemMesh.getElementNodes(e)) for e in edges})
+        # only need set to eliminate double entries
+
+        if len(edges_length_set) == 1:
+            presumable_order = edges_length_set[0] - 1
+        else:
+            presumable_order = [el - 1 for el in edges_length_set]
     else:
-        print("Could not determine element order, presumably no gmsh or netgen mesh")
-        return 1
+        print("Found no edges in mesh: Element order determination does not work without them.")
+    print(presumable_order)
+
+    return presumable_order
 
 
 def get_FemMeshObjectDimension(fem_mesh_obj):

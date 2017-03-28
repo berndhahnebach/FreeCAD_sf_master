@@ -26,8 +26,7 @@ __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 
 
-# TODO: check for second order elements
-# TODO: export mesh functions (to be defined, cell functions, vertex functions, facet functions)
+
 
 
 ## @package importFenicsMesh
