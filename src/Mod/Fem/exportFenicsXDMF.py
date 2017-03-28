@@ -72,16 +72,20 @@ def write_fenics_mesh_points_xdmf(fem_mesh_obj, geometrynode, encoding=ENCODING_
     numnodes = fem_mesh_obj.FemMesh.NodeCount
     dim = get_MaxDimElementFromList(get_FemMeshObjectElementTypes(fem_mesh_obj))[2]
 
-    if dim == 2:
-        geometrynode.set("GeometryType", "XY")
-    elif dim == 3:
-        geometrynode.set("GeometryType", "XYZ")
+    # if dim == 2:
+    #    geometrynode.set("GeometryType", "XY")
+    # elif dim == 3:
+    #    geometrynode.set("GeometryType", "XYZ")
 
+    geometrynode.set("GeometryType", "XYZ")
+
+    # TODO: investigate: real two dimensional geometry. At the moment it is saved as
+    # flat 3d geometry.
 
     recalc_nodes_ind_dict = {}
 
     if encoding == ENCODING_ASCII:
-        dataitem = etree.SubElement(geometrynode, "DataItem", Dimensions="%d %d" % (numnodes, dim), Format="XML")
+        dataitem = etree.SubElement(geometrynode, "DataItem", Dimensions="%d %d" % (numnodes, 3), Format="XML")
         nodes = []
         for (ind, (key, node)) in enumerate(fem_mesh_obj.FemMesh.Nodes.iteritems()):
             nodes.append(node)
@@ -124,7 +128,18 @@ def write_fenics_mesh_volumes_xdmf(fem_mesh_obj, topologynode, rd, encoding=ENCO
     topologynode.set("NumberOfElements", str(num_cells))
     topologynode.set("NodesPerElement", str(nodes_per_element))
 
-    fc_cells = fem_mesh_obj.FemMesh.Volumes # TODO: dim abhaengig
+    if dim_cell == 3:
+        fc_cells = fem_mesh_obj.FemMesh.Volumes
+    elif dim_cell == 2:
+        fc_cells = fem_mesh_obj.FemMesh.Faces
+    elif dim_cell == 1:
+        fc_cells = fem_mesh_obj.FemMesh.Edges
+    elif dim_cell == 0:
+        fc_cells = fem_mesh_obj.FemMesh.Nodes
+    else:
+        fc_cells = []
+        print("Dimension of mesh incompatible with export XDMF function: %d" % (dim,))
+
     nodeindices = [(rd[ind] for ind in fem_mesh_obj.FemMesh.getElementNodes(fc_volume_ind)) for (fen_ind, fc_volume_ind) in enumerate(fc_cells)] # stimmen nicht
 	# FC starts after all other entities, fenics start from 0 to size-1
 
