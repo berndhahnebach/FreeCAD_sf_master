@@ -33,10 +33,10 @@ import FreeCAD
 import importToolsFem
 import os
 
-import importFenicsXML
-import exportFenicsXML
-import importFenicsXDMF
-import exportFenicsXDMF
+import readFenicsXML
+import writeFenicsXML
+import readFenicsXDMF
+import writeFenicsXDMF
 
 
 # Template copied from importZ88Mesh.py. Thanks Bernd!
@@ -78,9 +78,9 @@ def export(objectslist, fileString):
     if fileString != "":
         fileName, fileExtension = os.path.splitext(fileString)
         if fileExtension.lower() == '.xml':
-            exportFenicsXML.write_fenics_mesh_xml(obj, fileString)
+            writeFenicsXML.write_fenics_mesh_xml(obj, fileString)
         elif fileExtension.lower() == '.xdmf':
-            exportFenicsXDMF.write_fenics_mesh_xdmf(obj, fileString)
+            writeFenicsXDMF.write_fenics_mesh_xdmf(obj, fileString)
 
     # write_fenics_mesh(obj, filename)
 
@@ -88,7 +88,7 @@ def export(objectslist, fileString):
 def import_fenics_mesh(filename, analysis=None):
     '''insert a FreeCAD FEM Mesh object in the ActiveDocument
     '''
-    mesh_data = importFenicsXML.read_fenics_mesh_xml(filename)
+    mesh_data = readFenicsXML.read_fenics_mesh_xml(filename)
     # xdmf not operational
 
     mesh_name = os.path.basename(os.path.splitext(filename)[0])
