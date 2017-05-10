@@ -1081,11 +1081,12 @@ class FemInputWriterCcx(FemInputWriter.FemInputWriter):
                 f.write('S, E\n')
             # there is no need to write all integration point results as long as there is no reader for this
             # see https://forum.freecadweb.org/viewtopic.php?f=18&t=29060
-            # f.write('** outputs --> dat file\n')
+            f.write('** outputs --> dat file\n')
             # f.write('*NODE PRINT , NSET=' + self.ccx_nall + '\n')
             # f.write('U \n')
-            # f.write('*EL PRINT , ELSET=' + self.ccx_eall + '\n')
+            f.write('*EL PRINT , ELSET=' + self.ccx_eall + '\n')
             # f.write('S \n')
+            f.write('EVOL \n')
 
     def write_step_end(self, f):
         f.write('\n***********************************************************\n')
