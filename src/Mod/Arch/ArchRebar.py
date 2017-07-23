@@ -314,12 +314,14 @@ class _Rebar(ArchComponent.Component):
         circle = Part.Wire(circle)
         try:
             bar = wire.makePipeShell([circle],True,False,2)
+            basewire = wire.copy()
         except Part.OCCError:
             print("Arch: error sweeping rebar profile along the base sketch")
             return
         # building final shape
         shapes = []
         placementlist = []
+        self.wires = []
         if father:
             rot = father.Placement.Rotation
         else:
@@ -345,9 +347,11 @@ class _Rebar(ArchComponent.Component):
         if spacinglist:
             placementlist[:] = []
             reqInfluenceArea = size - (obj.OffsetStart.Value + obj.OffsetEnd.Value)
-            if influenceArea > reqInfluenceArea:
+            # Avoid unnecessary checks to pass like. For eg.: when we have values
+            # like influenceArea is 100.00001 and reqInflueneArea is 100
+            if round(influenceArea) > round(reqInfluenceArea):
                 return FreeCAD.Console.PrintError("Influence area of rebars is greater than "+ str(reqInfluenceArea) + ".\n")
-            elif influenceArea < reqInfluenceArea:
+            elif round(influenceArea) < round(reqInfluenceArea):
                 FreeCAD.Console.PrintWarning("Last span is greater that end offset.\n")
             for i in range(len(spacinglist)):
                 if i == 0:
@@ -363,10 +367,15 @@ class _Rebar(ArchComponent.Component):
             if i == 0:
                 bar.Placement = obj.PlacementList[i]
                 shapes.append(bar)
+                basewire.Placement = obj.PlacementList[i]
+                self.wires.append(basewire)
             else:
                 bar = bar.copy()
                 bar.Placement = obj.PlacementList[i]
                 shapes.append(bar)
+                w = basewire.copy()
+                w.Placement = obj.PlacementList[i]
+                self.wires.append(w)
         if shapes:
             obj.Shape = Part.makeCompound(shapes)
             obj.Placement = pl

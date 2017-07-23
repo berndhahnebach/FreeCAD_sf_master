@@ -1,5 +1,8 @@
 #***************************************************************************
-#*   (c) sliptonic (shopinthewoods@gmail.com) 2014                        *
+#*   (c) imarin 2017 				                           *
+#*                                                                         *
+#*   heavily based on gbrl post-procesor by:                                                                      *
+#*   (c) sliptonic (shopinthewoods@gmail.com) 2014                         *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -23,10 +26,19 @@
 
 
 '''
-Generate g-code compatible with grbl from a Path.
+Generate g-code compatible with fablin from a Path.
 
-import grbl_post
-grbl_post.export(object,"/path/to/file.ncc")
+import fablin_post
+fablin_post.export(object,"/path/to/file.ncc")
+'''
+
+TOOLTIP_ARGS='''
+Arguments for fablin:
+    --rapids-feedrate                ... feedrate to be used for rapids (e.g. --rapids-feedrate=300)
+    --header,--no-header             ... output headers (--header)
+    --comments,--no-comments         ... output comments (--comments)
+    --line-numbers,--no-line-numbers ... prefix with line numbers (--no-lin-numbers)
+    --show-editor, --no-show-editor  ... pop up editor before writing output(--show-editor)
 '''
 
 import datetime
@@ -34,36 +46,39 @@ now = datetime.datetime.now()
 from PathScripts import PostUtils
 
 #These globals set common customization preferences
-OUTPUT_COMMENTS = True
-OUTPUT_HEADER = True
+OUTPUT_COMMENTS = False # Fablin does not support parenthesis, it will echo the command complaining. As a side effect the spinner may turn at a very reduced speed (do not ask me why).
+OUTPUT_HEADER = False # Same as above. You can enable this by passing arguments to the post-processor in case you need them for example for debugging the gcode.
 OUTPUT_LINE_NUMBERS = False
 OUTPUT_TOOL_CHANGE = False
+
 SHOW_EDITOR = True
 MODAL = False #if true commands are suppressed if the same as previous line.
 COMMAND_SPACE = " "
 LINENR = 100 #line number starting value
 
 #These globals will be reflected in the Machine configuration of the project
-UNITS = "G21" #G21 for metric, G20 for us standard
-MACHINE_NAME = "GRBL"
+UNITS = "" # only metric, G20/G21 is ignored
+MACHINE_NAME = "FABLIN"
 CORNER_MIN = {'x':0, 'y':0, 'z':0 }
 CORNER_MAX = {'x':500, 'y':300, 'z':300 }
 
 RAPID_MOVES = ['G0', 'G00']
+#RAPID_MOVES = []
+
+RAPID_FEEDRATE = 10000
 
 #Preamble text will appear at the beginning of the GCODE output file.
-PREAMBLE = '''G17 G90
+PREAMBLE = '''G90
 '''
 
 #Postamble text will appear following the last operation.
 POSTAMBLE = '''M5
 G00 X-1.0 Y1.0
-G17 G90
-; M2
+G90
 '''
 
 # These commands are ignored by commenting them out
-SUPPRESS_COMMANDS = [ 'G98', 'G80' ]
+SUPPRESS_COMMANDS = [ 'G98', 'G80', 'M6', 'G17' ]
 
 #Pre operation text will be inserted before every operation
 PRE_OPERATION = ''''''
@@ -79,8 +94,37 @@ TOOL_CHANGE = ''''''
 if open.__module__ == '__builtin__':
     pythonopen = open
 
+def processArguments(argstring):
+    global OUTPUT_HEADER
+    global OUTPUT_COMMENTS
+    global OUTPUT_LINE_NUMBERS
+    global SHOW_EDITOR
+    global RAPID_FEEDRATE
+    for arg in argstring.split():
+        if arg == '--header':
+            OUTPUT_HEADER = True
+        elif arg == '--no-header':
+            OUTPUT_HEADER = False
+        elif arg == '--comments':
+            OUTPUT_COMMENTS = True
+        elif arg == '--no-comments':
+            OUTPUT_COMMENTS = False
+        elif arg == '--line-numbers':
+            OUTPUT_LINE_NUMBERS = True
+        elif arg == '--no-line-numbers':
+            OUTPUT_LINE_NUMBERS = False
+        elif arg == '--show-editor':
+            SHOW_EDITOR = True
+        elif arg == '--no-show-editor':
+	    SHOW_EDITOR = False
 
-def export(objectslist,filename,args):
+	params = arg.split('=')
+
+        if params[0] == '--rapids-feedrate':
+	    RAPID_FEEDRATE = params[1]
+
+def export(objectslist,filename,argstring):
+    processArguments(argstring)
     global UNITS
     for obj in objectslist:
         if not hasattr(obj,"Path"):
@@ -91,7 +135,8 @@ def export(objectslist,filename,args):
     gcode = ""
 
     #Find the machine.
-    #The user my have overridden post processor defaults in the GUI.  Make sure we're using the current values in the Machine Def.
+    #The user my have overridden post processor defaults in the GUI.
+    #Make sure we're using the current values in the Machine Def.
     myMachine = None
     for pathobj in objectslist:
         if hasattr(pathobj,"Group"): #We have a compound or project.
@@ -117,7 +162,7 @@ def export(objectslist,filename,args):
     if OUTPUT_COMMENTS: gcode += linenumber() + "(begin preamble)\n"
     for line in PREAMBLE.splitlines(True):
         gcode += linenumber() + line
-    gcode += linenumber() + UNITS + "\n"
+    #gcode += linenumber() + UNITS + "\n"
 
     for obj in objectslist:
 
@@ -186,8 +231,14 @@ def parse(pathobj):
         for c in pathobj.Path.Commands:
             outstring = []
             command = c.Name
-            outstring.append(command)
-            # if modal: only print the command if it is not the same as the last one
+
+	    # fablin does not support parenthesis syntax, so removing that (pocket) in the agnostic gcode
+	    if command[0] == '(':
+		if not OUTPUT_COMMENTS: pass
+	    else:
+	    	outstring.append(command)
+
+	    # if modal: only print the command if it is not the same as the last one
             if MODAL == True:
                 if command == lastcommand:
                     outstring.pop(0)
@@ -203,6 +254,9 @@ def parse(pathobj):
                         outstring.append(param + str(c.Parameters['T']))
                     else:
                         outstring.append(param + format(c.Parameters[param], '.4f'))
+
+	    if command in RAPID_MOVES and command != lastcommand:
+		outstring.append('F' + format(RAPID_FEEDRATE))
 
             # store the latest command
             lastcommand = command
@@ -223,7 +277,7 @@ def parse(pathobj):
                     outstring.pop(0) #remove the command
 
             if command in SUPPRESS_COMMANDS:
-                outstring.insert(0, ";")
+                outstring = []
 
             #prepend a line number and append a newline
             if len(outstring) >= 1:
