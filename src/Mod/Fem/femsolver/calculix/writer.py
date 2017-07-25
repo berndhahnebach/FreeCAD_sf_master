@@ -1086,6 +1086,8 @@ class FemInputWriterCcx(FemInputWriter.FemInputWriter):
             # f.write('U \n')
             f.write('*EL PRINT , ELSET=' + self.ccx_eall + '\n')
             # f.write('S \n')
+            # needs unit test fixing, does not make so much sense if not used anywhere, FreeCAD has element volume calculation too ...
+            # better would be a pref
             f.write('EVOL \n')
 
     def write_step_end(self, f):
