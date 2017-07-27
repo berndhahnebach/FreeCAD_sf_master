@@ -119,6 +119,7 @@ INSTALL(
         PyGui/TaskPanelFemMaterial.ui
         PyGui/TaskPanelFemMeshGmsh.ui
         PyGui/TaskPanelFemMeshGroup.ui
+	PyGui/TaskPanelFemMeshGroupXDMFExport.ui
         PyGui/TaskPanelFemMeshRegion.ui
         PyGui/TaskPanelFemResultShow.ui
         PyGui/TaskPanelFemSolverCalculix.ui
