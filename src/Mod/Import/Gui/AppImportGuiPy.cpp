@@ -342,7 +342,10 @@ private:
 
             Handle(XCAFApp_Application) hApp = XCAFApp_Application::GetApplication();
             Handle(TDocStd_Document) hDoc;
+            bool optionReadShapeCompoundMode_status;
             hApp->NewDocument(TCollection_ExtendedString("MDTV-CAF"), hDoc);
+            ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Import/hSTEP");
+            optionReadShapeCompoundMode_status = hGrp->GetBool("ReadShapeCompoundMode",false);
 
             if (file.hasExtension("stp") || file.hasExtension("step")) {
                 try {
@@ -416,6 +419,8 @@ private:
             // purge the document before recomputing it to clear it and settle it in the proper
             // way. This is drastically improving STEP rendering time on complex STEP files.
             pcDoc->recompute();
+            if (file.hasExtension("stp") || file.hasExtension("step"))
+                ocaf.setMerge(optionReadShapeCompoundMode_status);
             ocaf.loadShapes();
             pcDoc->purgeTouched();
             pcDoc->recompute();
@@ -513,6 +518,15 @@ private:
             Base::FileInfo file(Utf8Name.c_str());
             if (file.hasExtension("stp") || file.hasExtension("step")) {
                 //Interface_Static::SetCVal("write.step.schema", "AP214IS");
+                bool optionScheme_214;
+                bool optionScheme_203;
+                ParameterGrp::handle hGrp_stp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Import/hSTEP");
+                optionScheme_214 = hGrp_stp->GetBool("Scheme_214",true);
+                optionScheme_203 = hGrp_stp->GetBool("Scheme_203",false);
+                if (optionScheme_214)
+                    Interface_Static::SetCVal("write.step.schema", "AP214CD");
+                if (optionScheme_203)
+                    Interface_Static::SetCVal("write.step.schema", "AP203");
                 STEPCAFControl_Writer writer;
                 writer.Transfer(hDoc, STEPControl_AsIs);
 
