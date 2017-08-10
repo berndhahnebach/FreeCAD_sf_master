@@ -959,6 +959,49 @@ std::set<int> FemMesh::getFacesOnly(void) const
     // but the volume faces does not seam know their global mesh ID, I could not found any method in SMESH
 
     std::set<int> resultIDs;
+    Base::Console().Log("huhu\n");
+
+    // iterate over volumes and over the faces of each volume add face id to set volume faces
+    // faces minus volume faces = faces only
+    SMDS_VolumeIteratorPtr aVolIter = myMesh->GetMeshDS()->volumesIterator();
+    Base::Console().Log("Volumes:\n");
+    while (aVolIter->more()) {
+        const SMDS_MeshVolume* aVol = aVolIter->next();
+        SMDS_VolumeTool vTool(aVol);
+        Base::Console().Log("%i, %i, %i, %i, %f\n", aVol->GetID(), vTool.ID(), aVol->NbNodes(), vTool.NbNodes(), vTool.GetSize());
+        Base::Console().Log("%i\n", vTool.NbFaces());
+
+        /*
+        int numFaces = vTool.NbFaces();
+        for (int i=0; i<numFaces; i++) {
+            Base::Console().Log("%i, %f\n", vTool.NbFaceNodes(i), vTool.GetFaceArea(i));
+        }
+        */
+
+        std::vector<const SMDS_MeshElement*> myFaces;
+        // fill myFaces
+        // mhh get the faceNodes of the volume, do I get the global mesh ID of them?
+        // if yes then I could search for the global faceID with this nodes
+        // post to vejmarie oder smesh entwickler
+        //vTool.getFaces( myFaces );
+        for (unsigned index = 0; index < myFaces.size(); ++index)
+        {
+            Base::Console().Log("%i\n", myFaces[index]->GetID());
+        }
+        /*
+        SMDS_ElemIteratorPtr aFaceIter = aVol->facesIterator();
+        while (aFaceIter && aFaceIter->more()) {
+            Base::Console().Log("hello2\n");
+            const SMDS_MeshFace* aFace = static_cast<const SMDS_MeshFace*>(aFaceIter->next());
+            int myid = aFace->GetID();
+            Base::Console().Log("hello\n");
+            Base::Console().Log("%i \n", myid);
+        }
+        //std::list<int> vnodes = getElementNodes(aVol->GetID());
+        */
+        Base::Console().Log("\n");
+    }
+
 
     // faces
     SMDS_FaceIteratorPtr aFaceIter = myMesh->GetMeshDS()->facesIterator();
