@@ -331,8 +331,8 @@ def makeResultMechanical(doc, name="MechanicalResult"):
 
 
 ########## solver objects ##########
-def makeSolverCalculix(doc, name="CalculiX"):
-    '''makeSolverCalculix(name): makes a Calculix solver object'''
+def makeSolverCalculixOld(doc, name="CalculiX"):
+    '''makeSolverCalculixOld(name): makes a Calculix solver object'''
     obj = doc.addObject("Fem::FemSolverObjectPython", name)
     import PyObjects._FemSolverCalculix
     PyObjects._FemSolverCalculix._FemSolverCalculix(obj)
@@ -342,10 +342,17 @@ def makeSolverCalculix(doc, name="CalculiX"):
     return obj
 
 
+def makeSolverCalculix(doc, name="CalculiX"):
+    '''makeSolverCalculix(name): makes a Calculix solver object'''
+    import FemCalculix.SolverObject
+    obj = FemCalculix.SolverObject.create(doc, name)
+    return obj
+
+
 def makeSolverElmer(doc, name="Elmer"):
     '''makeSolverElmer(name): makes a Elmer solver object'''
     import FemElmer.SolverObject
-    obj = FemElmer.SolverObject.create(FreeCAD.ActiveDocument, name)
+    obj = FemElmer.SolverObject.create(doc, name)
     return obj
 
 
