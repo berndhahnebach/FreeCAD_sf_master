@@ -351,8 +351,8 @@ def makeSolverCalculix(name="CalculiX"):
 
 def makeSolverElmer(name="Elmer"):
     '''makeSolverElmer(name): makes a Elmer solver object'''
-    import FemElmer.SolverObject
-    obj = FemElmer.SolverObject.create(FreeCAD.ActiveDocument, name)
+    import FemSolver.Elmer.Object
+    obj = FemSolver.Elmer.Object.create(FreeCAD.ActiveDocument, name)
     return obj
 
 
