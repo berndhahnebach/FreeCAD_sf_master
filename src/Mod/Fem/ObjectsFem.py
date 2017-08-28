@@ -342,7 +342,7 @@ def makeSolverCalculixOld(doc, name="CalculiX"):
     return obj
 
 
-def makeSolverCalculix(doc, name="CalculiX"):
+def makeSolverCalculix(doc, name="SolverCalculiX"):
     '''makeSolverCalculix(name): makes a Calculix solver object'''
     import FemCalculix.SolverObject
     obj = FemCalculix.SolverObject.create(doc, name)
