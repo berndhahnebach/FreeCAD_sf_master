@@ -354,9 +354,7 @@ def makeSolverCalculixOld(doc, name="CalculiX"):
 
 def makeSolverCalculix(doc, name="SolverCalculiX"):
     '''makeSolverCalculix(name): makes a Calculix solver object'''
-    print('import solver module')
     import FemCalculix.SolverObject
-    print('call creating the solver object')
     obj = FemCalculix.SolverObject.create(doc, name)
     return obj
 
