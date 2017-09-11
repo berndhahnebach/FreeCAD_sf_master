@@ -85,7 +85,7 @@ INSTALL(
         FemSolver/SolverBase.py
         FemSolver/EquationBase.py
     DESTINATION
-    Mod/Fem/FemSolver
+        Mod/Fem/FemSolver
 )
 
 INSTALL(
@@ -96,7 +96,7 @@ INSTALL(
         FemSolver/Elmer/Tasks.py
         FemSolver/Elmer/Writer.py
     DESTINATION
-    Mod/Fem/FemSolver/Elmer
+        Mod/Fem/FemSolver/Elmer
 )
 
 INSTALL(
