@@ -97,7 +97,6 @@ SET(FemScripts_SRCS
     FemMisc.py
     FemSettings.py
     FemTask.py
-    FemSolverObject.py
     FemEquation.py
     FemRun.py
     FemSelectionWidgets.py
