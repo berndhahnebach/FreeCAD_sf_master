@@ -45,7 +45,6 @@ INSTALL(
         FemMisc.py
         FemSettings.py
         FemTask.py
-        FemEquation.py
         FemRun.py
         FemSelectionWidgets.py
         FemSignal.py
