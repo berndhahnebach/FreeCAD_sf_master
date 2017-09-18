@@ -31,7 +31,7 @@ from .FemCommands import FemCommands
 import FreeCADGui
 from PySide import QtCore, QtGui
 import FemRun
-import FemMisc
+import FemUtils
 
 
 class _CommandFemSolverRun(FemCommands):
@@ -55,11 +55,11 @@ class _CommandFemSolverRun(FemCommands):
         if len(sel) == 1 and sel[0].isDerivedFrom("Fem::FemSolverObjectPython"):
             self.solver = sel[0]
 
-        if FemMisc.isDerivedFrom(self.solver, "Fem::FemSolverObjectZ88"):
+        if FemUtils.isDerivedFrom(self.solver, "Fem::FemSolverObjectZ88"):
             self._newActivated()
-        elif FemMisc.isDerivedFrom(self.solver, "Fem::FemSolverObjectElmer"):
+        elif FemUtils.isDerivedFrom(self.solver, "Fem::FemSolverObjectElmer"):
             self._newActivated()
-        elif FemMisc.isDerivedFrom(self.solver, "Fem::FemSolverObjectCalculix"):
+        elif FemUtils.isDerivedFrom(self.solver, "Fem::FemSolverObjectCalculix"):
             self._newActivated()
         elif self.solver.SolverType == "FemSolverCalculix":
             import FemToolsCcx
