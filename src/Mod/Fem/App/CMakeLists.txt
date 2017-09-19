@@ -89,7 +89,6 @@ SET(FemScripts_SRCS
     FemMesh2Mesh.py
     FemMeshTools.py
     FemResultTools.py
-    FemSelectionObserver.py
     FemToolsCcx.py
     ObjectsFem.py
     FemReport.py
@@ -166,6 +165,7 @@ SET(FemZ88_SRCS
 
 SET(FemGuiScripts_SRCS
     PyGui/FemCommands.py
+    PyGui/FemSelectionObserver.py
     PyGui/__init__.py
     PyGui/_CommandFemAnalysis.py
     PyGui/_CommandFemConstraintSelfWeight.py

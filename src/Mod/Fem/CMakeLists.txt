@@ -37,7 +37,6 @@ INSTALL(
         FemMesh2Mesh.py
         FemMeshTools.py
         FemResultTools.py
-        FemSelectionObserver.py
         FemToolsCcx.py
         ObjectsFem.py
         FemReport.py
@@ -134,6 +133,7 @@ INSTALL(
 INSTALL(
     FILES
         PyGui/FemCommands.py
+        PyGui/FemSelectionObserver.py
         PyGui/__init__.py
         PyGui/_CommandFemSolverElmer.py
         PyGui/_CommandFemEquation.py
