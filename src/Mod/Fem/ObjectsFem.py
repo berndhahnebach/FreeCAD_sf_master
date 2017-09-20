@@ -44,8 +44,8 @@ def makeConstraintBearing(doc, name="ConstraintBearing"):
     return obj
 
 
-def makeConstraintBodyHeatSource(name="BodyHeatSource"):
-    obj = FreeCAD.ActiveDocument.addObject("Fem::ConstraintPython", name)
+def makeConstraintBodyHeatSource(doc, name="BodyHeatSource"):
+    obj = doc.addObject("Fem::ConstraintPython", name)
     import PyObjects._FemConstraintBodyHeatSource
     PyObjects._FemConstraintBodyHeatSource.Proxy(obj)
     if FreeCAD.GuiUp:
@@ -106,7 +106,7 @@ def makeConstraintHeatflux(doc, name="ConstraintHeatflux"):
     return obj
 
 
-def makeConstraintInitialFlowVelocity(doc,name="InitialFlowVelocity"):
+def makeConstraintInitialFlowVelocity(doc, name="InitialFlowVelocity"):
     obj = doc.addObject("Fem::ConstraintPython", name)
     import PyObjects._FemConstraintInitialFlowVelocity
     PyObjects._FemConstraintInitialFlowVelocity.Proxy(obj)
@@ -210,24 +210,7 @@ def makeElementGeometry2D(doc, thickness=20.0, name="ElementGeometry2D"):
 
 
 ########## material objects ##########
-<<<<<<< HEAD
-def makeMaterialSolid(doc, name="MechanicalSolidMaterial"):
-    '''makeMaterialSolid(name): makes an FEM Material for solid'''
-    obj = doc.addObject("App::MaterialObjectPython", name)
-    import PyObjects._FemMaterial
-    PyObjects._FemMaterial._FemMaterial(obj)
-    obj.Category = 'Solid'
-    if FreeCAD.GuiUp:
-        import PyGui._ViewProviderFemMaterial
-        PyGui._ViewProviderFemMaterial._ViewProviderFemMaterial(obj.ViewObject)
-    # doc.recompute()
-    return obj
-
-
 def makeMaterialFluid(doc, name="FluidMaterial"):
-=======
-def makeMaterialFluid(name="FluidMaterial"):
->>>>>>> FEM: objects module, sort defs
     '''makeMaterialFluid(name): makes an FEM Material for fluid'''
     obj = doc.addObject("App::MaterialObjectPython", name)
     import PyObjects._FemMaterial
@@ -252,26 +235,23 @@ def makeMaterialMechanicalNonlinear(doc, base_material, name="MechanicalMaterial
     return obj
 
 
-def makeMaterialSolid(name="MechanicalSolidMaterial"):
+def makeMaterialSolid(doc, name="MechanicalSolidMaterial"):
     '''makeMaterialSolid(name): makes an FEM Material for solid'''
-    obj = FreeCAD.ActiveDocument.addObject("App::MaterialObjectPython", name)
+    obj = doc.addObject("App::MaterialObjectPython", name)
     import PyObjects._FemMaterial
     PyObjects._FemMaterial._FemMaterial(obj)
     obj.Category = 'Solid'
     if FreeCAD.GuiUp:
         import PyGui._ViewProviderFemMaterial
         PyGui._ViewProviderFemMaterial._ViewProviderFemMaterial(obj.ViewObject)
-    # FreeCAD.ActiveDocument.recompute()
+    # doc.recompute()
     return obj
 
 
 ########## mesh objects ##########
-<<<<<<< HEAD
-def makeMeshGmsh(doc, name="FEMMeshGMSH"):
-=======
-def makeMeshBoundaryLayer(base_mesh, name="MeshBoundaryLayer"):
+def makeMeshBoundaryLayer(doc, base_mesh, name="MeshBoundaryLayer"):
     '''makeMeshBoundaryLayer([length], [name]): creates a  FEM mesh BoundaryLayer object to define boundary layer properties'''
-    obj = FreeCAD.ActiveDocument.addObject("Fem::FeaturePython", name)
+    obj = doc.addObject("Fem::FeaturePython", name)
     import PyObjects._FemMeshBoundaryLayer
     PyObjects._FemMeshBoundaryLayer._FemMeshBoundaryLayer(obj)
 
@@ -286,8 +266,7 @@ def makeMeshBoundaryLayer(base_mesh, name="MeshBoundaryLayer"):
     return obj
 
 
-def makeMeshGmsh(name="FEMMeshGMSH"):
->>>>>>> FEM: objects module, sort defs
+def makeMeshGmsh(doc, name="FEMMeshGMSH"):
     '''makeMeshGmsh(name): makes a GMSH FEM mesh object'''
     obj = doc.addObject("Fem::FemMeshObjectPython", name)
     import PyObjects._FemMeshGmsh
@@ -315,28 +294,7 @@ def makeMeshGroup(doc, base_mesh, use_label=False, name="FEMMeshGroup"):
     return obj
 
 
-<<<<<<< HEAD
-def makeMeshBoundaryLayer(doc, base_mesh, name="MeshBoundaryLayer"):
-    '''makeMeshBoundaryLayer([length], [name]): creates a  FEM mesh BoundaryLayer object to define boundary layer properties'''
-    obj = doc.addObject("Fem::FeaturePython", name)
-    import PyObjects._FemMeshBoundaryLayer
-    PyObjects._FemMeshBoundaryLayer._FemMeshBoundaryLayer(obj)
-
-    # obj.BaseMesh = base_mesh
-    # App::PropertyLinkList does not support append, we will use a temporary list to append the mesh BoundaryLayer obj. to the list
-    tmplist = base_mesh.MeshBoundaryLayerList
-    tmplist.append(obj)
-    base_mesh.MeshBoundaryLayerList = tmplist
-    if FreeCAD.GuiUp:
-        import PyGui._ViewProviderFemMeshBoundaryLayer
-        PyGui._ViewProviderFemMeshBoundaryLayer._ViewProviderFemMeshBoundaryLayer(obj.ViewObject)
-    return obj
-
-
 def makeMeshNetgen(doc, name="FEMMeshNetgen"):
-=======
-def makeMeshNetgen(name="FEMMeshNetgen"):
->>>>>>> FEM: objects module, sort defs
     '''makeMeshNetgen(name): makes a Fem MeshShapeNetgenObject object'''
     obj = doc.addObject("Fem::FemMeshShapeNetgenObject", name)
     return obj
