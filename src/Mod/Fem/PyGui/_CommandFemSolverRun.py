@@ -30,7 +30,7 @@ __url__ = "http://www.freecadweb.org"
 from .FemCommands import FemCommands
 import FreeCADGui
 from PySide import QtCore, QtGui
-import FemRun
+import femsolver.run
 import FemUtils
 
 
@@ -78,8 +78,8 @@ class _CommandFemSolverRun(FemCommands):
         solver = self._getSelectedSolver()
         if solver is not None:
             try:
-                machine = FemRun.getMachine(solver)
-            except FemRun.MustSaveError:
+                machine = femsolver.run.getMachine(solver)
+            except femsolver.run.MustSaveError:
                 QtGui.QMessageBox.critical(
                     FreeCADGui.getMainWindow(),
                     "Can't start Solver",
@@ -87,7 +87,7 @@ class _CommandFemSolverRun(FemCommands):
                     "This must be done because the location of the working "
                     "directory is set to \"Beside .fcstd File\".")
                 return
-            except FemRun.DirectoryDoesNotExist:
+            except femsolver.run.DirectoryDoesNotExist:
                 QtGui.QMessageBox.critical(
                     FreeCADGui.getMainWindow(),
                     "Can't start Solver",
@@ -95,7 +95,7 @@ class _CommandFemSolverRun(FemCommands):
                 return
             if not machine.running:
                 machine.reset()
-                machine.target = FemRun.RESULTS
+                machine.target = femsolver.run.RESULTS
                 machine.start()
 
     def _getSelectedSolver(self):
