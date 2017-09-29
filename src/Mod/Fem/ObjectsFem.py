@@ -72,12 +72,6 @@ def makeConstraintFixed(doc, name="ConstraintFixed"):
     return obj
 
 
-def makeConstraintFluidBoundary(doc, name="ConstraintFluidBoundary"):
-    '''makeConstraintFluidBoundary(name): makes a Fem ConstraintForce object'''
-    obj = doc.addObject("Fem::ConstraintForce", name)
-    return obj
-
-
 def makeConstraintFlowVelocity(doc, name="ConstraintFlowVelocity"):
     obj = doc.addObject("Fem::ConstraintPython", name)
     import PyObjects._FemConstraintFlowVelocity
@@ -85,6 +79,12 @@ def makeConstraintFlowVelocity(doc, name="ConstraintFlowVelocity"):
     if FreeCAD.GuiUp:
         import PyGui._ViewProviderFemConstraintFlowVelocity
         PyGui._ViewProviderFemConstraintFlowVelocity.ViewProxy(obj.ViewObject)
+    return obj
+
+
+def makeConstraintFluidBoundary(doc, name="ConstraintFluidBoundary"):
+    '''makeConstraintFluidBoundary(name): makes a Fem ConstraintForce object'''
+    obj = doc.addObject("Fem::ConstraintForce", name)
     return obj
 
 
