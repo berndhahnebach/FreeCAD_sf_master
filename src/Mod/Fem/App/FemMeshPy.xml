@@ -16,7 +16,7 @@
         </Documentation>
         <Methode Name="setShape">
             <Documentation>
-                <UserDocu>set the Part shape to mesh</UserDocu>
+                <UserDocu>Set the Part shape to mesh</UserDocu>
             </Documentation>
         </Methode>
         <Methode Name="compute">
@@ -61,17 +61,17 @@
         </Methode>
         <Methode Name="read">
             <Documentation>
-                <UserDocu>Read in an DAT, UNV, MED or STL file.</UserDocu>
+                <UserDocu>Read in a DAT, UNV, MED or STL file.</UserDocu>
             </Documentation>
         </Methode>
         <Methode Name="write" Const="true">
             <Documentation>
-                <UserDocu>write out an DAT, UNV, MED or STL file.</UserDocu>
+                <UserDocu>Write out a DAT, UNV, MED or STL file.</UserDocu>
             </Documentation>
         </Methode>
         <Methode Name="writeABAQUS" Const="true">
             <Documentation>
-                <UserDocu>write out as ABAQUS.</UserDocu>
+                <UserDocu>Write out as ABAQUS.</UserDocu>
             </Documentation>
         </Methode>
         <Methode Name="setTransform">
@@ -101,7 +101,7 @@
         </Methode>
         <Methode Name="getNodeById" Const="true">
             <Documentation>
-                <UserDocu>Get the node position vector by an Node-ID</UserDocu>
+                <UserDocu>Get the node position vector by a Node-ID</UserDocu>
             </Documentation>
         </Methode>
         <Methode Name="getNodesBySolid" Const="true">
