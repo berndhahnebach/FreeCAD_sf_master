@@ -370,9 +370,17 @@ class FemInputWriterCcx(FemInputWriter.FemInputWriter):
             elif len(self.shellthickness_objects) > 1:
                 self.get_ccx_elsets_single_mat_multiple_shell()
             elif len(self.beamsection_objects) == 1:
-                self.get_ccx_elsets_single_mat_single_beam_edit()
+                if len(self.beamrotation_objects) == 0:
+                    self.get_ccx_elsets_single_mat_single_beam_edit()  # we only would need the beams in z-direction
+                elif len(self.beamrotation_objects) > 0:
+                    print('Rotation of first beam rotation object is: ' + str(self.beamrotation_objects[0]['Object'].Rotation))
+                    self.get_ccx_elsets_single_mat_single_beam_edit()  # we need the ones in z-direction and the ones from the defined rotation
             elif len(self.beamsection_objects) > 1:
-                self.get_ccx_elsets_single_mat_multiple_beam()
+                if len(self.beamrotation_objects) == 0:
+                    self.get_ccx_elsets_single_mat_multiple_beam()  # we only would need the beams in z-direction
+                elif len(self.beamrotation_objects) > 0:
+                    print('Rotation of first beam rotation object is: ' + str(self.beamrotation_objects[0]['Object'].Rotation))
+                    self.get_ccx_elsets_single_mat_multiple_beam()  # we need the ones in z-direction and the ones from the defined rotation
             elif len(self.fluidsection_objects) == 1:
                 self.get_ccx_elsets_single_mat_single_fluid()
             elif len(self.fluidsection_objects) > 1:
@@ -389,9 +397,17 @@ class FemInputWriterCcx(FemInputWriter.FemInputWriter):
             elif len(self.shellthickness_objects) > 1:
                 self.get_ccx_elsets_multiple_mat_multiple_shell()
             elif len(self.beamsection_objects) == 1:
-                self.get_ccx_elsets_multiple_mat_single_beam()
+                if len(self.beamrotation_objects) == 0:
+                    self.get_ccx_elsets_multiple_mat_single_beam()  # we only would need the beams in z-direction
+                elif len(self.beamrotation_objects) > 0:
+                    print('Rotation of first beam rotation object is: ' + str(self.beamrotation_objects[0]['Object'].Rotation))
+                    self.get_ccx_elsets_multiple_mat_single_beam()  # we need the ones in z-direction and the ones from the defined rotation
             elif len(self.beamsection_objects) > 1:
-                self.get_ccx_elsets_multiple_mat_multiple_beam()
+                if len(self.beamrotation_objects) == 0:
+                    self.get_ccx_elsets_multiple_mat_multiple_beam()  # we only would need the beams in z-direction
+                elif len(self.beamrotation_objects) > 0:
+                    print('Rotation of first beam rotation object is: ' + str(self.beamrotation_objects[0]['Object'].Rotation))
+                    self.get_ccx_elsets_multiple_mat_multiple_beam()  # we need the ones in z-direction and the ones from the defined rotation
             elif len(self.fluidsection_objects) == 1:
                 self.get_ccx_elsets_multiple_mat_single_fluid()
             elif len(self.fluidsection_objects) > 1:
