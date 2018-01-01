@@ -281,7 +281,7 @@ def write_fenics_mesh_xdmf(fem_mesh_obj, outputfile, group_values_dict={}, encod
         mesh_function_attribute = ET.SubElement(mesh_function_grid, "Attribute")
 
         elem_dict = {}
-        (elem_mark_group, elem_mark_default) = group_values_dict.get(g, (g, -1))
+        (elem_mark_group, elem_mark_default) = group_values_dict.get(g, (1, 0))
 
         # TODO: is it better to save all groups each at once or collect all codim equal
         # groups to put them into one function?
