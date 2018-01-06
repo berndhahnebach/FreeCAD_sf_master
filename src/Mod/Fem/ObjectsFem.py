@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Objects FEM"
+__title__ = "FreeCAD FEM Objects"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

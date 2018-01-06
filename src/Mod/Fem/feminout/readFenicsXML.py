@@ -19,9 +19,8 @@
 # *   USA                                                                   *
 # *                                                                         *
 # ***************************************************************************
-from __future__ import print_function
 
-__title__ = "FreeCAD Fenics XML mesh reader"
+__title__ = "FreeCAD FEM Fenics Solver XML Mesh Reader"
 __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 
@@ -29,6 +28,7 @@ __url__ = "http://www.freecadweb.org"
 #  \ingroup FEM
 #  \brief FreeCAD Fenics Mesh XML reader for FEM workbench
 
+from __future__ import print_function
 
 import FreeCAD
 from xml.etree import ElementTree as ET

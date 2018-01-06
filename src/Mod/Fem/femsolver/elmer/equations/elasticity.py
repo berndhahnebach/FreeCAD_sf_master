@@ -20,8 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "Elasticity"
+__title__ = "FreeCAD FEM Elmer Solver Elasticity"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

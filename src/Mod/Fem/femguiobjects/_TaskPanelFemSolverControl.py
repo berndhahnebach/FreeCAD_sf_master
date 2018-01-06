@@ -20,11 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "Solver Job Control Task Panel"
+__title__ = "FreeCAD FEM Solver Job Control Task Panel"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 from PySide import QtCore
 from PySide import QtGui

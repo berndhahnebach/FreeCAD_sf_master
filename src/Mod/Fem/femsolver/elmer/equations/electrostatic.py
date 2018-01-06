@@ -20,8 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "Electrostatic"
+__title__ = "FreeCAD FEM Elmer Solver Electrostatic"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

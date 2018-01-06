@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Fem Gui modules"
+__title__ = "FreeCAD FEM Gui modules"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

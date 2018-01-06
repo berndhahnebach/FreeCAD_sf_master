@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "the fem nonlinear mechanical material object"
+__title__ = "FreeCAD FEM Nonlinear Mechanical Material Object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemMaterialMechanicalNonLinear
 #  \ingroup FEM
+#  \brief FreeCAD FEM Nonlinear Mechanical Material Object for FEM workbench
 
 
 class _FemMaterialMechanicalNonlinear:

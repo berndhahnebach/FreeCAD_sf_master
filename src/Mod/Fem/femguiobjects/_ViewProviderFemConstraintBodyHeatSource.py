@@ -20,12 +20,14 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "view provider for constraint body heat source object"
+__title__ = "FreeCAD FEM Vew Provider for Constraint Body Heat Source Object"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
+import FemConstraint
 from . import ViewProviderFemConstraint
 
 

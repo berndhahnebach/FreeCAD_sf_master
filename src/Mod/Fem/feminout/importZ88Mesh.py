@@ -19,15 +19,16 @@
 # *   USA                                                                   *
 # *                                                                         *
 # ***************************************************************************
-from __future__ import print_function
 
-__title__ = "FreeCAD Z88 Mesh reader and writer"
+__title__ = "FreeCAD FEM Z88 Mesh reader and writer"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package importZ88Mesh
 #  \ingroup FEM
 #  \brief FreeCAD Z88 Mesh reader and writer for FEM workbench
+
+from __future__ import print_function
 
 import FreeCAD
 import os
