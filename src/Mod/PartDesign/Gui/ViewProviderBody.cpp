@@ -379,16 +379,16 @@ void ViewProviderBody::unifyVisualProperty(const App::Property* prop) {
        prop == &Selectable ||
        prop == &DisplayModeBody)
         return;
-                
+
     Gui::Document *gdoc = Gui::Application::Instance->getDocument ( pcObject->getDocument() ) ;
-       
+
     PartDesign::Body *body = static_cast<PartDesign::Body *> ( getObject() );
     auto features = body->Group.getValues();
     for(auto feature : features) {
         
         if(!feature->isDerivedFrom(PartDesign::Feature::getClassTypeId()))
             continue;
-        
+
         //copy over the properties data
         auto p = gdoc->getViewProvider(feature)->getPropertyByName(prop->getName());
         p->Paste(*prop);
@@ -398,15 +398,16 @@ void ViewProviderBody::unifyVisualProperty(const App::Property* prop) {
 void ViewProviderBody::setVisualBodyMode(bool bodymode) {
 
     Gui::Document *gdoc = Gui::Application::Instance->getDocument ( pcObject->getDocument() ) ;
-       
+
     PartDesign::Body *body = static_cast<PartDesign::Body *> ( getObject() );
     auto features = body->Group.getValues();
     for(auto feature : features) {
         
         if(!feature->isDerivedFrom(PartDesign::Feature::getClassTypeId()))
             continue;
-        
-        static_cast<PartDesignGui::ViewProvider*>(gdoc->getViewProvider(feature))->setBodyMode(bodymode);
+
+        auto* vp = static_cast<PartDesignGui::ViewProvider*>(gdoc->getViewProvider(feature));
+        if (vp) vp->setBodyMode(bodymode);
     }
 }
 
@@ -456,6 +457,17 @@ void ViewProviderBody::dropObject(App::DocumentObject* obj)
     PartDesign::Body* body = static_cast<PartDesign::Body*>(getObject());
     if (obj->getTypeId().isDerivedFrom(Part::Part2DObject::getClassTypeId())) {
         body->addObject(obj);
+    }
+    else if (PartDesignGui::isFeatureMovable(obj)) {
+        std::vector<App::DocumentObject*> move;
+        move.push_back(obj);
+        std::vector<App::DocumentObject*> deps = PartDesignGui::collectMovableDependencies(move);
+        move.insert(std::end(move), std::begin(deps), std::end(deps));
+
+        PartDesign::Body* source = PartDesign::Body::findBodyOf(obj);
+        if (source)
+            source->removeObjects(move);
+        body->addObjects(move);
     }
     else {
         body->BaseFeature.setValue(obj);

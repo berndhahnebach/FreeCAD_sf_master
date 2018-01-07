@@ -407,8 +407,13 @@ class FemTest(unittest.TestCase):
 
         # collect all Python modules in Fem
         pymodules += collect_python_modules('')  # Fem main dir
+        pymodules += collect_python_modules('feminout')
+        pymodules += collect_python_modules('femmesh')
+        pymodules += collect_python_modules('femresult')
+        pymodules += collect_python_modules('femtest')
         pymodules += collect_python_modules('PyObjects')
         if FreeCAD.GuiUp:
+            pymodules += collect_python_modules('femcommands')
             pymodules += collect_python_modules('PyGui')
         pymodules += collect_python_modules('femsolver')
         pymodules += collect_python_modules('femsolver/elmer')
@@ -1299,13 +1304,14 @@ def create_test_results():
     shutil.copyfile(dat_result_file, dat_Flow1D_thermomech_test_result_file)
     print('Flow1D thermomech results copied to the appropriate FEM test dirs in: ' + temp_dir)
 
+
 '''
 update the results of FEM unit tests:
 
 import TestFem
 TestFem.create_test_results()
 
-copy result files from your_temp_directory/FEM_unittests/   test directories into the src dirctory
+copy result files from your_temp_directory/FEM_unittests/   test directories into the src directory
 compare the results with git difftool
 run make
 start FreeCAD and run FEM unit test
