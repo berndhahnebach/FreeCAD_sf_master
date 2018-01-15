@@ -479,14 +479,29 @@ PyObject* SketchObjectPy::delExternal(PyObject *args)
 
 PyObject* SketchObjectPy::delConstraintOnPoint(PyObject *args)
 {
-    int Index;
-    if (!PyArg_ParseTuple(args, "i", &Index))
+    int Index, pos=-1;
+    if (!PyArg_ParseTuple(args, "i|i", &Index, &pos))
         return 0;
 
-    if (this->getSketchObjectPtr()->delConstraintOnPoint(Index)) {
-        std::stringstream str;
-        str << "Not able to delete a constraint on point with the given index: " << Index;
-        PyErr_SetString(PyExc_ValueError, str.str().c_str());
+    if (pos>=0 && pos<3) { // Sketcher::none Sketcher::mid
+        if (this->getSketchObjectPtr()->delConstraintOnPoint(Index,(Sketcher::PointPos)pos)) {
+            std::stringstream str;
+            str << "Not able to delete a constraint on point with the given index: " << Index
+                << " and position: " << pos;
+            PyErr_SetString(PyExc_ValueError, str.str().c_str());
+            return 0;
+        }
+    }
+    else if (pos==-1) {
+        if (this->getSketchObjectPtr()->delConstraintOnPoint(Index)) {
+            std::stringstream str;
+            str << "Not able to delete a constraint on point with the given index: " << Index;
+            PyErr_SetString(PyExc_ValueError, str.str().c_str());
+            return 0;
+        }
+    }
+    else {
+        PyErr_SetString(PyExc_ValueError, "Wrong PointPos argument");
         return 0;
     }
 

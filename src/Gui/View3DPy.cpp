@@ -176,6 +176,7 @@ void View3DInventorPy::init_type()
         "'addFinishCallback','addStartCallback','addMotionCallback','addValueChangedCallback'\n");
     add_varargs_method("setActiveObject", &View3DInventorPy::setActiveObject, "setActiveObject(name,object)\nadd or set a new active object");
     add_varargs_method("getActiveObject", &View3DInventorPy::getActiveObject, "getActiveObject(name)\nreturns the active object for the given type");
+    add_varargs_method("getViewProvidersOfType", &View3DInventorPy::getViewProvidersOfType, "getViewProvidersOfType(name)\nreturns a list of view providers for the given type");
     add_varargs_method("redraw", &View3DInventorPy::redraw, "redraw(): renders the scene on screen (useful for animations)");
 
 }
@@ -695,43 +696,6 @@ Py::Object View3DInventorPy::isAnimationEnabled(const Py::Tuple& args)
     return Py::Boolean(ok ? true : false);
 }
 
-void View3DInventorPy::createImageFromFramebuffer(int width, int height, const QColor& bgcolor, QImage& img)
-{
-    View3DInventorViewer* viewer = _view->getViewer();
-    static_cast<QtGLWidget*>(viewer->getGLWidget())->makeCurrent();
-
-    const QtGLContext* context = QtGLContext::currentContext();
-    if (!context) {
-        Base::Console().Warning("createImageFromFramebuffer failed because no context is active\n");
-        return;
-    }
-#if QT_VERSION >= 0x040600
-    QtGLFramebufferObjectFormat format;
-    format.setSamples(8);
-    format.setAttachment(QtGLFramebufferObject::Depth);
-#if defined(HAVE_QT5_OPENGL)
-    format.setInternalTextureFormat(GL_RGB32F_ARB);
-#else
-    format.setInternalTextureFormat(GL_RGB);
-#endif
-    QtGLFramebufferObject fbo(width, height, format);
-#else
-    QtGLFramebufferObject fbo(width, height, QtGLFramebufferObject::Depth);
-#endif
-    const QColor col = viewer->backgroundColor();
-    bool on = viewer->hasGradientBackground();
-
-    if (bgcolor.isValid()) {
-        viewer->setBackgroundColor(bgcolor);
-        viewer->setGradientBackground(false);
-    }
-
-    viewer->renderToFramebuffer(&fbo);
-    viewer->setBackgroundColor(col);
-    viewer->setGradientBackground(on);
-    img = fbo.toImage();
-}
-
 Py::Object View3DInventorPy::saveImage(const Py::Tuple& args)
 {
     char *cFileName,*cColor="Current",*cComment="$MIBA";
@@ -755,23 +719,7 @@ Py::Object View3DInventorPy::saveImage(const Py::Tuple& args)
         bg.setNamedColor(colname);
 
     QImage img;
-#if !defined(HAVE_QT5_OPENGL)
-    bool pbuffer = QGLPixelBuffer::hasOpenGLPbuffers();
-#else
-    bool pbuffer = false;
-#endif
-    if (App::GetApplication().GetParameterGroupByPath
-        ("User parameter:BaseApp/Preferences/Document")->GetBool("DisablePBuffers",!pbuffer)) {
-        createImageFromFramebuffer(w, h, bg, img);
-    }
-    else {
-        try {
-            _view->getViewer()->savePicture(w, h, bg, img);
-        }
-        catch (const Base::Exception&) {
-            createImageFromFramebuffer(w, h, bg, img);
-        }
-    }
+    _view->getViewer()->savePicture(w, h, 8, bg, img);
 
     SoFCOffscreenRenderer& renderer = SoFCOffscreenRenderer::instance();
     SoCamera* cam = _view->getViewer()->getSoRenderManager()->getCamera();
@@ -2210,38 +2158,52 @@ Py::Object View3DInventorPy::removeDraggerCallback(const Py::Tuple& args)
 
 Py::Object View3DInventorPy::setActiveObject(const Py::Tuple& args)
 {
-	PyObject* docObject = 0;
-	char* name;
-	
-        //allow reset of active object by setting "None"
-        if( args.length() == 2 && args.back() == Py::None() ) {
-            PyArg_Parse(args.front().ptr(), "s", &name);
-            _view->setActiveObject(NULL, name);
-            return Py::None();
-        }
-        
-        if (!PyArg_ParseTuple(args.ptr(), "sO!", &name, &App::DocumentObjectPy::Type, &docObject))
-		throw Py::Exception();
-                
+    PyObject* docObject = 0;
+    char* name;
 
-	if (docObject){
-		App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(docObject)->getDocumentObjectPtr();
-		_view->setActiveObject(obj, name);
-	}
-	return Py::None();
+    //allow reset of active object by setting "None"
+    if (args.length() == 2 && args.back() == Py::None()) {
+        PyArg_Parse(args.front().ptr(), "s", &name);
+        _view->setActiveObject(NULL, name);
+        return Py::None();
+    }
+
+    if (!PyArg_ParseTuple(args.ptr(), "sO!", &name, &App::DocumentObjectPy::Type, &docObject))
+        throw Py::Exception();
+
+    if (docObject){
+        App::DocumentObject* obj = static_cast<App::DocumentObjectPy*>(docObject)->getDocumentObjectPtr();
+        _view->setActiveObject(obj, name);
+    }
+    return Py::None();
 }
 
 Py::Object View3DInventorPy::getActiveObject(const Py::Tuple& args)
 {
     char* name;
     if (!PyArg_ParseTuple(args.ptr(), "s", &name))
-                throw Py::Exception();
-    
+        throw Py::Exception();
+
     App::DocumentObject* obj = _view->getActiveObject<App::DocumentObject*>(name);
     if(!obj)
         return Py::None();
-    
+
     return Py::Object(obj->getPyObject());
+}
+
+Py::Object View3DInventorPy::getViewProvidersOfType(const Py::Tuple& args)
+{
+    char* name;
+    if (!PyArg_ParseTuple(args.ptr(), "s", &name))
+        throw Py::Exception();
+
+    std::vector<ViewProvider*> vps = _view->getViewer()->getViewProvidersOfType(Base::Type::fromName(name));
+    Py::List list;
+    for (std::vector<ViewProvider*>::iterator it = vps.begin(); it != vps.end(); ++it) {
+        list.append(Py::asObject((*it)->getPyObject()));
+    }
+
+    return list;
 }
 
 Py::Object View3DInventorPy::redraw(const Py::Tuple& args)

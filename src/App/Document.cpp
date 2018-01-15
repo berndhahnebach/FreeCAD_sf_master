@@ -2303,7 +2303,8 @@ std::vector<App::DocumentObject*> DocumentP::partialTopologicalSort(const std::v
 
             for (auto outListIt : out) {
                 auto outListMapIt = countMap.find(outListIt);
-                outListMapIt->second.first = outListMapIt->second.first - 1;
+                if (outListMapIt != countMap.end())
+                    outListMapIt->second.first = outListMapIt->second.first - 1;
             }
         }
     }
@@ -2337,7 +2338,8 @@ std::vector<App::DocumentObject*> DocumentP::partialTopologicalSort(const std::v
 
             for (auto inListIt : in) {
                 auto inListMapIt = countMap.find(inListIt);
-                inListMapIt->second.second = inListMapIt->second.second - 1;
+                if (inListMapIt != countMap.end())
+                    inListMapIt->second.second = inListMapIt->second.second - 1;
             }
         }
     }
@@ -2537,7 +2539,7 @@ DocumentObject * Document::addObject(const char* sType, const char* pObjectName,
     pcObject->pcNameInDocument = &(d->objectMap.find(ObjectName)->first);
     // insert in the vector
     d->objectArray.push_back(pcObject);
-    // insert in the adjacence list and referenc through the ConectionMap
+    // insert in the adjacence list and reference through the ConectionMap
     //_DepConMap[pcObject] = add_vertex(_DepList);
 
     // If we are restoring, don't set the Label object now; it will be restored later. This is to avoid potential duplicate

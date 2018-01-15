@@ -41,7 +41,7 @@ class PathPreferences:
     PostProcessorOutputFile   = "PostProcessorOutputFile"
     PostProcessorOutputPolicy = "PostProcessorOutputPolicy"
 
-    # Linear tolerance to use when generating Paths, eg when tesselating geometry
+    # Linear tolerance to use when generating Paths, eg when tessellating geometry
     GeometryTolerance       = "GeometryTolerance"
     LibAreaCurveAccuracy    = "LibAreaCurveAccuarcy"
 
@@ -112,7 +112,7 @@ class PathPreferences:
     @classmethod
     def macroFilePath(cls):
         grp = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Macro")
-        return grp.GetString("MacroPath", FreeCAD.getUserAppDataDir())
+        return grp.GetString("MacroPath", FreeCAD.getUserMacroDir())
 
     @classmethod
     def searchPaths(cls):
