@@ -101,7 +101,7 @@ def write_fenics_mesh_points_xdmf(fem_mesh_obj, geometrynode, encoding=ENCODING_
     if encoding == ENCODING_ASCII:
         dataitem = ET.SubElement(geometrynode, "DataItem", Dimensions="%d %d" % (numnodes, effective_dim), Format="XML")
         nodes = []
-        for (ind, (key, node)) in enumerate(fem_mesh_obj.FemMesh.Nodes.iteritems()):
+        for (ind, (key, node)) in enumerate(list(fem_mesh_obj.FemMesh.Nodes.items())):
             nodes.append(node)
             recalc_nodes_ind_dict[key] = ind
 
