@@ -1,8 +1,6 @@
-#!/bin/bash
-#
 # ***************************************************************************
 # *                                                                         *
-# *   Copyright (c) 2017 sliptonic <shopinthewoods@gmail.com>               *
+# *   Copyright (c) 2017 - Bernd Hahnebach <bernd@bimstatik.org>            *
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
 # *   it under the terms of the GNU Lesser General Public License (LGPL)    *
@@ -22,41 +20,22 @@
 # *                                                                         *
 # ***************************************************************************
 
-# Script to run pylint on Path. Currently only checks for errors.
+__title__ = "FemElementRotation1D"
+__author__ = "Bernd Hahnebach"
+__url__ = "http://www.freecadweb.org"
 
-if [ 'utils' == $(basename ${PWD}) ]; then
-  cd ..
-elif [ 'PathScripts' == $(basename ${PWD}) ]; then
-  cd ..
-elif [ 'PathTests' == $(basename ${PWD}) ]; then
-  cd ..
-elif [ -d 'src/Mod/Path' ]; then
-  cd src/Mod/Path
-elif [ -d 'Mod/Path' ]; then
-  cd Mod/Path
-elif [ -d 'Path' ]; then
-  cd Path
-fi
+## @package FemElementRotation1D
+#  \ingroup FEM
 
-if [ ! -d 'PathScripts' ]; then
-  echo "Cannot determine source directory, please call from within Path source directory."
-  exit 2
-fi
 
-EXTERNAL_MODULES+=' PySide.QtCore'
-EXTERNAL_MODULES+=' PySide.QtGui'
-EXTERNAL_MODULES+=' FreeCAD'
-EXTERNAL_MODULES+=' DraftGeomUtils'
-EXTERNAL_MODULES+=' importlib'
+class _FemElementRotation1D:
+    "The FemElementRotation1D object"
 
-ARGS+=" --errors-only"
-ARGS+=" --ignored-modules=$(echo ${EXTERNAL_MODULES} | tr ' ' ',')"
-ARGS+=" --jobs=4"
+    def __init__(self, obj):
+        obj.addProperty("App::PropertyAngle", "Rotation", "BeamRotation", "Set the rotation of beam elements")
+        obj.addProperty("App::PropertyLinkSubList", "References", "BeamRotation", "List of beam rotation shapes")
+        obj.Proxy = self
+        self.Type = "Fem::FemElementRotation1D"
 
-if [ -z "$(which pylint)" ]; then
-  echo "Cannot find pylint, please install and try again!"
-  exit 1
-fi
-
-#pylint ${ARGS} PathScripts/ PathTests/
-pylint ${ARGS} PathScripts/
+    def execute(self, obj):
+        return
