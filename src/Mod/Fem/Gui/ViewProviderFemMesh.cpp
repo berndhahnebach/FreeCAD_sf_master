@@ -520,14 +520,40 @@ void ViewProviderFemMesh::setColorByNodeId(const std::map<long,App::Color> &Node
 void ViewProviderFemMesh::setColorByNodeId(const std::vector<long> &NodeIds,const std::vector<App::Color> &NodeColors)
 {
 
+    Base::Console().Log("\nWe are in second setColorByNodeId, we will print content of NodeColors:\n");  // output
+    for (unsigned index = 0; index < NodeIds.size(); ++index)  // output
+        Base::Console().Log("%i --> (%.2f, %.2f, %.2f)\n", NodeIds[index], NodeColors[index].r, NodeColors[index].g, NodeColors[index].b);
+
     long startId = *(std::min_element(NodeIds.begin(), NodeIds.end()));
     long endId   = *(std::max_element(NodeIds.begin(), NodeIds.end()));
 
-    std::vector<App::Color> colorVec(endId-startId+2,App::Color(0,1,0));
+    /*App::Color myColor;
+    myColor.r = 0.5;
+    myColor.g = 0.5;
+    myColor.b = 0.5;*/
+    Base::Console().Log("\nstartId: %i\n", startId);  // output
+    Base::Console().Log("endId: %i\n", endId);  // output
+    Base::Console().Log("NodeIds.begin(): %i\n", *(NodeIds.begin()));  // output
+    Base::Console().Log("NodeIds.end(): %i\n", *(NodeIds.end()));  // output   gibt schrott aus !!!
+
+    long myid = *(NodeIds.end());
+    Base::Console().Log("endId myid: %i\n", myid);  // output
+
+    //std::vector<App::Color> colorVec(endId-startId+2,App::Color(0,1,0));  // ich muss so einen langen vec haben, die luecken werden im helper ignoriert, aber irgendwoe nicht die luechen am anfang, da es keine luecken hat !!!!
+    std::vector<App::Color> colorVec(endId+1,App::Color(0,1,0));
+    Base::Console().Log("colorVec.size(): %i\n", colorVec.size());  // output
     long i=0;
     for(std::vector<long>::const_iterator it=NodeIds.begin();it!=NodeIds.end();++it,i++)
-        colorVec[*it-startId] = NodeColors[i];
+        colorVec[*it] = NodeColors[i];
+    //Base::Console().Log("iterator: %i %i\n", *it-startId, i);  // output
 
+    //for(unsigned j=0; j<NodeIds.size(); j++)
+    //    Base::Console().Log("ohne iterator: %i\n", j);  // output
+
+
+    Base::Console().Log("\nWe are in second setColorByNodeId, we will print content of colorVec:\n");  //output
+    for (unsigned index = 0; index < colorVec.size(); ++index)  // output
+        Base::Console().Log("%i --> (%.2f, %.2f, %.2f)\n", index, colorVec[index].r, colorVec[index].g, colorVec[index].b);  //output
 
     setColorByNodeIdHelper(colorVec);
 
@@ -535,6 +561,8 @@ void ViewProviderFemMesh::setColorByNodeId(const std::vector<long> &NodeIds,cons
 
 void ViewProviderFemMesh::setColorByNodeIdHelper(const std::vector<App::Color> &colorVec)
 {
+    Base::Console().Log("\nWe are in second setColorByNodeIdHelper!\n");  // output
+
     pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
 
     // resizing and writing the color vector:
@@ -544,9 +572,14 @@ void ViewProviderFemMesh::setColorByNodeIdHelper(const std::vector<App::Color> &
     long i=0;
     for(std::vector<unsigned long>::const_iterator it=vNodeElementIdx.begin()
             ;it!=vNodeElementIdx.end()
-            ;++it,i++)
-       colors[i] = SbColor(colorVec[*it-1].r,colorVec[*it-1].g,colorVec[*it-1].b);
-
+            ;++it,i++){
+       colors[i] = SbColor(colorVec[*it].r,colorVec[*it].g,colorVec[*it].b);
+       Base::Console().Log("nodeid from mesh VP: %i\n", *it);  // output das sind meine knotennummern des mesh to color *it
+    }
+    // info: vNodeElementIdx: mesh nodes from the mesh viewprovider we would like to color
+    Base::Console().Log("\nWe are in setColorByNodeIdHelper, we will print the content off colors:\n");  // output
+    //for (unsigned index = 0; index < colors.size(); ++index)  // output
+    //    Base::Console().Log("%i --> (%.2f, %.2f, %.2f)\n", index, colors[index].r, colors[index].g, colors[index].b);  //output
 
     pcShapeMaterial->diffuseColor.finishEditing();
 }

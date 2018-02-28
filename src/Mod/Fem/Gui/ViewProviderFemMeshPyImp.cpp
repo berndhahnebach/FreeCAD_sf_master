@@ -64,6 +64,9 @@ App::Color calcColor(double value,double min, double max)
 
 PyObject* ViewProviderFemMeshPy::setNodeColorByScalars(PyObject *args)
 {
+
+    Base::Console().Log("\nWe are in setNodeColorByScalars!\n");  // output
+
     double max = -1e12;
     double min = +1e12;
     PyObject *node_ids_py;
@@ -81,18 +84,29 @@ PyObject* ViewProviderFemMeshPy::setNodeColorByScalars(PyObject *args)
         for (int i=0; i<num_items; i++){
             PyObject *id_py = PyList_GetItem(node_ids_py, i);
             long id = PyLong_AsLong(id_py);
+            Base::Console().Log("id= %i\n", id);  // output
             ids.push_back(id);
             PyObject *value_py = PyList_GetItem(values_py, i);
             double val = PyFloat_AsDouble(value_py);
+            Base::Console().Log("va= %d\n", val);  // output
             values.push_back(val);
             if(val > max)
                 max = val;
             if(val < min)
                 min = val;
         }
+        // output
+        Base::Console().Log("\nids und values\n");  // output
+        for (unsigned index = 0; index < ids.size(); ++index)
+        {
+            Base::Console().Log("%i --> %d\n", ids[index], values[index]);
+        }
         long i=0;
-        for(std::vector<double>::const_iterator it=values.begin(); it!=values.end(); ++it, i++)
+        for(std::vector<double>::const_iterator it=values.begin(); it!=values.end(); ++it, i++){
             node_colors[i] = calcColor(*it, min, max);
+            //Base::Console().Log("%i\n", myFaces[index]->GetID())
+            Base::Console().Log("%d\n", node_colors[i]);  // ???
+        }
         this->getViewProviderFemMeshPtr()->setColorByNodeId(ids, node_colors);
     } else {
         PyErr_SetString(Base::BaseExceptionFreeCADError, "PyArg_ParseTuple failed. Invalid arguments used with setNodeByScalars");
