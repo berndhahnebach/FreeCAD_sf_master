@@ -191,6 +191,7 @@ def make_femmesh(mesh_data):
                 mesh.addFace([e[0], e[1], e[2], e[3], e[4], e[5], e[6], e[7]], i)
             elms_seg2 = m['Seg2Elem']
             for i in elms_seg2:
+                print(i)
                 e = elms_seg2[i]
                 mesh.addEdge([e[0], e[1]], i)
             elms_seg3 = m['Seg3Elem']
