@@ -117,6 +117,7 @@ SET(FemTests_SRCS
     femtest/__init__.py
     femtest/testccxtools.py
     femtest/testcommon.py
+    femtest/testmesh.py
     femtest/testsolverframework.py
     femtest/testtools.py
 )
@@ -159,6 +160,12 @@ SET(FemTestsElmer_SRCS
     femtest/testfiles/elmer/case.sif
     femtest/testfiles/elmer/group_mesh.geo
     femtest/testfiles/elmer/ELMERSOLVER_STARTINFO
+)
+
+SET(FemTestsMesh_SRCS
+    femtest/testfiles/mesh/__init__.py
+    femtest/testfiles/mesh/tetra10_mesh.inp
+    femtest/testfiles/mesh/tetra10_mesh.unv
 )
 
 SET(FemTools_SRCS
@@ -206,6 +213,7 @@ SET(FemAllScripts
     ${FemTestsFiles_SRCS}
     ${FemTestsCcx_SRCS}
     ${FemTestsElmer_SRCS}
+    ${FemTestsMesh_SRCS}
     ${FemTools_SRCS}
     ${FemObjectsScripts_SRCS}
 )
@@ -234,6 +242,7 @@ INSTALL(FILES ${FemTests_SRCS} DESTINATION Mod/Fem/femtest)
 INSTALL(FILES ${FemTestsFiles_SRCS} DESTINATION Mod/Fem/femtest/testfiles)
 INSTALL(FILES ${FemTestsCcx_SRCS} DESTINATION Mod/Fem/femtest/testfiles/ccx)
 INSTALL(FILES ${FemTestsElmer_SRCS} DESTINATION Mod/Fem/femtest/testfiles/elmer)
+INSTALL(FILES ${FemTestsMesh_SRCS} DESTINATION Mod/Fem/femtest/testfiles/mesh)
 INSTALL(FILES ${FemTools_SRCS} DESTINATION Mod/Fem/femtools)
 INSTALL(FILES ${FemObjectsScripts_SRCS} DESTINATION Mod/Fem/femobjects)
 
