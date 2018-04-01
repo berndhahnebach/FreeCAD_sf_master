@@ -61,6 +61,8 @@ def read_fenics_mesh_xml(xmlfilename):
         print("Mesh dimension: %d" % (dim,))
         print("Mesh cell type: %s" % (cell_type,))
 
+        # every cell type contains a dict with key=dimension and value=number
+
         cells_parts_dim = {'point': {0: 1},
                            'interval': {0: 2, 1: 1},
                            'triangle': {0: 3, 1: 3, 2: 1},
