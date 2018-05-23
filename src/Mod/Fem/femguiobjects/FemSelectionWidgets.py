@@ -404,6 +404,7 @@ class GeometryElementsSelection(QtGui.QWidget):
             # if we do not check, we would start a new SelectionObserver on every click on addReference button
             # but close only one SelectionObserver on leaving the task panel
             self.sel_server = FemSelectionObserver(self.selectionParser, print_message)
+            self.pushButton_Add.setText('hello')
 
     def selectionParser(self, selection):
         print('selection: ', selection[0].Shape.ShapeType, '  ', selection[0].Name, '  ', selection[1])
