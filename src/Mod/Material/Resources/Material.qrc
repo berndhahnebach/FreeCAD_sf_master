@@ -1,5 +1,6 @@
 <RCC>
     <qresource> 
+        <file>icons/Arch_Material_Group.svg</file>
         <file>icons/preview-rendered.svg</file>
         <file>icons/preview-vector.svg</file>
     </qresource>

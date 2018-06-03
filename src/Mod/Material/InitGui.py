@@ -21,3 +21,19 @@
 #***************************************************************************
 
 
+
+class MaterialWorkbench ( Workbench ):
+    "Material workbench object"
+    def __init__(self):
+        self.__class__.Icon = 'Arch_Material_Group'
+        self.__class__.MenuText = "Material framework"
+        self.__class__.ToolTip = "Material framework"
+
+    def Initialize(self):
+        import materialcommands.commands
+
+        tools = ["Material_MaterialEditor"]
+        self.appendToolbar("MaterialTools", tools)
+        self.appendMenu("Material framework", tools)
+
+Gui.addWorkbench(MaterialWorkbench())

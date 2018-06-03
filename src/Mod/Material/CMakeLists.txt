@@ -10,7 +10,13 @@ SET(Material_SRCS
     MaterialEditor.py
     materials-editor.ui
 )
-SOURCE_GROUP("Module" FILES ${Material_SRCS})
+
+SET(MaterialCommands_SRCS
+    materialcommands/__init__.py
+    materialcommands/commands.py
+)
+
+SOURCE_GROUP("Module" FILES ${Material_SRCS} ${MaterialCommands_SRCS})
 
 # collect all the material cards:
 #FILE( GLOB MaterialLib_Files ./StandardMaterial/*.FCMat ./StandardMaterial/*.txt  )
@@ -36,13 +42,14 @@ SET (FluidMaterial_Files
 SOURCE_GROUP("MatLib" FILES ${FluidMaterial_Files})
 
 ADD_CUSTOM_TARGET(Material ALL
-    SOURCES ${Material_SRCS} ${Material_QRC_SRCS}
+    SOURCES ${Material_SRCS} ${MaterialCommands_SRCS} ${Material_QRC_SRCS}
 )
 
 fc_target_copy_resource(Material 
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}/Mod/Material
-    ${Material_SRCS})
+    ${Material_SRCS}
+    ${MaterialCommands_SRCS})
 
 IF (BUILD_GUI)
     fc_target_copy_resource(Material
@@ -70,7 +77,7 @@ fc_target_copy_resource(FluidMaterialLib
     ${FluidMaterial_Files})
 
 INSTALL(
-    FILES ${Material_SRCS} ${Material_QRC_SRCS}
+    FILES ${Material_SRCS} ${Material_QRC_SRCS} ${MaterialCommands_SRCS}
     DESTINATION Mod/Material
 )
 
