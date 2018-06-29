@@ -1,14 +1,15 @@
-import os
 import FreeCAD
-import Path
-import Part
 import Mesh
+import Part
+import Path
+import PathScripts.PathDressup as PathDressup
+import PathScripts.PathGeom as PathGeom
+import PathScripts.PathLog as PathLog
 import PathSimulator
 import math
+import os
+
 from FreeCAD import Vector, Base
-import PathScripts.PathLog as PathLog
-from PathScripts.PathGeom import PathGeom
-import PathScripts.PathDressup as PathDressup
 
 _filePath = os.path.dirname(os.path.abspath(__file__))
 
@@ -95,7 +96,7 @@ class PathSimulation:
                 self.firstDrill = True
                 self.activeOps.append(self.operations[i])
                 self.numCommands += len(self.operations[i].Path.Commands)
-        
+
         self.stock = self.job.Stock.Shape
         if (self.isVoxel):
             maxlen = self.stock.BoundBox.XLength
@@ -480,14 +481,14 @@ class PathSimulation:
         self.cutTool.ViewObject.hide()
         self.iprogress = 0
         self.EndSimulation()
-        
+
     def InvalidOperation(self):
         if len(self.activeOps) == 0:
           return True
         if (self.tool == None):
           TSError("No tool assigned for the operation")
           return True
-        return false
+        return False
 
     def SimFF(self):
         if self.InvalidOperation():

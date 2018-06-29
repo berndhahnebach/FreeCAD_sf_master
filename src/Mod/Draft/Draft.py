@@ -47,11 +47,11 @@ __url__ = "http://www.freecadweb.org"
 
 '''The Draft module offers a range of tools to create and manipulate basic 2D objects'''
 
-import FreeCAD, math, sys, os, DraftVecUtils, Draft_rc, WorkingPlane
+import FreeCAD, math, sys, os, DraftVecUtils, WorkingPlane
 from FreeCAD import Vector
 
 if FreeCAD.GuiUp:
-    import FreeCADGui
+    import FreeCADGui, Draft_rc
     from PySide import QtCore
     from PySide.QtCore import QT_TRANSLATE_NOOP
     gui = True
@@ -253,7 +253,7 @@ def ungroup(obj):
             g = grp.Group
             g.remove(obj)
             grp.Group = g
-            
+
 def autogroup(obj):
     "adds a given object to the autogroup, if applicable"
     if FreeCAD.GuiUp:
@@ -270,6 +270,11 @@ def autogroup(obj):
                             gr = g.Group
                             gr.append(obj)
                             g.Group = gr
+                else:
+                    # Arch active container
+                    a = FreeCADGui.ActiveDocument.ActiveView.getActiveObject("Arch")
+                    if a:
+                        a.addObject(obj)
 
 def dimSymbol(symbol=None,invert=False):
     "returns the current dim symbol from the preferences as a pivy SoMarkerSet"
@@ -357,13 +362,22 @@ def shapify(obj):
 def getGroupContents(objectslist,walls=False,addgroups=False,spaces=False):
     '''getGroupContents(objectlist,[walls,addgroups]): if any object of the given list
     is a group, its content is appened to the list, which is returned. If walls is True,
-    walls and structures are also scanned for included windows or rebars. If addgroups 
+    walls and structures are also scanned for included windows or rebars. If addgroups
     is true, the group itself is also included in the list.'''
     def getWindows(obj):
         l = []
         if getType(obj) in ["Wall","Structure"]:
             for o in obj.OutList:
                 l.extend(getWindows(o))
+            for i in obj.InList:
+                if (getType(i) in ["Window"]) or isClone(obj,"Window"):
+                    if hasattr(i,"Hosts"):
+                        if obj in i.Hosts:
+                            l.append(i)
+                elif (getType(i) in ["Rebar"]) or isClone(obj,"Rebar"):
+                    if hasattr(i,"Host"):
+                        if obj == i.Host:
+                            l.append(i)
         elif (getType(obj) in ["Window","Rebar"]) or isClone(obj,["Window","Rebar"]):
             l.append(obj)
         return l
@@ -635,7 +649,7 @@ def getMovableChildren(objectslist,recursive=True):
     if not isinstance(objectslist,list):
         objectslist = [objectslist]
     for obj in objectslist:
-        if not (getType(obj) in ["Clone","SectionPlane","Facebinder"]):
+        if not (getType(obj) in ["Clone","SectionPlane","Facebinder","BuildingPart"]):
             # objects that should never move their children
             children = obj.OutList
             if  hasattr(obj,"Proxy"):
@@ -912,8 +926,20 @@ def makePolygon(nfaces,radius=1,inscribed=True,placement=None,face=None,support=
     FreeCAD.ActiveDocument.recompute()
     return obj
 
-def makeLine(p1,p2):
-    '''makeLine(p1,p2): Creates a line between p1 and p2.'''
+def makeLine(p1,p2=None):
+    '''makeLine(p1,p2): Creates a line between p1 and p2.
+    makeLine(LineSegment): Creates a line from a Part.LineSegment
+    makeLine(Shape): Creates a line from first vertex to last vertex of the given shape'''
+    if not p2:
+        if hasattr(p1,"StartPoint") and hasattr(p1,"EndPoint"):
+            p2 = p1.EndPoint
+            p1 = p1.StartPoint
+        elif hasattr(p1,"Vertexes"):
+            p2 = p1.Vertexes[-1].Point
+            p1 = p1.Vertexes[0].Point
+        else:
+            FreeCAD.Console.PrintError("Unable to create a line from the given data\n")
+            return
     obj = makeWire([p1,p2])
     return obj
 
@@ -1153,22 +1179,31 @@ def makeBlock(objectslist):
         select(obj)
     return obj
 
-def makeArray(baseobject,arg1,arg2,arg3,arg4=None,name="Array"):
+def makeArray(baseobject,arg1,arg2,arg3,arg4=None,arg5=None,arg6=None,name="Array"):
     '''makeArray(object,xvector,yvector,xnum,ynum,[name]) for rectangular array, or
+    makeArray(object,xvector,yvector,zvector,xnum,ynum,znum,[name]) for rectangular array, or
     makeArray(object,center,totalangle,totalnum,[name]) for polar array: Creates an array
     of the given object
     with, in case of rectangular array, xnum of iterations in the x direction
-    at xvector distance between iterations, and same for y direction with yvector
-    and ynum. In case of polar array, center is a vector, totalangle is the angle
-    to cover (in degrees) and totalnum is the number of objects, including the original.
-    The result is a parametric Draft Array.'''
+    at xvector distance between iterations, same for y direction with yvector and ynum,
+    same for z direction with zvector and znum. In case of polar array, center is a vector,
+    totalangle is the angle to cover (in degrees) and totalnum is the number of objects,
+    including the original. The result is a parametric Draft Array.'''
     if not FreeCAD.ActiveDocument:
         FreeCAD.Console.PrintError("No active document. Aborting\n")
         return
     obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython",name)
     _Array(obj)
     obj.Base = baseobject
-    if arg4:
+    if arg6:
+        obj.ArrayType = "ortho"
+        obj.IntervalX = arg1
+        obj.IntervalY = arg2
+        obj.IntervalZ = arg3
+        obj.NumberX = arg4
+        obj.NumberY = arg5
+        obj.NumberZ = arg6
+    elif arg4:
         obj.ArrayType = "ortho"
         obj.IntervalX = arg1
         obj.IntervalY = arg2
@@ -1215,6 +1250,22 @@ def makePathArray(baseobject,pathobject,count,xlate=None,align=False,pathobjsubs
     if gui:
         _ViewProviderDraftArray(obj.ViewObject)
         baseobject.ViewObject.hide()
+        formatObject(obj,obj.Base)
+        if len(obj.Base.ViewObject.DiffuseColor) > 1:
+            FreeCAD.ActiveDocument.recompute()
+            obj.ViewObject.Proxy.resetColors(obj.ViewObject)
+        select(obj)
+    return obj
+
+def makePointArray(base, ptlst):
+    '''makePointArray(base,pointlist):'''
+    obj = FreeCAD.ActiveDocument.addObject("Part::FeaturePython","PointArray")
+    _PointArray(obj, base, ptlst)
+    obj.Base = base
+    obj.PointList = ptlst
+    if gui:
+        _ViewProviderDraftArray(obj.ViewObject)
+        base.ViewObject.hide()
         formatObject(obj,obj.Base)
         if len(obj.Base.ViewObject.DiffuseColor) > 1:
             FreeCAD.ActiveDocument.recompute()
@@ -1391,7 +1442,7 @@ def move(objectslist,vector,copy=False):
             newobj.End = obj.End.add(vector)
             newobj.Dimline = obj.Dimline.add(vector)
         else:
-            if copy and obj.isDerivedFrom("Mesh::Feature"): 
+            if copy and obj.isDerivedFrom("Mesh::Feature"):
                 print("Mesh copy not supported at the moment") # TODO
             newobj = obj
             if "Placement" in obj.PropertiesList:
@@ -1407,18 +1458,20 @@ def move(objectslist,vector,copy=False):
     if copy and getParam("selectBaseObjects",False):
         select(objectslist)
     else:
-        select(newobjlist) 
+        select(newobjlist)
     if len(newobjlist) == 1: return newobjlist[0]
     return newobjlist
 
-def array(objectslist,arg1,arg2,arg3,arg4=None):
-    '''array(objectslist,xvector,yvector,xnum,ynum) for rectangular array, or
-    array(objectslist,center,totalangle,totalnum) for polar array: Creates an array
+def array(objectslist,arg1,arg2,arg3,arg4=None,arg5=None,arg6=None):
+    '''array(objectslist,xvector,yvector,xnum,ynum) for rectangular array,
+    array(objectslist,xvector,yvector,zvector,xnum,ynum,znum) for rectangular array,
+    or array(objectslist,center,totalangle,totalnum) for polar array: Creates an array
     of the objects contained in list (that can be an object or a list of objects)
     with, in case of rectangular array, xnum of iterations in the x direction
-    at xvector distance between iterations, and same for y direction with yvector
-    and ynum. In case of polar array, center is a vector, totalangle is the angle
-    to cover (in degrees) and totalnum is the number of objects, including the original.
+    at xvector distance between iterations, and same for y and z directions with yvector
+    and ynum and zvector and znum. In case of polar array, center is a vector, totalangle
+    is the angle to cover (in degrees) and totalnum is the number of objects, including
+    the original.
 
     This function creates an array of independent objects. Use makeArray() to create a
     parametric array object.'''
@@ -1435,6 +1488,22 @@ def array(objectslist,arg1,arg2,arg3,arg4=None):
                 currentyvector=currentxvector.add(Vector(yvector).multiply(ycount))
                 if not ycount==0:
                     move(objectslist,currentyvector,True)
+    def rectArray2(objectslist,xvector,yvector,zvector,xnum,ynum,znum):
+        typecheck([(xvector,Vector), (yvector,Vector), (zvector,Vector),(xnum,int), (ynum,int),(znum,int)], "rectArray2")
+        if not isinstance(objectslist,list): objectslist = [objectslist]
+        for xcount in range(xnum):
+            currentxvector=Vector(xvector).multiply(xcount)
+            if not xcount==0:
+                move(objectslist,currentxvector,True)
+            for ycount in range(ynum):
+                currentxvector=FreeCAD.Base.Vector(currentxvector)
+                currentyvector=currentxvector.add(Vector(yvector).multiply(ycount))
+                if not ycount==0:
+                    move(objectslist,currentyvector,True)
+                for zcount in range(znum):
+                    currentzvector=currentyvector.add(Vector(zvector).multiply(zcount))
+                    if not zcount==0:
+                        move(objectslist,currentzvector,True)
     def polarArray(objectslist,center,angle,num):
         typecheck([(center,Vector), (num,int)], "polarArray")
         if not isinstance(objectslist,list): objectslist = [objectslist]
@@ -1442,8 +1511,9 @@ def array(objectslist,arg1,arg2,arg3,arg4=None):
         for i in range(num):
             currangle = fraction + (i*fraction)
             rotate(objectslist,currangle,center,copy=True)
-
-    if arg4:
+    if arg6:
+        rectArray2(objectslist,arg1,arg2,arg3,arg4,arg5,arg6)
+    elif arg4:
         rectArray(objectslist,arg1,arg2,arg3,arg4)
     else:
         polarArray(objectslist,arg1,arg2,arg3)
@@ -1581,7 +1651,7 @@ def scale(objectslist,delta=Vector(1,1,1),center=Vector(0,0,0),copy=False,legacy
                 newobj.ViewObject.FontSize = factor
                 d = obj.Position.sub(center)
                 newobj.Position = center.add(Vector(d.x*delta.x,d.y*delta.y,d.z*delta.z))
-            if copy: 
+            if copy:
                 formatObject(newobj,obj)
             newobjlist.append(newobj)
         if copy and getParam("selectBaseObjects",False):
@@ -2246,6 +2316,16 @@ def getSVG(obj,scale=1,linewidth=0.35,fontsize=12,fillstyle="shape color",direct
         return svg
 
     def getText(color,fontsize,fontname,angle,base,text,linespacing=0.5,align="center",flip=True):
+        if isinstance(angle,FreeCAD.Rotation):
+            if not plane:
+                angle = angle.Angle
+            else:
+                if plane.axis.getAngle(angle.Axis) < 0.001:
+                    angle = angle.Angle
+                elif abs(plane.axis.getAngle(angle.Axis)-math.pi) < 0.001:
+                    return "" # text is perpendicular to view, so it shouldn't appear
+                else:
+                    angle = 0 #TODO maybe there is something better to do here?
         if not isinstance(text,list):
             text = text.split("\n")
         if align.lower() == "center":
@@ -2459,16 +2539,22 @@ def getSVG(obj,scale=1,linewidth=0.35,fontsize=12,fillstyle="shape color",direct
                     tbase = getProj(prx.tbase)
                 svg += getText(stroke,fontsize,obj.ViewObject.FontName,tangle,tbase,prx.string)
 
-    elif getType(obj) == "Annotation":
+    elif getType(obj) in ["Annotation","DraftText"]:
         "returns an svg representation of a document annotation"
         if not obj.ViewObject:
             print ("export of texts to SVG is only available in GUI mode")
         else:
             n = obj.ViewObject.FontName
-            a = obj.ViewObject.Rotation.getValueAs("rad")
-            t = obj.LabelText
+            if getType(obj) == "Annotation":
+                p = getProj(obj.Position)
+                r = obj.ViewObject.Rotation.getValueAs("rad")
+                t = obj.LabelText
+            else: # DraftText
+                p = getProj(obj.Placement.Base)
+                r = obj.Placement.Rotation
+                t = obj.Text
             j = obj.ViewObject.Justification
-            svg += getText(stroke,fontsize,n,a,getProj(obj.Position),t,linespacing,j)
+            svg += getText(stroke,fontsize,n,r,p,t,linespacing,j)
 
     elif getType(obj) == "Axis":
         "returns the SVG representation of an Arch Axis system"
@@ -2523,7 +2609,7 @@ def getSVG(obj,scale=1,linewidth=0.35,fontsize=12,fillstyle="shape color",direct
             if len(f.Edges) == 1:
                 if isinstance(f.Edges[0].Curve,Part.Circle):
                     svg += getCircle(f.Edges[0])
-                    
+
     elif getType(obj) == "Rebar":
         fill = "none"
         lstyle = getLineStyle()
@@ -2617,7 +2703,7 @@ def getSVG(obj,scale=1,linewidth=0.35,fontsize=12,fillstyle="shape color",direct
                     angle = -DraftVecUtils.angle(p2.sub(p1))
                     arrowsize = obj.ViewObject.ArrowSize.Value/pointratio
                     svg += getArrow(obj.ViewObject.ArrowType,p2,arrowsize,stroke,linewidth,angle)
-                    
+
     # techdraw expects bottom-to-top coordinates
     if techdraw:
         svg = '<g transform ="scale(1,-1)">'+svg+'</g>'
@@ -2716,23 +2802,23 @@ def makeShape2DView(baseobj,projectionVector=None,facenumbers=[]):
 
 def makeSketch(objectslist,autoconstraints=False,addTo=None,
         delete=False,name="Sketch",radiusPrecision=-1):
-    '''makeSketch(objectslist,[autoconstraints],[addTo],[delete],[name],[radiusPrecision]): 
+    '''makeSketch(objectslist,[autoconstraints],[addTo],[delete],[name],[radiusPrecision]):
 
-    Makes a Sketch objectslist with the given Draft objects. 
+    Makes a Sketch objectslist with the given Draft objects.
 
     * objectlist: can be single or list of objects of Draft type objects,
         Part::Feature, Part.Shape, or mix of them.
 
     * autoconstraints(False): if True, constraints will be automatically added to
-        wire nodes, rectangles and circles. 
-    
+        wire nodes, rectangles and circles.
+
     * addTo(None) : if set to an existing sketch, geometry will be added to it
         instead of creating a new one.
-    
-    * delete(False): if True, the original object will be deleted. 
+
+    * delete(False): if True, the original object will be deleted.
         If set to a string 'all' the object and all its linked object will be
         deleted
-    
+
     * name('Sketch'): the name for the new sketch object
 
     * radiusPrecision(-1): If <0, disable radius constraint. If =0, add indiviaul
@@ -3032,8 +3118,10 @@ def makePoint(X=0, Y=0, Z=0,color=None,name = "Point", point_size= 5):
     return obj
 
 def makeShapeString(String,FontFile,Size = 100,Tracking = 0):
+
     '''ShapeString(Text,FontFile,Height,Track): Turns a text string
     into a Compound Shape'''
+
     if not FreeCAD.ActiveDocument:
         FreeCAD.Console.PrintError("No active document. Aborting\n")
         return
@@ -3054,11 +3142,13 @@ def makeShapeString(String,FontFile,Size = 100,Tracking = 0):
     return obj
 
 def clone(obj,delta=None,forcedraft=False):
+
     '''clone(obj,[delta,forcedraft]): makes a clone of the given object(s). The clone is an exact,
     linked copy of the given object. If the original object changes, the final object
     changes too. Optionally, you can give a delta Vector to move the clone from the
     original position. If forcedraft is True, the resulting object is a Draft clone
     even if the input object is an Arch object.'''
+
     prefix = getParam("ClonePrefix","")
     if prefix:
         prefix = prefix.strip()+" "
@@ -3067,14 +3157,18 @@ def clone(obj,delta=None,forcedraft=False):
     if (len(obj) == 1) and obj[0].isDerivedFrom("Part::Part2DObject"):
         cl = FreeCAD.ActiveDocument.addObject("Part::Part2DObjectPython","Clone2D")
         cl.Label = prefix + obj[0].Label + " (2D)"
-    elif (len(obj) == 1) and hasattr(obj[0],"CloneOf") and (not forcedraft):
+    elif (len(obj) == 1) and (hasattr(obj[0],"CloneOf") or (getType(obj[0]) == "BuildingPart")) and (not forcedraft):
         # arch objects can be clones
         import Arch
-        cl = getattr(Arch,"make"+obj[0].Proxy.Type)()
+        if getType(obj[0]) == "BuildingPart":
+            cl = Arch.makeComponent()
+        else:
+            cl = getattr(Arch,"make"+obj[0].Proxy.Type)()
         base = getCloneBase(obj[0])
         cl.Label = prefix + base.Label
         cl.CloneOf = base
-        cl.Placement = obj[0].Placement
+        if getType(obj[0]) != "BuildingPart":
+            cl.Placement = obj[0].Placement
         try:
             cl.Role = base.Role
             cl.Description = base.Description
@@ -3083,7 +3177,7 @@ def clone(obj,delta=None,forcedraft=False):
             pass
         if gui:
             cl.ViewObject.DiffuseColor = base.ViewObject.DiffuseColor
-            if obj[0].Proxy.Type == "Window":
+            if getType(obj[0]) in ["Window","BuildingPart"]:
                 from DraftGui import todo
                 todo.delay(Arch.recolorize,cl)
         select(cl)
@@ -5771,7 +5865,6 @@ class _Array(_DraftObject):
         obj.IntervalX = Vector(1,0,0)
         obj.IntervalY = Vector(0,1,0)
         obj.IntervalZ = Vector(0,0,1)
-        obj.IntervalZ = Vector(0,0,0)
         obj.Angle = 360
         obj.Axis = Vector(0,0,1)
         obj.Fuse = False
@@ -6011,6 +6104,46 @@ class _PathArray(_DraftObject):
             travel += step
         return(Part.makeCompound(base))
 
+class _PointArray(_DraftObject):
+    "The Draft Point Array object"
+    def __init__(self, obj, bobj, ptlst):
+        _DraftObject.__init__(self,obj,"PointArray")
+        obj.addProperty("App::PropertyLink","Base","Draft",QT_TRANSLATE_NOOP("App::Property","Base")).Base = bobj
+        obj.addProperty("App::PropertyLink","PointList","Draft",QT_TRANSLATE_NOOP("App::Property","PointList")).PointList = ptlst
+        obj.addProperty("App::PropertyInteger","Count","Draft",QT_TRANSLATE_NOOP("App::Property","Count")).Count = 0
+        obj.setEditorMode("Count", 1)
+
+    def execute(self, obj):
+        import Part
+        from FreeCAD import Base, Vector
+        pls = []
+        opl = obj.PointList
+        while getType(opl) == 'Clone':
+            opl = opl.Objects[0]
+        if hasattr(opl, 'Geometry'):
+            pls = opl.Geometry
+        elif hasattr(opl, 'Links'):
+            pls = opl.Links
+        elif hasattr(opl, 'Components'):
+            pls = opl.Components
+
+        base = []
+        i = 0
+        if hasattr(obj.Base, 'Shape'):
+            for pts in pls:
+                #print pts # inspect the objects
+                if hasattr(pts, 'X') and hasattr(pts, 'Y') and hasattr(pts, 'Y'):
+        	        nshape = obj.Base.Shape.copy()
+        	        if hasattr(pts, 'Placement'):
+        	            place = pts.Placement
+        	            nshape.translate(place.Base)
+        	            nshape.rotate(place.Base, place.Rotation.Axis, place.Rotation.Angle * 180 /  math.pi )
+        	        nshape.translate(Base.Vector(pts.X,pts.Y,pts.Z))
+        	        i += 1
+        	        base.append(nshape)
+        obj.Count = i
+        obj.Shape = Part.makeCompound(base)
+
 class _Point(_DraftObject):
     "The Draft Point object"
     def __init__(self, obj,x=0,y=0,z=0):
@@ -6057,7 +6190,7 @@ class _Clone(_DraftObject):
         obj.addProperty("App::PropertyVector","Scale","Draft",QT_TRANSLATE_NOOP("App::Property","The scale factor of this clone"))
         obj.addProperty("App::PropertyBool","Fuse","Draft",QT_TRANSLATE_NOOP("App::Property","If this clones several objects, this specifies if the result is a fusion or a compound"))
         obj.Scale = Vector(1,1,1)
-        
+
     def join(self,obj,shapes):
         if len(shapes) < 2:
             return shapes[0]
@@ -6186,8 +6319,12 @@ class _ViewProviderDraftArray(_ViewProviderDraft):
         _ViewProviderDraft.__init__(self,vobj)
 
     def getIcon(self):
-        return ":/icons/Draft_Array.svg"
-        
+        if hasattr(self.Object,"ArrayType"):
+            return ":/icons/Draft_Array.svg"
+        elif hasattr(self.Object,"PointList"):
+            return ":/icons/Draft_PointArray.svg"
+        return ":/icons/Draft_PathArray.svg"
+
     def resetColors(self, vobj):
         colors = []
         if vobj.Object.Base:
@@ -6364,6 +6501,8 @@ class _Facebinder(_DraftObject):
         obj.addProperty("App::PropertyLinkSubList","Faces","Draft",QT_TRANSLATE_NOOP("App::Property","Linked faces"))
         obj.addProperty("App::PropertyBool","RemoveSplitter","Draft",QT_TRANSLATE_NOOP("App::Property","Specifies if splitter lines must be removed"))
         obj.addProperty("App::PropertyDistance","Extrusion","Draft",QT_TRANSLATE_NOOP("App::Property","An optional extrusion value to be applied to all faces"))
+        obj.addProperty("App::PropertyBool","Sew","Draft",QT_TRANSLATE_NOOP("App::Property","This specifies if the shapes sew"))
+
 
     def execute(self,obj):
         import Part
@@ -6396,6 +6535,10 @@ class _Facebinder(_DraftObject):
                 if not sh:
                     sh = faces.pop()
                     sh = sh.multiFuse(faces)
+                if hasattr(obj,"Sew"):
+                    if obj.Sew:
+                        sh = sh.copy()
+                        sh.sewShape()
                 if hasattr(obj,"RemoveSplitter"):
                     if obj.RemoveSplitter:
                         sh = sh.removeSplitter()
@@ -6432,6 +6575,9 @@ class _Facebinder(_DraftObject):
 class _ViewProviderFacebinder(_ViewProviderDraft):
     def __init__(self,vobj):
         _ViewProviderDraft.__init__(self,vobj)
+
+    def getIcon(self):
+        return ":/icons/Draft_Facebinder_Provider.svg"
 
     def setEdit(self,vobj,mode):
         import DraftGui
@@ -6523,9 +6669,9 @@ class _ViewProviderVisGroup:
 
 
 class WorkingPlaneProxy:
-    
+
     "The Draft working plane proxy object"
-    
+
     def __init__(self,obj):
         obj.Proxy = self
         obj.addProperty("App::PropertyPlacement","Placement","Base",QT_TRANSLATE_NOOP("App::Property","The placement of this object"))
@@ -6588,11 +6734,11 @@ class ViewProviderWorkingPlaneProxy:
 
     def claimChildren(self):
         return []
-        
+
     def doubleClicked(self,vobj):
         FreeCADGui.runCommand("Draft_SelectPlane")
         return True
-        
+
     def setupContextMenu(self,vobj,menu):
         from PySide import QtCore,QtGui
         action1 = QtGui.QAction(QtGui.QIcon(":/icons/Draft_SelectPlane.svg"),"Write camera position",menu)
@@ -6601,7 +6747,7 @@ class ViewProviderWorkingPlaneProxy:
         action2 = QtGui.QAction(QtGui.QIcon(":/icons/Draft_SelectPlane.svg"),"Write objects state",menu)
         QtCore.QObject.connect(action2,QtCore.SIGNAL("triggered()"),self.writeState)
         menu.addAction(action2)
-        
+
     def writeCamera(self):
         if hasattr(self,"Object"):
             from pivy import coin
@@ -6620,7 +6766,7 @@ class ViewProviderWorkingPlaneProxy:
                 cdata.append(n.heightAngle.getValue())
                 cdata.append(1.0) # perspective camera
             self.Object.ViewObject.ViewData = cdata
-            
+
     def writeState(self):
         if hasattr(self,"Object"):
             FreeCAD.Console.PrintMessage(QT_TRANSLATE_NOOP("Draft","Writing objects shown/hidden state")+"\n")
@@ -6760,9 +6906,9 @@ def makeLabel(targetpoint=None,target=None,direction=None,distance=None,labeltyp
 
 
 class DraftLabel:
-    
+
     "The Draft Label object"
-    
+
     def __init__(self,obj):
         obj.Proxy = self
         obj.addProperty("App::PropertyPlacement","Placement","Base",QT_TRANSLATE_NOOP("App::Property","The placement of this object"))
@@ -6961,7 +7107,7 @@ class ViewProviderDraftLabel:
                 self.text2d.string.setValues([l.encode("utf8") for l in obj.Text if l])
                 self.text3d.string.setValues([l.encode("utf8") for l in obj.Text if l])
                 self.onChanged(obj.ViewObject,"TextAlignment")
-                
+
     def getTextSize(self,vobj):
         from pivy import coin
         if vobj.DisplayMode == "3D text":
@@ -7054,9 +7200,9 @@ class ViewProviderDraftLabel:
 
 
 class DraftText:
-    
+
     "The Draft Text object"
-    
+
     def __init__(self,obj):
         obj.Proxy = self
         obj.addProperty("App::PropertyPlacement","Placement","Base",QT_TRANSLATE_NOOP("App::Property","The placement of this object"))
@@ -7117,6 +7263,10 @@ class ViewProviderDraftText:
         vobj.addDisplayMode(self.node2d,"2D text")
         vobj.addDisplayMode(self.node3d,"3D text")
         self.onChanged(vobj,"TextColor")
+        self.onChanged(vobj,"FontSize")
+        self.onChanged(vobj,"FontName")
+        self.onChanged(vobj,"Justification")
+        self.onChanged(vobj,"LineSpacing")
 
     def getDisplayModes(self,vobj):
         return ["2D text","3D text"]

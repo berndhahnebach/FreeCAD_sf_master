@@ -1,6 +1,6 @@
 # ***************************************************************************
 # *                                                                         *
-# *   Copyright (c) 2015 - Bernd Hahnebach <bernd@bimstatik.org>            *
+# *   Copyright (c) 2016 - Victor Titov (DeepSOIC) <vv.titov@gmail.com>     *
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
 # *   it under the terms of the GNU Lesser General Public License (LGPL)    *
@@ -20,28 +20,17 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Selection Observer"
-__author__ = "Bernd Hahnebach"
-__url__ = "http://www.freecadweb.org"
+__title__ = "ImageTools package"  # from "Macro Image Scaling"
+__author__  = "JAndersM"
+__url__     = "https://www.freecadweb.org/wiki/Macro_Image_Scaling"
+__version__ = "00.01"
+__date__    = "19/01/2016" 
+ 
+ 
+__tutorial__ = "https://youtu.be/2iFE40uHrA8" 
+__forum__ = "https://forum.freecadweb.org/viewtopic.php?f=3&t=14265"
 
-## \addtogroup FEM
-#  @{
 
-import FreeCAD
-import FreeCADGui
-
-
-class FemSelectionObserver:
-    '''FemSelectionObserver'''
-    def __init__(self, parseSelectionFunction, print_message=''):
-        self.parseSelectionFunction = parseSelectionFunction
-        FreeCADGui.Selection.addObserver(self)
-        FreeCAD.Console.PrintMessage(print_message + "!\n")
-
-    def addSelection(self, docName, objName, sub, pos):
-        selected_object = FreeCAD.getDocument(docName).getObject(objName)  # get the obj objName
-        self.added_obj = (selected_object, sub)
-        # on double click on a vertex of a solid sub is None and obj is the solid
-        self.parseSelectionFunction(self.added_obj)
-
-##  @}
+## @package ImageTools
+#  \ingroup Image
+#  \brief ImageTools Package for Image workbench

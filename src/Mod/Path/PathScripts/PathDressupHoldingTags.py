@@ -25,13 +25,13 @@ import FreeCAD
 import Part
 import Path
 import PathScripts.PathDressup as PathDressup
+import PathScripts.PathGeom as PathGeom
 import PathScripts.PathLog as PathLog
 import PathScripts.PathUtil as PathUtil
 import PathScripts.PathUtils as PathUtils
 import copy
 import math
 
-from PathScripts.PathGeom import PathGeom
 from PathScripts.PathDressupTagPreferences import HoldingTagPreferences
 from PathScripts.PathUtils import waiting_effects
 from PySide import QtCore
@@ -522,7 +522,7 @@ class PathData:
         return self.baseWire is not None
 
     def findZLimits(self, edges):
-        # not considering arcs and spheres in Z direction, find the highes and lowest Z values
+        # not considering arcs and spheres in Z direction, find the highest and lowest Z values
         minZ = 99999999999
         maxZ = -99999999999
         for e in edges:
