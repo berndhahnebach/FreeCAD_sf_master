@@ -327,12 +327,37 @@ void TaskPostBox::updateEnumerationList(App::PropertyEnumeration& prop, QComboBo
     std::vector<std::string> vec = prop.getEnumVector();
     for(std::vector<std::string>::iterator it = vec.begin(); it != vec.end(); ++it ) {
         list.push_back(QString::fromStdString(*it));
-        //Base::Console().Message("%s\n", vec[it - vec.begin()].c_str());  // works great but seams cumbersome to me
+        Base::Console().Message("%s\n", vec[it - vec.begin()].c_str());  // works great but seams cumbersome to me
         Base::Console().Message("%s\n", (*it).c_str());  // works great
     }
 
     box->insertItems(0, list);
     box->setCurrentIndex(prop.getValue());
+    // box->setCurrentIndex(index);
+
+
+    // BERNDS CODE
+    Base::Console().Message("\nUpdate QComboBox with App::PropertyEnumeration:\n");
+    int propCurrentIdx = prop.getValue();
+    std::string propCurrentValue = vec[propCurrentIdx];
+    Base::Console().Message("  Property current informations: Index = %i, Value = %s\n", propCurrentIdx, propCurrentValue.c_str());
+    //Base::Console().Message("  Enumerations: ");
+
+    // prints the first 
+    Base::Console().Message("  %s\n", vec[0].c_str());
+
+    // save somewhere for me, I have a forum topic about all this console logs, but where ?
+    // furthermore print vector, array contents is important too!
+    // C++ print type?
+    std::string myString = "dumm nur weens nich geht";
+    Base::Console().Message("  print my own string: %s: \n", myString.c_str());
+    // https://stackoverflow.com/questions/10865957/c-printf-with-stdstring/10865967#10865967
+
+    //https://stackoverflow.com/questions/10750057/how-to-print-out-the-contents-of-a-vector/10758845#10758845
+    for(unsigned int i=0; i<vec.size(); ++i) {
+        Base::Console().Message("  %s\n", vec[i].c_str());
+    }
+    // ende bernds code
 }
 
 //###########################################################################################################
