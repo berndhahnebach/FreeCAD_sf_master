@@ -327,9 +327,8 @@ void TaskPostBox::updateEnumerationList(App::PropertyEnumeration& prop, QComboBo
     std::vector<std::string> vec = prop.getEnumVector();
     for(std::vector<std::string>::iterator it = vec.begin(); it != vec.end(); ++it ) {
         list.push_back(QString::fromStdString(*it));
-        Base::Console().Message("%s\n", vec[it - vec.begin()].c_str());  // works great but seams cumbersome to me
-        //Base::Console().Message("%s\n", *it);  // prints stupid character
-        //Base::Console().Message("%s\n", *it.c_str());  // compilererror
+        //Base::Console().Message("%s\n", vec[it - vec.begin()].c_str());  // works great but seams cumbersome to me
+        Base::Console().Message("%s\n", (*it).c_str());  // works great
     }
 
     box->insertItems(0, list);
