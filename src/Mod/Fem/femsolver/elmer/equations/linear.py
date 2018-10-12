@@ -20,11 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-
 __title__ = "_Linear"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 from . import equation
 

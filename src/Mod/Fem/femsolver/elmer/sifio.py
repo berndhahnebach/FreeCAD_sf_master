@@ -20,6 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
+__title__ = "???"
+__author__ = "Markus Hovorka"
+__url__ = "http://www.freecadweb.org"
+
+## \addtogroup FEM
+#  @{
 
 import collections
 import six

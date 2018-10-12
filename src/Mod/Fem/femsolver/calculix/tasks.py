@@ -21,11 +21,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-
 __title__ = "CalculiX Tasks"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 import os
 import subprocess

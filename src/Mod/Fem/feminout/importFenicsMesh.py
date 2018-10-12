@@ -19,7 +19,6 @@
 # *   USA                                                                   *
 # *                                                                         *
 # ***************************************************************************
-from __future__ import print_function
 
 __title__ = "FreeCAD Fenics mesh reader and writer"
 __author__ = "Johannes Hartung"
@@ -28,6 +27,8 @@ __url__ = "http://www.freecadweb.org"
 ## @package importFenicsMesh
 #  \ingroup FEM
 #  \brief FreeCAD Fenics Mesh reader and writer for FEM workbench
+
+from __future__ import print_function
 
 from PySide import QtGui, QtCore
 

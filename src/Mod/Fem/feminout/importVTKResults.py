@@ -1,5 +1,4 @@
 # ***************************************************************************
-# *   (c) Qingfeng Xia 2017                       *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -20,6 +19,7 @@
 # *   USA                                                                   *
 # *                                                                         *
 # *   Juergen Riegel 2002                                                   *
+# *   (c) Qingfeng Xia 2017                                                 *
 # ***************************************************************************/
 
 __title__ = "FreeCAD Result import and export VTK file library"

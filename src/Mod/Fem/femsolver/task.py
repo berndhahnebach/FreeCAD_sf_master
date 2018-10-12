@@ -20,11 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-
 __title__ = "task"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 import threading
 import time

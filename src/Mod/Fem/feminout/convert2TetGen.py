@@ -1,12 +1,13 @@
 # (c) 2010 LGPL
 
+## \addtogroup FEM
+#  @{
+
+
 #Make mesh of pn junction in TetGen format
 import FreeCAD, FreeCADGui, Part, Mesh
 App = FreeCAD # shortcut
 Gui = FreeCADGui # shortcut
-
-## \addtogroup FEM
-#  @{
 
 def exportMeshToTetGenPoly(meshToExport,filePath,beVerbose=1):
     """Export mesh to TetGen *.poly file format"""

@@ -1,10 +1,3 @@
-# Fem gui init module
-# (c) 2009 Juergen Riegel
-#
-# Gathering all the information to start FreeCAD
-# This is the second one of three init scripts, the third one
-# runs when the gui is up
-
 #***************************************************************************
 #*   (c) Juergen Riegel (juergen.riegel@web.de) 2009                       *
 #*                                                                         *
@@ -28,6 +21,12 @@
 #*                                                                         *
 #*   Juergen Riegel 2002                                                   *
 #***************************************************************************/
+
+# Fem gui init module
+
+# Gathering all the information to start FreeCAD
+# This is the second one of three init scripts, the third one
+# runs when the gui is up
 
 import FreeCAD
 import FreeCADGui

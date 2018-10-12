@@ -24,6 +24,8 @@ __title__ = "FreeCAD FEM Elmer Solver Electrostatic"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 import femtools.femutils as FemUtils
 from ... import equationbase

@@ -20,11 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-
 __title__ = "signal"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 def notify(signal, *args):
     for slot in signal:

@@ -20,7 +20,6 @@
 # *                                                                         *
 # ***************************************************************************
 
-
 __title__ = "the constraint initial flow velocity object"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"

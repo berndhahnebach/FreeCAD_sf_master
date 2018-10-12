@@ -20,11 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-
 __title__ = "Z88 Tasks"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 import os
 import subprocess
