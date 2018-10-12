@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Fem ccx test cases"
+__title__ = "FreeCAD FEM ccx test cases"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

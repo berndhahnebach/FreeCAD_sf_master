@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Fluxsolver"
+__title__ = "FreeCAD FEM Fluxsolver"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD Z88 Disp Reader"
+__title__ = "FreeCAD FEM Z88 Disp Reader"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package importZ88O2Results
 #  \ingroup FEM
-#  \brief FreeCAD Z88 Disp Reader for FEM workbench
+#  \brief FreeCAD FEM Z88 Disp Reader for FEM workbench
 
 import FreeCAD
 import os

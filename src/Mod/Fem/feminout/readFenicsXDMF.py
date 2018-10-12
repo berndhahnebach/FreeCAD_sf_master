@@ -21,7 +21,7 @@
 # ***************************************************************************
 from __future__ import print_function
 
-__title__ = "FreeCAD Fenics XDMF mesh reader"
+__title__ = "FreeCAD FEM Fenics XDMF mesh reader"
 __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 

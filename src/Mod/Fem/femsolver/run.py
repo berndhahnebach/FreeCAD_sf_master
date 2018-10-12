@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "run"
+__title__ = "FreeCAD FEM run"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "General Solver Object"
+__title__ = "FreeCAD FEM General Solver Object"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

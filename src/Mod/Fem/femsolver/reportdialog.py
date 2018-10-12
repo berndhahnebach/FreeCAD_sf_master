@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "reportdialog"
+__title__ = "FreeCAD FEM reportdialog"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

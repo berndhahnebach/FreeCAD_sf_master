@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Equation"
+__title__ = "FreeCAD FEM Equation"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

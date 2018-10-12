@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "signal"
+__title__ = "FreeCAD FEM signal"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

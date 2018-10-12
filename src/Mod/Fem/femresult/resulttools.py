@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Fem Tools for results"
+__title__ = "FreeCAD FEM Tools for results"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

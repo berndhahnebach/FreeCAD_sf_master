@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_Base"
+__title__ = "FreeCAD FEM _Base"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

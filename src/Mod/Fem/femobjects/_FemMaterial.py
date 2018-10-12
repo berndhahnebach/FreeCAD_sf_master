@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FemMaterial"
+__title__ = "FreeCAD FEM FemMaterial"
 __author__ = "Juergen Riegel, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemMaterial
 #  \ingroup FEM
-
+#  \brief FemMaterial
 
 class _FemMaterial:
     "The FEM Material object"

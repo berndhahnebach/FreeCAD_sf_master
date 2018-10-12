@@ -22,10 +22,13 @@
 # *                                                                         *
 # ***************************************************************************/
 
-__title__ = "Tools for FEM unit tests"
+__title__ = "FreeCAD Tools for FEM unit tests"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## @package testtools
+#  \ingroup Fem
+#  \brief FreeCAD Tools for FEM unit tests
 
 import FreeCAD
 import tempfile

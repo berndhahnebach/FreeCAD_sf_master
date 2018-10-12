@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Z88 SolverObject"
+__title__ = "FreeCAD FEM Z88 SolverObject"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package SolverZ88
 #  \ingroup FEM
+#  \brief FreeCAD FEM Z88 SolverObject
 
 import os
 import glob

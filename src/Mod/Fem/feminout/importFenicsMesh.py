@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD Fenics mesh reader and writer"
+__title__ = "FreeCAD FEM Fenics mesh reader and writer"
 __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 

@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Tools for the work with FEM meshes"
+__title__ = "FreeCAD FEM Tools for working with FEM meshes"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

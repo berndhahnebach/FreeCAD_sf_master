@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Heat"
+__title__ = "FreeCAD FEM Heat"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

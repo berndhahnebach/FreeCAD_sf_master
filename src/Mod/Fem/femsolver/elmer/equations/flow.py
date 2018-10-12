@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Flow"
+__title__ = "FreeCAD FEM Flow"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

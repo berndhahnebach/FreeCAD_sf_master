@@ -20,10 +20,10 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Fem test cases"
+__title__ = "FreeCAD FEM test cases"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package test_files
 #  \ingroup Fem
-#  \brief Fem test cases
+#  \brief FreeCAD FEM test cases

@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_NonLinear"
+__title__ = "FreeCAD FEM _NonLinear"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 

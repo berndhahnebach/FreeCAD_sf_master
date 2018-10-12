@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Z88 Writer"
+__title__ = "FreeCAD FEM Z88 Writer"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

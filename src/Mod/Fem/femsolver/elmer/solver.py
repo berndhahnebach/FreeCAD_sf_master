@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "Elmer"
+__title__ = "FreeCAD FEM FreeCAD FEM Elmer"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 
