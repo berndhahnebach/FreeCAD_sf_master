@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM FemMaterial"
+__title__ = "FreeCAD FEM material"
 __author__ = "Juergen Riegel, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
