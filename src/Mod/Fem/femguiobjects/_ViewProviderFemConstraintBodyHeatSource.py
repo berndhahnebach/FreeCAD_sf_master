@@ -27,7 +27,6 @@ __url__ = "http://www.freecadweb.org"
 ## \addtogroup FEM
 #  @{
 
-import FemConstraint
 from . import ViewProviderFemConstraint
 
 

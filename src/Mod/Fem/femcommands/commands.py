@@ -20,13 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "???"
+__title__ = "FreeCAD FEM Commands"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## \addtogroup FEM
 #  @{
-
 
 import FreeCAD
 import FreeCADGui
