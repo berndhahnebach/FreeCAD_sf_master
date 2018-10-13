@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FemMesh to Mesh converter"
+__title__ = "FreeCAD FEM FemMesh to Mesh converter"
 __author__ = "Frantisek Loeffelmann, Ulrich Brammer, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FwmMesh2Mesh
 #  \ingroup FEM
+#  \brief FreeCAD FEM FemMesh to Mesh converter
 
 from __future__ import print_function
 

@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemElementGeometry2D"
+__title__ = "FreeCAD FEM _ViewProviderFemElementGeometry2D"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemElementGeometry2D
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemElementGeometry2D
 
 import FreeCAD
 import FreeCADGui

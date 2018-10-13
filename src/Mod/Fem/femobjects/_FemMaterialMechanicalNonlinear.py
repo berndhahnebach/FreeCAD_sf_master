@@ -28,7 +28,6 @@ __url__ = "http://www.freecadweb.org"
 #  \ingroup FEM
 #  \brief FreeCAD FEM Nonlinear Mechanical Material Object for FEM workbench
 
-
 class _FemMaterialMechanicalNonlinear:
     "The FemMaterialMechanicalNonlinear object"
     def __init__(self, obj):

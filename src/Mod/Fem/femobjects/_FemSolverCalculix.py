@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_FemSolverCalculix"
+__title__ = "FreeCAD FEM _FemSolverCalculix"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemSolverCalculix
 #  \ingroup FEM
+#  \brief FreeCAD FEM _FemSolverCalculix
 
 import FreeCAD
 from femtools import ccxtools

@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_FemMeshGroup"
+__title__ = "FreeCAD FEM _FemMeshGroup"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemMeshGroup
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM _FemMeshGroup
 
 class _FemMeshGroup:
     "The FemMeshGroup object"

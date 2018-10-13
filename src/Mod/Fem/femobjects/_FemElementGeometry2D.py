@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_FemElementGeometry2D"
+__title__ = "FreeCAD FEM _FemElementGeometry2D"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemElementGeometry2D
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM _FemElementGeometry2D
 
 class _FemElementGeometry2D:
     "The FemElementGeometry2D object"

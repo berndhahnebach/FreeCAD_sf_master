@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemMaterialMechanicalNonlinear"
+__title__ = "FreeCAD FEM _ViewProviderFemMaterialMechanicalNonlinear"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemMaterialMechanicalNonLinear
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemMaterialMechanicalNonlinear
 
 import FreeCAD
 import FreeCADGui

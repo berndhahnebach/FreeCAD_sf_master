@@ -20,14 +20,13 @@
 #*                                                                         *
 #***************************************************************************
 
-__title__ = "DocumentOject Class to hold mechanical FEM results"
+__title__ = "FreeCAD DocumentOject Class to hold mechanical FEM results"
 __author__ = "Qingfeng Xia, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemResultMechanical
 #  \ingroup FEM
 #  \brief FreeCAD DocumentObject class to hold mechanical results in FEM workbench
-
 
 class _FemResultMechanical():
     """The Fem::_FemResultMechanical's Proxy python type, add result specific properties

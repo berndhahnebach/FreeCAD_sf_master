@@ -20,11 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "the constraint electrostatic potential object"
+__title__ = "FreeCAD FEM constraint electrostatic potential object"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## @package FemConstraintElectrostaticPotential
+#  \ingroup FEM
+#  \brief FreeCAD FEM constraint electrostatic potential object
 
 from . import FemConstraint
 

@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemMeshBoundaryLayer"
+__title__ = "FreeCAD FEM _ViewProviderFemMeshBoundaryLayer"
 __author__ = "Bernd Hahnebach, Qingfeng Xia"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemMeshBoundaryLayer
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemMeshBoundaryLayer
 
 import FreeCAD
 import FreeCADGui

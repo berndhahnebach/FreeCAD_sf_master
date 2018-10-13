@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemSolverCalculix"
+__title__ = "FreeCAD FEM _ViewProviderFemSolverCalculix"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemSolverCalculix
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemSolverCalculix
 
 import FreeCAD
 import FreeCADGui

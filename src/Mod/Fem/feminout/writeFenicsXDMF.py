@@ -20,7 +20,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD Fenics XDMF mesh writer"
+__title__ = "FreeCAD FEM Fenics XDMF mesh writer"
 __author__ = "Johannes Hartung"
 __url__ = "http://www.freecadweb.org"
 

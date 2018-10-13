@@ -21,13 +21,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_FemElementFluid1D"
+__title__ = "FreeCAD FEM _FemElementFluid1D"
 __author__ = "Ofentse Kgoa"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemElementFluid1D
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM _FemElementFluid1D
 
 class _FemElementFluid1D:
     "The FemElementFluid1D object"

@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemElementRotation1D"
+__title__ = "FreeCAD FEM _ViewProviderFemElementRotation1D"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemElementRotation1D
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemElementRotation1D
 
 import FreeCAD
 import FreeCADGui

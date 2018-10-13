@@ -26,4 +26,4 @@ __url__ = "http://www.freecadweb.org"
 
 ## @package PyGui
 #  \ingroup Fem
-#  \brief Fem Gui module
+#  \brief FreeCAD FEM Gui modules

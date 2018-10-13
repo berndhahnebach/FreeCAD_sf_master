@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "the constraint self weight object"
+__title__ = "FreeCAD FEM constraint self weight object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemConstraintSelfWeight
 #  \ingroup FEM
-
+#  \bried FreeCAD FEM constraint self weight object
 
 class _FemConstraintSelfWeight:
     "The FemConstraintSelfWeight object"

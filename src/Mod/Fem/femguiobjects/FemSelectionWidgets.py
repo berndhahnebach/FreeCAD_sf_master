@@ -21,11 +21,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "FemSelectWidget"
+__title__ = "FreeCAD FEM FemSelectWidget"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## @package FemSelectWidget
+#  \ingroup FEM
+#  \brief FreeCAD FEM FemSelectWidget
 
 import FreeCAD
 import FreeCADGui

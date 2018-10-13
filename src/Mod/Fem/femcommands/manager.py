@@ -21,7 +21,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD Fem Commands"
+__title__ = "FreeCAD FEM Commands"
 __author__ = "Przemo Firszt"
 __url__ = "http://www.freecadweb.org"
 

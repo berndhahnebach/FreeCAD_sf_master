@@ -22,13 +22,13 @@
 # *   (c) Qingfeng Xia 2017                                                 *
 # ***************************************************************************/
 
-__title__ = "FreeCAD Result import and export VTK file library"
+__title__ = "FreeCAD FEM Result import and export VTK file library"
 __author__ = "Qingfeng Xia, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package importVTKResults
 #  \ingroup FEM
-#  \brief FreeCAD Result import and export VTK file library
+#  \brief FreeCAD FEM Result import and export VTK file library
 
 import os
 import FreeCAD

@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_FemMeshResult"
+__title__ = "FreeCAD FEM _FemMeshResult"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemMeshResult
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM _FemMeshResult
 
 class _FemMeshResult():
     """The Fem::FemMeshObject's Proxy python type, add Result specific object type

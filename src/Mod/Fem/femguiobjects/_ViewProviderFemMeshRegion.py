@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemMeshRegion"
+__title__ = "FreeCAD FEM _ViewProviderFemMeshRegion"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemMeshRegion
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemMeshRegion
 
 import FreeCAD
 import FreeCADGui

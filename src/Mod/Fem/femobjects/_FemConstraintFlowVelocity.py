@@ -20,10 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "the constraint flow velocity object"
+__title__ = "FreeCAD FEM constraint flow velocity object"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## @package FemConstraintFlowVelocity
+#  \ingroup FEM
+#  \brief FreeCAD FEM constraint flow velocity object
 
 from . import FemConstraint
 

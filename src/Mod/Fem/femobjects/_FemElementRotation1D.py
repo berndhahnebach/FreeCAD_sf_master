@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FemElementRotation1D"
+__title__ = "FreeCAD FEM FemElementRotation1D"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemElementRotation1D
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM FemElementRotation1D
 
 class _FemElementRotation1D:
     "The FemElementRotation1D object"

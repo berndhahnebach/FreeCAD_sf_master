@@ -20,11 +20,12 @@
 # *                                                                         *
 # ***************************************************************************
 
-
 __title__ = "FreeCAD FEM _Base"
 __author__ = "Markus Hovorka"
 __url__ = "http://www.freecadweb.org"
 
+## \addtogroup FEM
+#  @{
 
 class Proxy(object):
 

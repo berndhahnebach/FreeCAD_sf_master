@@ -22,12 +22,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemElementFluid1D"
+__title__ = "FreeCAD FEM _ViewProviderFemElementFluid1D"
 __author__ = "Ofentse Kgoa, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemElementFluid1D
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemElementFluid1D
 
 import FreeCAD
 import FreeCADGui

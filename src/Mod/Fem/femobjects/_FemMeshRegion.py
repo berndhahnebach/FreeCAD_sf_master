@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_FemMeshRegion"
+__title__ = "FreeCAD FEM _FemMeshRegion"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemMeshRegion
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM _FemMeshRegion
 
 class _FemMeshRegion:
     "The FemMeshRegion object"

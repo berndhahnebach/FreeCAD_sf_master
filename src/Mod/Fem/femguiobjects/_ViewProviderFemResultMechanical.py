@@ -20,7 +20,7 @@
 #*                                                                         *
 #***************************************************************************
 
-__title__ = "ViewProvider for FEM mechanical ResultObjectPython"
+__title__ = "FreeCAD ViewProvider for FEM mechanical ResultObjectPython"
 __author__ = "Qingfeng Xia, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 

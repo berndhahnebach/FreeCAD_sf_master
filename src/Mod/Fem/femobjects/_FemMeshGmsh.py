@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_FemMeshGmsh"
+__title__ = "FreeCAD FEM _FemMeshGmsh"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemMeshGmsh
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM _FemMeshGmsh
 
 class _FemMeshGmsh():
     """A Fem::FemMeshObject python type, add Gmsh specific properties

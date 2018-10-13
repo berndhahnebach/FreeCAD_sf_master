@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemMeshResult"
+__title__ = "FreeCAD FEM _ViewProviderFemMeshResult"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemMeshResult
 #  \ingroup FEM
-
+#  \brief FreeCAD FEM _ViewProviderFemMeshResult
 
 class _ViewProviderFemMeshResult:
     "A View Provider for the FemMeshResult object"

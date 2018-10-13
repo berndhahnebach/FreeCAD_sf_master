@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemMaterial"
+__title__ = "FreeCAD FEM _ViewProviderFemMaterial"
 __author__ = "Juergen Riegel, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package _ViewProviderFemMaterial
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemMaterial
 
 import FreeCAD
 import FreeCADGui

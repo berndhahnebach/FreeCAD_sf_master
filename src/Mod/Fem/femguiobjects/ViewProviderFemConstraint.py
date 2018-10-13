@@ -21,11 +21,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "_Base ViewProvider"
+__title__ = "FreeCAD FEM _Base ViewProvider"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## @package _BaseViewProvider
+#  \ingroup FEM
+#  \brief FreeCAD _Base ViewProvider for FEM workbench
 
 import FreeCAD
 import FreeCADGui

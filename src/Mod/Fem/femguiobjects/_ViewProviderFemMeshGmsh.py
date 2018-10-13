@@ -20,12 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "_ViewProviderFemMeshGmsh"
+__title__ = "FreeCAD FEM _ViewProviderFemMeshGmsh"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemMeshGmsh
 #  \ingroup FEM
+#  \brief FreeCAD FEM _ViewProviderFemMeshGmsh
 
 import FreeCAD
 import FreeCADGui
