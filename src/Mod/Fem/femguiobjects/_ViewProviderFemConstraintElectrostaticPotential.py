@@ -20,11 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-
-__title__ = "view provider for constraint electrostatic potential object"
+__title__ = "FreeCAD FEM view provider for constraint electrostatic potential object"
 __author__ = "Markus Hovorka, Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
+## @package ViewProvider????
+#  \ingroup FEM
+#  \brief FreeCAD FEM view provider for constraint electrostatic potential object
 
 import FreeCAD
 import FreeCADGui
