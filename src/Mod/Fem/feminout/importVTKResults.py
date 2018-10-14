@@ -1,4 +1,6 @@
 # ***************************************************************************
+# *   Copyright (c) Jürgen Riegel       (juergen.riegel@web.de) 2002        *
+# *   Copyright (c) Qingfeng Xia        (qingfeng.xia at oxford uni) 2017   *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -18,8 +20,6 @@
 # *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 # *   USA                                                                   *
 # *                                                                         *
-# *   Juergen Riegel 2002                                                   *
-# *   (c) Qingfeng Xia 2017                                                 *
 # ***************************************************************************/
 
 __title__ = "FreeCAD FEM Result import and export VTK file library"
