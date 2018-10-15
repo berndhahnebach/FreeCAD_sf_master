@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM _FemMeshBoundaryLayer"
+__title__ = "FreeCAD FEM mesh boundary layer object"
 __author__ = "Bernd Hahnebach, Qingfeng Xia"
 __url__ = "http://www.freecadweb.org"
 
 ## @package FemMeshBoundaryLayer
 #  \ingroup FEM
-#  \brief _FemMeshBoundaryLayer
+#  \brief FEM mesh boundary layer object
 
 class _FemMeshBoundaryLayer:
     "The FemMeshBoundaryLayer object"
