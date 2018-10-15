@@ -26,7 +26,7 @@ __url__ = "http://www.freecadweb.org"
 
 ## @package FemMaterial
 #  \ingroup FEM
-#  \brief FemMaterial
+#  \brief FEM material
 
 class _FemMaterial:
     "The FEM Material object"
