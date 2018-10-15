@@ -20,13 +20,13 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM _ViewProviderFemConstraintSelfWeight"
+__title__ = "FreeCAD FEM Constraint SelfWeight ViewProvider"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
 ## @package ViewProviderFemConstraintSelfWeight
 #  \ingroup FEM
-#  \brief FreeCAD FEM _ViewProviderFemConstraintSelfWeight
+#  \brief FreeCAD FEM Constraint SelfWeight ViewProvider
 
 import FreeCAD
 import FreeCADGui
