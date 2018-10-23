@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2009     *
-  *   Copyright (c) Qingfeng Xia         (qingfeng.xia at oxford uni) 2017     *
+ *   Copyright (c) Jürgen Riegel        (juergen.riegel@web.de) 2009       *
+ *   Copyright (c) Qingfeng Xia         (qingfeng.xia at oxford uni) 2017  *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
