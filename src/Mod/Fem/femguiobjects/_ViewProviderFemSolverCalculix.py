@@ -179,6 +179,7 @@ class _TaskPanelFemSolverCalculix:
             try:
                 out = unicode(out, 'utf-8', 'replace')
                 rx = QtCore.QRegExp("\\*ERROR.*\\n\\n")
+                print(rx)
                 rx.setMinimal(True)
                 pos = rx.indexIn(out)
                 while not pos < 0:
@@ -189,14 +190,25 @@ class _TaskPanelFemSolverCalculix:
                 self.femConsoleMessage(out.replace('\n', '<br>'))
             except UnicodeDecodeError:
                 self.femConsoleMessage("Error converting stdout from CalculiX", "#FF0000")
+        if '*ERROR in e_c3d: nonpositive jacobian' in out:
+            FreeCAD.Console.PrintError('\n\nCalculiX returned an error due to nonpositive jacobian elements.\n')
+            FreeCAD.Console.PrintError('Use the run button on selected solver to get a better error output.\n')
+        if '*ERROR' in out:
+            return False
+        else:
+            return True
 
     def UpdateText(self):
         if(self.Calculix.state() == QtCore.QProcess.ProcessState.Running):
             self.form.l_time.setText('Time: {0:4.1f}: '.format(time.time() - self.Start))
 
-    def calculixError(self, error):
+    def calculixError(self, error=''):
         print("Error() {}".format(error))
         self.femConsoleMessage("CalculiX execute error: {}".format(error), "#FF0000")
+
+    def calculixNoError(self):
+        print("CalculiX done without error!")
+        self.femConsoleMessage("CalculiX done without error!", "#00AA00")
 
     def calculixStarted(self):
         print("calculixStarted()")
@@ -218,10 +230,12 @@ class _TaskPanelFemSolverCalculix:
         # Restore previous cwd
         QtCore.QDir.setCurrent(self.cwd)
 
-        self.printCalculiXstdout()
         self.Timer.stop()
 
-        self.femConsoleMessage("CalculiX done!", "#00AA00")
+        if self.printCalculiXstdout():
+            self.calculixNoError()
+        else:
+            self.calculixError()
 
         self.form.pb_run_ccx.setText("Re-run CalculiX")
         self.femConsoleMessage("Loading result sets...")
