@@ -42,6 +42,7 @@
 #include <Base/FileInfo.h>
 #include <Base/TimeInfo.h>
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 #include <App/Application.h>
 
 #include <Mod/Mesh/App/Core/MeshKernel.h>
@@ -1191,7 +1192,7 @@ void FemMesh::read(const char *FileName)
 #if SMESH_VERSION_MAJOR < 7
     else if (File.hasExtension("dat") ) {
         // read brep-file
-    // vejmarie disable
+        // vejmarie disable
         myMesh->DATToMesh(File.filePath().c_str());
     }
 #endif
@@ -1600,6 +1601,54 @@ void FemMesh::writeABAQUS(const std::string &Filename, int elemParam, bool group
     }
 }
 
+
+void FemMesh::writeZ88(const std::string &FileName) const
+{
+    Base::TimeInfo Start;
+    Base::Console().Log("Start: FemMesh::writeZ88() =================================\n");
+
+    /*
+    Python command to export FemMesh from StartWB FEM 3D example:
+    import feminout.importZ88Mesh
+    feminout.importZ88Mesh.write(App.ActiveDocument.Box_Mesh.FemMesh, '/tmp/mesh.z88')
+    */
+
+    // create the Python commands
+    Base::FileInfo File(FileName);
+    Base::Console().Log("Export path: %s\n", File.filePath().c_str());
+    /*
+    Base::Console().Log("Export mesh object: %s\n", "pendent");
+    std::string exportCommand = "feminout.importZ88Mesh.write(App.ActiveDocument.Box_Mesh.FemMesh, '" + File.filePath() + "')";
+
+    // the Python commands are passed to the interpreter
+    Base::Interpreter().runString("import feminout.importZ88Mesh");
+    Base::Interpreter().runString(exportCommand.c_str());  // std::string needs to be converted to const char* , newline \n in string gives error EOL ...
+
+    // this is zeiger nicht auf mesh object, sondern auf meshObject.FemMesh, daher brauche ich nur code fuer objnamen auf this ausfuehren ... , eben nicht, da zeiger auf FemMesh nicht mesh obj
+    //std::string objName = this->getName();  // this ist zeiger auf FemMesh
+    //std::string commandMeshInfo = 
+    */
+
+    /*
+    PyObject* module = PyImport_ImportModule("feminout.importZ88Mesh");
+    if (!module)
+        return;
+    try {
+        Py::Module z88mod(module, true);
+        Py::Object mesh = Py::asObject(new FemMeshPy(const_cast<FemMesh*>(this)));
+        Py::Callable method(z88mod.getAttr("write"));
+        Py::Tuple args(2);
+        args.setItem(0, mesh);
+        args.setItem(1, Py::String(FileName));
+        method.apply(args);
+    }
+    catch (Py::Exception& e) {
+        e.clear();
+    }
+    */
+}
+
+
 void FemMesh::write(const char *FileName) const
 {
     Base::FileInfo File(FileName);
@@ -1639,6 +1688,11 @@ void FemMesh::write(const char *FileName) const
         FemVTKTools::writeVTKMesh(File.filePath().c_str(), this);
     }
 #endif
+    else if (File.hasExtension("z88") ) {
+        Base::Console().Log("FEM mesh object will be exported to z88 format.\n");
+        // write z88 file
+        writeZ88(File.filePath());
+    }
     else{
         throw Base::FileException("An unknown file extension was added!");
     }
