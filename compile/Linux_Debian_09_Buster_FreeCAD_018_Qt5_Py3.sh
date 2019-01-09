@@ -108,29 +108,10 @@ sudo apt-get clean
 
 
 # *******************************************
-# use debian version and create deb package
+# install pivy for Python3
 cd $base_dir
-rm -rf mypivy
-mkdir mypivy
-cd mypivy/
-git clone https://salsa.debian.org/kkremitzki-guest/pivy
-cd pivy
-git archive remotes/origin/upstream | gzip > ../pivy_0.6.4.orig.tar.gz
-dpkg-buildpackage -us -uc
-cd $base_dir
-sudo dpkg -i mypivy/python3-pivy_0.6.4-1_amd64.deb 
-
-
-# *******************************************
-# does not work
-# get, compile and install pivy for Python3
-# https://forum.freecadweb.org/viewtopic.php?f=4&t=32389#p270460
-# cd $base_dir
-# rm -rf pivy
-#git clone https://github.com/FreeCAD/pivy
-#cd pivy
-#python3 setup_old.py build
-#sudo python3 setup_old.py install
+wget https://github.com/berndhahnebach/FreeCAD_bhb/blob/vagrant/compile/packages/python3-pivy_0.6.4-1_amd64.deb
+sudo dpkg -i python3-pivy_0.6.4-1_amd64.deb
 
 
 # *******************************************
