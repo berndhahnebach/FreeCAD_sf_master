@@ -282,7 +282,7 @@ class _TaskPanelFemMaterial:
 
     # material parameter input fields *******************************
     def print_material_params(self, material=None):
-        # in rare cases we gone pass a empty dict
+        # in rare cases we need to pass an empty dict
         # in such a case a empty dict should be printed and not self.material thus we check for None
         if material is None:
             material = self.material
