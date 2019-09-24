@@ -79,6 +79,8 @@ def setup_cantileverbase(doc=None, solvertype="ccxtools"):
         solver_object.WorkingDir = u""
     elif solvertype == "elmer":
         analysis.addObject(ObjectsFem.makeSolverElmer(doc, "SolverElmer"))
+    elif solvertype == "oofem":
+        analysis.addObject(ObjectsFem.makeSolverOofem(doc, "SolverOOFEM"))
     elif solvertype == "z88":
         analysis.addObject(ObjectsFem.makeSolverZ88(doc, "SolverZ88"))
     if solvertype == "calculix" or solvertype == "ccxtools":

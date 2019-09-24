@@ -46,6 +46,8 @@ doc = run_ccx_cantilevernodeload("calculix")
 doc = run_ccx_cantilevernodeload("ccxtools")
 doc = run_ccx_cantilevernodeload("z88")
 
+doc = run_oofem_planestress2d()
+
 """
 
 
@@ -235,6 +237,21 @@ def run_material_nl_platewithhole(solver=None, base_name=None):
     return doc
 
 
+def run_oofem_planestress2d(solver=None, base_name=None):
+
+    from .oofem_planestress2d import setup
+    doc = setup()
+
+    if base_name is None:
+        base_name = "PlaneStress2D"
+        if solver is not None:
+            base_name += ("_" + solver)
+    run_analysis(doc, base_name)
+    doc.recompute()
+
+    return doc
+
+
 def run_rcwall2d(solver=None, base_name=None):
 
     from .rc_wall_2d import setup
@@ -309,3 +326,4 @@ def run_all():
     run_thermomech_bimetall()
     run_thermomech_flow1d()
     run_thermomech_spine()
+    run_oofem_planestress2d()

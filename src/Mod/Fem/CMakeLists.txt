@@ -42,6 +42,7 @@ SET(FemExamples_SRCS
     femexamples/manager.py
     femexamples/material_multiple_twoboxes.py
     femexamples/material_nl_platewithhole.py
+    femexamples/oofem_planestress2d.py
     femexamples/rc_wall_2d.py
     femexamples/thermomech_bimetall.py
     femexamples/thermomech_flow1d.py
