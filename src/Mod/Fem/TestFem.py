@@ -36,6 +36,7 @@ from femtest.app.test_mesh import TestMeshEleTetra10 as FemTest07
 from femtest.app.test_result import TestResult as FemTest08
 from femtest.app.test_ccxtools import TestCcxTools as FemTest09
 from femtest.app.test_solverframework import TestSolverFrameWork as FemTest10
+from femtest.app.test_solveroofem import FemTest11
 
 # dummy usage to get flake8 and lgtm quiet
 False if FemTest01.__name__ else True
@@ -48,6 +49,7 @@ False if FemTest07.__name__ else True
 False if FemTest08.__name__ else True
 False if FemTest09.__name__ else True
 False if FemTest10.__name__ else True
+False if FemTest11.__name__ else True
 
 
 # For more information on how to run a specific test class or a test method see
@@ -101,6 +103,7 @@ unittest.TextTestRunner().run(alltest)
 ./bin/FreeCAD --run-test "femtest.app.test_object"
 ./bin/FreeCAD --run-test "femtest.app.test_result"
 ./bin/FreeCAD --run-test "femtest.app.test_solverframework"
+./bin/FreeCAD --run-test "femtest.app.test_solveroofem"
 ./bin/FreeCADCmd --run-test "femtest.app.test_femimport"
 ./bin/FreeCADCmd --run-test "femtest.app.test_ccxtools"
 ./bin/FreeCADCmd --run-test "femtest.app.test_common"
@@ -109,6 +112,7 @@ unittest.TextTestRunner().run(alltest)
 ./bin/FreeCADCmd --run-test "femtest.app.test_object"
 ./bin/FreeCADCmd --run-test "femtest.app.test_result"
 ./bin/FreeCADCmd --run-test "femtest.app.test_solverframework"
+./bin/FreeCADCmd --run-test "femtest.app.test_solveroofem"
 
 # class
 ./bin/FreeCAD --run-test "femtest.app.test_common.TestFemCommon"

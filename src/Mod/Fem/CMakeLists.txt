@@ -168,6 +168,7 @@ SET(FemTestsApp_SRCS
     femtest/app/test_object.py
     femtest/app/test_result.py
     femtest/app/test_solverframework.py
+    femtest/app/test_solveroofem.py
 )
 
 SET(FemTestsFiles_SRCS
@@ -223,6 +224,13 @@ SET(FemTestsMesh_SRCS
     femtest/data/mesh/tetra10_mesh.z88
 )
 
+SET(FemTestsOofem_SRCS
+    femtest/data/oofem/__init__.py
+    femtest/data/oofem/OOFEM_CantileverCcxNodeLoad.in
+    femtest/data/oofem/OOFEM_CantileverCcxPrescribedDisplacement.in
+    femtest/data/oofem/OOFEM_PlaneStress2D.in
+)
+
 SET(FemTools_SRCS
     femtools/__init__.py
     femtools/membertools.py
@@ -276,6 +284,7 @@ SET(FemAllScripts
     ${FemTestsCcx_SRCS}
     ${FemTestsElmer_SRCS}
     ${FemTestsMesh_SRCS}
+    ${FemTestsOofem_SRCS}
     ${FemTools_SRCS}
     ${FemObjectsScripts_SRCS}
 )
@@ -309,6 +318,7 @@ INSTALL(FILES ${FemTestsFiles_SRCS} DESTINATION Mod/Fem/femtest/data)
 INSTALL(FILES ${FemTestsCcx_SRCS} DESTINATION Mod/Fem/femtest/data/ccx)
 INSTALL(FILES ${FemTestsElmer_SRCS} DESTINATION Mod/Fem/femtest/data/elmer)
 INSTALL(FILES ${FemTestsMesh_SRCS} DESTINATION Mod/Fem/femtest/data/mesh)
+INSTALL(FILES ${FemTestsOofem_SRCS} DESTINATION Mod/Fem/femtest/data/oofem)
 INSTALL(FILES ${FemTools_SRCS} DESTINATION Mod/Fem/femtools)
 INSTALL(FILES ${FemObjectsScripts_SRCS} DESTINATION Mod/Fem/femobjects)
 
