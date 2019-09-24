@@ -1052,6 +1052,28 @@ class _SolverElmer(CommandManager):
         self.add_obj_on_gui_noset_edit(self.__class__.__name__.lstrip("_"))
 
 
+class _SolverOofem(CommandManager):
+    "The FEM_SolverOOFEM command definition"
+    def __init__(self):
+        super(_SolverOofem, self).__init__()
+        self.resources = {
+            "Pixmap": "fem-solver-standard",
+            "MenuText": QtCore.QT_TRANSLATE_NOOP(
+                "FEM_SolverOOFEM",
+                "Solver OOFEM"
+            ),
+            "Accel": "S, Z",
+            "ToolTip": QtCore.QT_TRANSLATE_NOOP(
+                "FEM_SolverOOFEM",
+                "Creates a FEM solver OOFEM"
+            )
+        }
+        self.is_active = "with_analysis"
+
+    def Activated(self):
+        self.add_obj_on_gui_noset_edit(self.__class__.__name__.lstrip("_"))
+
+
 class _SolverRun(CommandManager):
     "The FEM_SolverRun command definition"
 
@@ -1245,6 +1267,10 @@ FreeCADGui.addCommand(
 FreeCADGui.addCommand(
     "FEM_SolverElmer",
     _SolverElmer()
+)
+FreeCADGui.addCommand(
+    "FEM_SolverOOFEM",
+    _SolverOofem()
 )
 FreeCADGui.addCommand(
     "FEM_SolverRun",
