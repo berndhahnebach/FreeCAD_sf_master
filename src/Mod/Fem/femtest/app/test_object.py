@@ -113,6 +113,7 @@ class TestObjectCreate(unittest.TestCase):
         analysis.addObject(ObjectsFem.makeSolverCalculixCcxTools(doc))
         analysis.addObject(ObjectsFem.makeSolverCalculix(doc))
         sol = analysis.addObject(ObjectsFem.makeSolverElmer(doc))[0]
+        analysis.addObject(ObjectsFem.makeSolverOofem(doc))
         analysis.addObject(ObjectsFem.makeSolverZ88(doc))
 
         analysis.addObject(ObjectsFem.makeEquationElasticity(doc, sol))
@@ -338,6 +339,10 @@ class TestObjectType(unittest.TestCase):
             type_of_obj(solverelmer)
         )
         self.assertEqual(
+            "Fem::FemSolverObjectOofem",
+            type_of_obj(ObjectsFem.makeSolverOofem(doc))
+        )
+        self.assertEqual(
             "Fem::FemSolverObjectZ88",
             type_of_obj(ObjectsFem.makeSolverZ88(doc))
         )
@@ -531,6 +536,10 @@ class TestObjectType(unittest.TestCase):
         self.assertTrue(is_of_type(
             solverelmer,
             "Fem::FemSolverObjectElmer"
+        ))
+        self.assertTrue(is_of_type(
+            ObjectsFem.makeSolverOofem(doc),
+            'Fem::FemSolverObjectOofem'
         ))
         self.assertTrue(is_of_type(
             ObjectsFem.makeSolverZ88(doc),
@@ -1144,10 +1153,32 @@ class TestObjectType(unittest.TestCase):
             "Fem::FemSolverObjectElmer"
         ))
 
+        # FemSolverObjectOOFEM
+        solver_oofem = ObjectsFem.makeSolverOofem(doc)
+        self.assertTrue(is_derived_from(
+            solver_oofem,
+            'App::DocumentObject'
+        ))
+        self.assertTrue(is_derived_from(
+            solver_oofem,
+            'Fem::FemSolverObject'
+        ))
+        self.assertTrue(is_derived_from(
+            solver_oofem,
+            'Fem::FemSolverObjectPython'
+        ))
+        self.assertTrue(is_derived_from(
+            solver_oofem,
+            'Fem::FemSolverObjectOofem'
+        ))
+
         # FemSolverObjectZ88
         solver_z88 = ObjectsFem.makeSolverZ88(doc)
         self.assertTrue(is_derived_from(
             solver_z88,
+
+        self.assertTrue(is_derived_from(
+            ObjectsFem.makeSolverZ88(doc),
             "App::DocumentObject"
         ))
         self.assertTrue(is_derived_from(
@@ -1439,6 +1470,11 @@ class TestObjectType(unittest.TestCase):
         )
         self.assertTrue(
             solverelmer.isDerivedFrom("Fem::FemSolverObjectPython")
+        )
+        self.assertTrue(
+            ObjectsFem.makeSolverOofem(
+                doc
+            ).isDerivedFrom('Fem::FemSolverObjectPython')
         )
         self.assertTrue(
             ObjectsFem.makeSolverZ88(
