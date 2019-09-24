@@ -39,6 +39,8 @@ FreeCAD.addImportType("FEM result CalculiX (*.frd)", "feminout.importCcxFrdResul
 FreeCAD.addImportType("FEM mesh Fenics (*.xml *.xdmf)", "feminout.importFenicsMesh")
 FreeCAD.addExportType("FEM mesh Fenics (*.xml *.xdmf)", "feminout.importFenicsMesh")
 
+FreeCAD.addExportType("FEM mesh OOFEM (*i1.txt)", "feminout.importOofemMesh")
+
 FreeCAD.addImportType(
     "FEM mesh YAML/JSON (*.meshyaml *.meshjson *.yaml *.json)", "feminout.importYamlJsonMesh"
 )
