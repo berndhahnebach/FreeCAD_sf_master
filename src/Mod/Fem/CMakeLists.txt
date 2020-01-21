@@ -40,6 +40,7 @@ SET(FemExamples_SRCS
     femexamples/constraint_contact_shell_shell.py
     femexamples/constraint_contact_solid_solid.py
     femexamples/constraint_tie.py
+    femexamples/examplesgui.py
     femexamples/manager.py
     femexamples/material_multiple_twoboxes.py
     femexamples/material_nl_platewithhole.py
