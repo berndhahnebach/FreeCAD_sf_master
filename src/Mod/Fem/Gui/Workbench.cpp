@@ -91,18 +91,38 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
     Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
     Gui::ToolBarItem* model = new Gui::ToolBarItem(root);
     model->setCommand("Model");
-    *model << "FEM_Analysis"
-           << "Separator"
-           << "FEM_MaterialSolid"
-           << "FEM_MaterialFluid"
-           << "FEM_MaterialMechanicalNonlinear"
-           << "FEM_MaterialReinforced"
-           << "FEM_MaterialEditor"
-           << "Separator"
-           << "FEM_ElementGeometry1D"
-           << "FEM_ElementRotation1D"
-           << "FEM_ElementGeometry2D"
-           << "FEM_ElementFluid1D";
+    *model
+        << "FEM_Analysis"
+        << "Separator"
+        << "FEM_MaterialSolid"
+        << "FEM_MaterialFluid"
+        << "FEM_MaterialMechanicalNonlinear"
+        << "FEM_MaterialReinforced"
+        << "FEM_MaterialEditor"
+        << "Separator"
+        << "FEM_ElementGeometry1D"
+        << "FEM_ElementRotation1D"
+        << "FEM_ElementGeometry2D"
+        << "FEM_ElementFluid1D";
+
+    Gui::ToolBarItem* electrostat = new Gui::ToolBarItem(root);
+    electrostat->setCommand("Electrostatic Constraints");
+    *electrostat
+        << "FEM_ConstraintElectrostaticPotential";
+
+    Gui::ToolBarItem* fluid = new Gui::ToolBarItem(root);
+    fluid->setCommand("Fluid Constraints");
+    *fluid
+        << "FEM_ConstraintInitialFlowVelocity"
+        << "Separator"
+        << "FEM_ConstraintFlowVelocity";
+
+    Gui::ToolBarItem* geom = new Gui::ToolBarItem(root);
+    geom->setCommand("Geometrical Constraints");
+    *geom
+        << "FEM_ConstraintPlaneRotation"
+        << "FEM_ConstraintSectionPrint"
+        << "FEM_ConstraintTransform";
 
     Gui::ToolBarItem* mech = new Gui::ToolBarItem(root);
     mech->setCommand("Mechanical Constraints");
@@ -136,17 +156,6 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
            << "FEM_MeshGroup"
            << "Separator"
            << "FEM_FEMMesh2Mesh";
-
-    Gui::ToolBarItem* fluid = new Gui::ToolBarItem(root);
-    fluid->setCommand("Fluid Constraints");
-    *fluid << "FEM_ConstraintInitialFlowVelocity"
-           << "Separator"
-           << "FEM_ConstraintFluidBoundary"
-           << "FEM_ConstraintFlowVelocity";
-
-    Gui::ToolBarItem* electrostat = new Gui::ToolBarItem(root);
-    electrostat->setCommand("Electrostatic Constraints");
-    *electrostat << "FEM_ConstraintElectrostaticPotential";
 
      Gui::ToolBarItem* solve = new Gui::ToolBarItem(root);
      solve->setCommand("Solve");
@@ -247,6 +256,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
            << "Separator"
            << "FEM_ConstraintFluidBoundary"
            << "FEM_ConstraintFlowVelocity";
+
+    Gui::MenuItem* geom = new Gui::MenuItem;
+    geom->setCommand("&Geometrical Constraints");
+    *geom
+        << "FEM_ConstraintPlaneRotation"
+        << "FEM_ConstraintSectionPrint"
+        << "FEM_ConstraintTransform";
 
     Gui::MenuItem* model = new Gui::MenuItem;
     root->insertItem(item, model);
