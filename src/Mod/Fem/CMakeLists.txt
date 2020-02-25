@@ -139,6 +139,13 @@ SET(FemSolverFenics_SRCS
     femsolver/fenics/fenics_tools.py
 )
 
+SET(FemSolverOpenSees_SRCS
+    femsolver/opensees/__init__.py
+    femsolver/opensees/solver.py
+    femsolver/opensees/tasks.py
+    femsolver/opensees/writer.py
+)
+
 SET(FemSolverZ88_SRCS
     femsolver/z88/__init__.py
     femsolver/z88/solver.py
@@ -265,6 +272,7 @@ SET(FemAllScripts
     ${FemSolverElmer_SRCS}
     ${FemSolverElmerEquations_SRCS}
     ${FemSolverFenics_SRCS}
+    ${FemSolverOpenSees_SRCS}
     ${FemSolverZ88_SRCS}
     ${FemTests_SRCS}
     ${FemTestsApp_SRCS}
@@ -297,6 +305,7 @@ INSTALL(FILES ${FemSolverCalculix_SRCS} DESTINATION Mod/Fem/femsolver/calculix)
 INSTALL(FILES ${FemSolverElmer_SRCS} DESTINATION Mod/Fem/femsolver/elmer)
 INSTALL(FILES ${FemSolverElmerEquations_SRCS} DESTINATION Mod/Fem/femsolver/elmer/equations)
 INSTALL(FILES ${FemSolverFenics_SRCS} DESTINATION Mod/Fem/femsolver/fenics)
+INSTALL(FILES ${FemSolverOpenSees_SRCS} DESTINATION Mod/Fem/femsolver/opensees)
 INSTALL(FILES ${FemSolverZ88_SRCS} DESTINATION Mod/Fem/femsolver/z88)
 INSTALL(FILES ${FemTests_SRCS} DESTINATION Mod/Fem/femtest)
 INSTALL(FILES ${FemTestsApp_SRCS} DESTINATION Mod/Fem/femtest/app)
