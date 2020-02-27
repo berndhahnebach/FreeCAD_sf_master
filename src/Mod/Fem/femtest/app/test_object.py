@@ -65,6 +65,7 @@ class TestObjectCreate(unittest.TestCase):
         analysis = ObjectsFem.makeAnalysis(doc)
 
         analysis.addObject(ObjectsFem.makeConstraintBearing(doc))
+        analysis.addObject(ObjectsFem.makeConstantPermittivityOfVakuum(doc))
         analysis.addObject(ObjectsFem.makeConstraintBodyHeatSource(doc))
         analysis.addObject(ObjectsFem.makeConstraintContact(doc))
         analysis.addObject(ObjectsFem.makeConstraintDisplacement(doc))
@@ -187,6 +188,10 @@ class TestObjectType(unittest.TestCase):
         self.assertEqual(
             "Fem::FemAnalysis",
             type_of_obj(ObjectsFem.makeAnalysis(doc))
+        )
+        self.assertEqual(
+            "Fem::ConstantPermittivityOfVakuum",
+            type_of_obj(ObjectsFem.makeConstantPermittivityOfVakuum(doc))
         )
         self.assertEqual(
             "Fem::ConstraintBearing",
@@ -384,6 +389,10 @@ class TestObjectType(unittest.TestCase):
         self.assertTrue(is_of_type(
             ObjectsFem.makeAnalysis(doc),
             "Fem::FemAnalysis"
+        ))
+        self.assertTrue(is_of_type(
+            ObjectsFem.makeConstantPermittivityOfVakuum(doc),
+            "Fem::ConstantPermittivityOfVakuum"
         ))
         self.assertTrue(is_of_type(
             ObjectsFem.makeConstraintBearing(doc),
@@ -591,6 +600,21 @@ class TestObjectType(unittest.TestCase):
         self.assertTrue(is_derived_from(
             analysis,
             "Fem::FemAnalysis"
+        ))
+
+        # ConstantPermittivityOfVakuum
+        constant_permittivity_of_vakuum = ObjectsFem.makeConstantPermittivityOfVakuum(doc)
+        self.assertTrue(is_derived_from(
+            constant_permittivity_of_vakuum,
+            "App::DocumentObject"
+        ))
+        self.assertTrue(is_derived_from(
+            constant_permittivity_of_vakuum,
+            "Fem::ConstraintPython"
+        ))
+        self.assertTrue(is_derived_from(
+            constant_permittivity_of_vakuum,
+            "Fem::ConstantPermittivityOfVakuum"
         ))
 
         # ConstraintBearing
@@ -1284,6 +1308,11 @@ class TestObjectType(unittest.TestCase):
             ObjectsFem.makeAnalysis(
                 doc
             ).isDerivedFrom("Fem::FemAnalysis")
+        )
+        self.assertTrue(
+            ObjectsFem.makeConstantPermittivityOfVakuum(
+                doc
+            ).isDerivedFrom("Fem::ConstraintPython")
         )
         self.assertTrue(
             ObjectsFem.makeConstraintBearing(
