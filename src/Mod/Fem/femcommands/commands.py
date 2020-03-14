@@ -22,9 +22,11 @@
 
 import FreeCAD
 import FreeCADGui
+from PySide import QtCore
 
 from .manager import CommandManager
 from femtools.femutils import is_of_type
+
 
 
 # Python command definitions
