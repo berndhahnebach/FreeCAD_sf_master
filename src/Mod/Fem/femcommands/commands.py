@@ -19,7 +19,7 @@
 # *                                                                         *
 # ***************************************************************************
 
-
+from PySide import QtCore
 import FreeCAD
 import FreeCADGui
 
@@ -716,6 +716,7 @@ class _SolverElmer(CommandManager):
 
 class _SolverOpenSees(CommandManager):
     "The FEM_SolverOpenSees command definition"
+
     def __init__(self):
         super(_SolverOpenSees, self).__init__()
         self.resources = {
@@ -738,6 +739,7 @@ class _SolverOpenSees(CommandManager):
 
 class _SolverOpenSees(CommandManager):
     "The FEM_SolverOpenSees command definition"
+
     def __init__(self):
         super(_SolverOpenSees, self).__init__()
         self.resources = {
