@@ -100,7 +100,7 @@ def getConstant(name, dimension):
 def setConstant(name, quantityStr):
     print(CONSTS_DEF[name])
     if name == "PermittivityOfVacuum":
-        theUnit = "W/(m^2*K^4)"
+        theUnit = "s^4*A^2/(m*kg)"
         CONSTS_DEF[name] = "{} {}".format(convert(quantityStr, theUnit), theUnit)
     print(CONSTS_DEF[name])
     return True
@@ -199,7 +199,7 @@ class Writer(object):
     def _handleConstants(self):
         for obj in self._getMember("Fem::ConstantPermittivityOfVakuum"):
             print("we need to overwrite the CONSTS_DEF['PermittivityOfVacuum'] in elmer writer")
-            setConstant("PermittivityOfVacuum", "0 W/(m^2*K^4)")
+            setConstant("PermittivityOfVacuum", "0 s^4*A^2/(m*kg)")
             print(CONSTS_DEF)
         """
         self._constant(
