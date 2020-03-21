@@ -50,7 +50,7 @@ class Check(run.Check):
     def run(self):
         self.pushStatus("Checking analysis...\n")
         self.checkMesh()
-        # self.checkMaterial()
+        self.checkMaterial()
 
 
 class Prepare(run.Prepare):
@@ -61,7 +61,7 @@ class Prepare(run.Prepare):
         with writer.FemInputWriterOpenSees(
             self.analysis,
             self.solver,
-            None, # membertools.get_mesh_to_solve(self.analysis)[0],
+            membertools.get_mesh_to_solve(self.analysis)[0],
             membertools.AnalysisMember(self.analysis),
             self.directory
         ) as w:
