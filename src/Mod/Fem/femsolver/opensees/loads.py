@@ -40,12 +40,12 @@ class Loads(object):
 
         self.write_section('Loads')
         self.blank_line()
-        print(self.force_objects)
 
         for femobj in self.force_objects:
             # femobj --> dict, FreeCAD document object is femobj["Object"]
             direction_vec = femobj["Object"].DirectionVector
             for ref_shape in femobj["NodeLoadTable"]:
+                self.write_line("pattern Plain 1 Linear {")
                 for n in sorted(ref_shape[1]):
                     node_load = ref_shape[1][n]
                     v1 = direction_vec.x * node_load
@@ -58,7 +58,7 @@ class Loads(object):
 
                     if ltype == 'PointLoad':
 
-                        self.write_line('load {0}\t{1:.3f}\t{2:.3f}\t{3:.3f}'.format(n, v1, v2, v3))
+                        self.write_line('\tload {0}\t{1:.3f}\t{2:.3f}\t{3:.3f}'.format(n, v1, v2, v3))
 
                     # Gravity
                     # -------
@@ -85,6 +85,8 @@ class Loads(object):
                             lx = -com['x'] * fact
                             ly = -com['y'] * fact
                             self.write_line('eleLoad -ele {0} -type -beamUniform {1} {2}'.format(elements, ly, lx))
+
+                self.write_line("}")
 
                 self.blank_line()
                 self.blank_line()
