@@ -37,7 +37,7 @@ __title__ = "OpenSees Writer"
 __author__ = "Bernd Hahnebach, Raeyat Roknabadi Ebrahim"
 __url__ = "http://www.freecadweb.org"
 
-## \addtogroup FEM
+# \addtogroup FEM
 #  @{
 
 # next FreeCAD version will drop Python 2
@@ -55,7 +55,7 @@ from .nodes import Nodes
 from .elements import Elements
 from .loads import Loads
 # from sets import Sets
-# from bcs import BCs
+from .bcs import BCs
 from .materials import Materials
 # from steps import Steps
 from .. import writerbase
@@ -76,7 +76,9 @@ comments = {
 
 
 class FemInputWriterOpenSees(writerbase.FemInputWriter,
-                             # Steps,  BCs, Sets,
+                             # Steps,
+                             BCs,
+                             # Sets,
                              Loads,
                              Materials,
                              Elements,
@@ -136,7 +138,7 @@ class FemInputWriterOpenSees(writerbase.FemInputWriter,
         self.write_heading()
         self.write_materials()
         self.write_nodes()
-        # writer.write_boundary_conditions()
+        self.write_boundary_conditions()
         self.write_elements()
         self.write_loads()
 
