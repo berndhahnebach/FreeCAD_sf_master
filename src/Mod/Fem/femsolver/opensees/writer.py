@@ -54,10 +54,10 @@ from .heading import Heading
 from .nodes import Nodes
 from .elements import Elements
 from .loads import Loads
-# from sets import Sets
+# from .sets import Sets
 from .bcs import BCs
 from .materials import Materials
-# from steps import Steps
+from .steps import Steps
 from .. import writerbase
 from femmesh import meshtools
 
@@ -76,7 +76,7 @@ comments = {
 
 
 class FemInputWriterOpenSees(writerbase.FemInputWriter,
-                             # Steps,
+                             Steps,
                              BCs,
                              # Sets,
                              Loads,
@@ -141,6 +141,7 @@ class FemInputWriterOpenSees(writerbase.FemInputWriter,
         self.write_boundary_conditions()
         self.write_elements()
         self.write_loads()
+        self.write_steps()
 
         print('***** OpenSees input file generated: {0} *****\n'.format(self.file_name))
         return self.file_name
