@@ -25,7 +25,7 @@ __title__ = "OpenSees SolverObject"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-## @package SolverOpenSees
+# @package SolverOpenSees
 #  \ingroup FEM
 
 import glob
@@ -76,8 +76,7 @@ class Proxy(solverbase.Proxy):
         return True
 
     def edit(self, directory):
-        pattern = os.path.join(directory, "*.in")
-        print(pattern)
+        pattern = os.path.join(directory, "*.tcl")
         print("Editing of OpenSees input files inside FreeCAD not supported ATM.")
         f = glob.glob(pattern)[0]
         FemGui.open(f)
