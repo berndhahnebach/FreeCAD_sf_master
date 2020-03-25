@@ -88,10 +88,13 @@ class Elements(object):
                     solid = 'FourNodeTetrahedron'
                 elif len(nodes) == 20:
                     solid = '20NodeBrick'
+                    # rearrange nodes number to avoid negative jacobian
+                    maps = [6, 7, 8, 5, 2, 3, 4, 1, 14, 15, 16, 13, 10, 11, 12, 9, 18, 19, 20, 17]
+                    nodes = ''.join(f'{nodes[i - 1]} ' for i in maps)
                 else:
                     FreeCAD.Console.PrintError("Writing of OpenSees {} Nodes element not supported.\n".format(len(nodes))
                                                )
-                self.write_line('element {0} {1} {2} {3}'.format(solid, key, ' '.join([str(i) for i in nodes]), 1))
+                self.write_line('element {0} {1} {2} {3}'.format(solid, key, nodes, 1))
 
             # =====================================================================================================
             # =====================================================================================================
