@@ -102,5 +102,11 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
     mat["ThermalExpansionCoefficient"] = "0.012 mm/m/K"
     material_object.Material = mat
 
+    # fixed_constraint
+    fixed_constraint = analysis.addObject(
+        ObjectsFem.makeConstraintFixed(doc, name="ConstraintFixed")
+    )[0]
+    fixed_constraint.References = [(geom_obj, "Face3")]
+
     doc.recompute()
     return doc
