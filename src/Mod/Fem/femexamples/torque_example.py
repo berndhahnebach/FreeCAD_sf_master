@@ -25,7 +25,7 @@
 """
 doc = App.newDocument("Torque_example")
 from femexamples import torque_example as torque
-torque.setup_cylinderbase(doc)
+torque.setup_transformconstraint(doc)
 """
 
 import FreeCAD
@@ -110,3 +110,41 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
 
     doc.recompute()
     return doc
+
+
+def setup_forceonsurface(doc=None, solvertype="ccxtools"):
+    # setup force on the surface of cylinder
+
+    doc = setup_cylinderbase(doc, solvertype)
+
+    # force_constraint
+    force_constraint = doc.Analysis.addObject(
+        ObjectsFem.makeConstraintForce(doc, name="ConstraintForce")
+    )[0]
+    force_constraint.References = [(doc.Cut, "Face1")]
+    force_constraint.Force = 100000.0
+    force_constraint.Direction = None
+    force_constraint.Reversed = True
+
+    doc.recompute()
+    return doc
+
+
+def setup_transformconstraint(doc=None, solvertype="ccxtools"):
+    # Transform the coordinates of the cylinder
+
+    doc = setup_forceonsurface(doc, solvertype)
+
+    # transform_constraint
+    transform_constraint = doc.Analysis.addObject(
+        ObjectsFem.makeConstraintTransform(doc, name="ConstraintTransform")
+    )[0]
+    transform_constraint.References = [(doc.Cut, "Face1")]
+    transform_constraint.TransformType = "Cylindrical"
+    transform_constraint.X_rot = 0.000000
+    transform_constraint.Y_rot = 0.000000
+    transform_constraint.Z_rot = 0.000000
+
+    doc.recompute()
+    return doc
+
