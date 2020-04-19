@@ -108,6 +108,20 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
     )[0]
     fixed_constraint.References = [(geom_obj, "Face3")]
 
+    # mesh
+    from .meshes.mesh_torque_example import create_nodes, create_elements
+    fem_mesh = Fem.FemMesh()
+    control = create_nodes(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating nodes.\n")
+    control = create_elements(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating elements.\n")
+    femmesh_obj = analysis.addObject(
+        doc.addObject("Fem::FemMeshObject", mesh_name)
+    )[0]
+    femmesh_obj.FemMesh = fem_mesh
+
     doc.recompute()
     return doc
 
