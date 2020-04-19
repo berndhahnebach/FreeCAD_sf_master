@@ -33,6 +33,17 @@ canti.setup_cantileverhexa20faceload()
 
 """
 
+# to run the example with a different solver (for example OpenSees) use:
+"""
+from femexamples import ccx_cantilever_std as canti
+
+canti.setup_cantileverbase(solvertype="opensees")
+canti.setup_cantileverfaceload"(solvertype="opensees")
+canti.setup_cantilevernodeload(solvertype="opensees")
+canti.setup_cantileverprescribeddisplacement(solvertype="opensees")
+canti.setup_cantileverhexa20faceload(solvertype="opensees")
+
+"""
 
 import FreeCAD
 
@@ -62,9 +73,8 @@ def setup_cantileverbase(doc=None, solvertype="ccxtools"):
     doc.recompute()
 
     if FreeCAD.GuiUp:
-        import FreeCADGui
         geom_obj.ViewObject.Document.activeView().viewAxonometric()
-        FreeCADGui.SendMsgToActiveView("ViewFit")
+        geom_obj.ViewObject.Document.activeView().fitAll()
 
     # analysis
     analysis = ObjectsFem.makeAnalysis(doc, "Analysis")
