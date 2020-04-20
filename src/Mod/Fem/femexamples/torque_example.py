@@ -51,10 +51,10 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
     # geometry object
     # name is important because the other method in this module use obj name
     cylinder1 = doc.addObject("Part::Cylinder", "Cylinder1")
-    cylinder1.Height = "50 mm"
+    cylinder1.Height = "5 mm"
     cylinder1.Radius = "5 mm"
     cylinder2 = doc.addObject("Part::Cylinder", "Cylinder2")
-    cylinder2.Height = "50 mm"
+    cylinder2.Height = "5 mm"
     cylinder2.Radius = "4 mm"
     geom_obj = doc.addObject("Part::Cut", "Cut")
     geom_obj.Base = cylinder1
