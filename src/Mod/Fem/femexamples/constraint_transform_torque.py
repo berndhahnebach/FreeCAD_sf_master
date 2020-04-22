@@ -24,7 +24,7 @@
 # to run the example use:
 """
 doc = App.newDocument("Torque_example")
-from femexamples import torque_example as torque
+from femexamples import constraint_transform_torque as torque
 torque.setup_transformconstraint(doc)
 """
 
@@ -109,7 +109,7 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
     fixed_constraint.References = [(geom_obj, "Face3")]
 
     # mesh
-    from .meshes.mesh_torque_example import create_nodes, create_elements
+    from .meshes.mesh_transform_torque import create_nodes, create_elements
     fem_mesh = Fem.FemMesh()
     control = create_nodes(fem_mesh)
     if not control:
@@ -118,9 +118,10 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
     if not control:
         FreeCAD.Console.PrintError("Error on creating elements.\n")
     femmesh_obj = analysis.addObject(
-        doc.addObject("Fem::FemMeshObject", mesh_name)
+        ObjectsFem.makeMeshGmsh(doc, mesh_name)
     )[0]
     femmesh_obj.FemMesh = fem_mesh
+    femmesh_obj.SecondOrderLinear = False
 
     doc.recompute()
     return doc
