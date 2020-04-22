@@ -47,7 +47,7 @@ SET(FemExamples_SRCS
     femexamples/thermomech_bimetall.py
     femexamples/thermomech_flow1d.py
     femexamples/thermomech_spine.py
-    femexamples/torque_example.py
+    femexamples/constraint_transform_torque.py
 )
 
 SET(FemExampleMeshes_SRCS
@@ -64,7 +64,7 @@ SET(FemExampleMeshes_SRCS
     femexamples/meshes/mesh_thermomech_bimetall_tetra10.py
     femexamples/meshes/mesh_thermomech_flow1d_seg3.py
     femexamples/meshes/mesh_thermomech_spine_tetra10.py
-    femexamples/meshes/mesh_torque_example.py
+    femexamples/meshes/mesh_transform_torque.py
 )
 
 SET(FemInOut_SRCS
