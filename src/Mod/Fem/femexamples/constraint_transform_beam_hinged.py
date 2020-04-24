@@ -59,22 +59,20 @@ def setup_beambase(doc=None, solvertype="ccxtools"):
     cylinder.Height = "20 mm"
     cylinder.Radius = "6 mm"
     cylinder.Placement = FreeCAD.Placement(
-        Vector(10, 12, 10), 
-        Rotation(0, 0, 90), 
-        Vector(0, 0, 0),
+        Vector(10, 12, 10), Rotation(0, 0, 90), Vector(0, 0, 0),
     )
     cut = doc.addObject("Part::Cut", "Cut")
     cut.Base = cube
     cut.Tool = cylinder
 
-    #mirroring
+    # mirroring
     mirror = doc.addObject("Part::Mirroring", "Mirror")
     mirror.Source = cut
-    mirror.Normal = (1,0,0)
-    mirror.Base = (100,100,20)
+    mirror.Normal = (1, 0, 0)
+    mirror.Base = (100, 100, 20)
 
-    #fusing
-    geom_obj = doc.addObject("Part::Fuse","Fusion")
+    # fusing
+    geom_obj = doc.addObject("Part::Fuse", "Fusion")
     geom_obj.Base = cut
     geom_obj.Tool = mirror
 
