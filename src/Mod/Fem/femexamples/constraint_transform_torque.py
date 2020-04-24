@@ -110,6 +110,7 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
 
     # mesh
     from .meshes.mesh_transform_torque import create_nodes, create_elements
+
     fem_mesh = Fem.FemMesh()
     control = create_nodes(fem_mesh)
     if not control:
@@ -117,9 +118,7 @@ def setup_cylinderbase(doc=None, solvertype="ccxtools"):
     control = create_elements(fem_mesh)
     if not control:
         FreeCAD.Console.PrintError("Error on creating elements.\n")
-    femmesh_obj = analysis.addObject(
-        ObjectsFem.makeMeshGmsh(doc, mesh_name)
-    )[0]
+    femmesh_obj = analysis.addObject(ObjectsFem.makeMeshGmsh(doc, mesh_name))[0]
     femmesh_obj.FemMesh = fem_mesh
     femmesh_obj.SecondOrderLinear = False
 
@@ -162,4 +161,3 @@ def setup_transformconstraint(doc=None, solvertype="ccxtools"):
 
     doc.recompute()
     return doc
-
