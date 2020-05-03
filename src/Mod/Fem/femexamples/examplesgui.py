@@ -43,18 +43,12 @@ class FemExamples(QtGui.QWidget):
     def init_ui(self):
 
         # Title
-        self.macrotitle_label = QtGui.QLabel("<b> FEM examples <b>", self)
+        self.macrotitle_label = QtGui.QLabel("<b>FEM Examples</b>", self)
 
-        # Dimension
-        self.label1 = QtGui.QLabel("Here should be some QtTreeWidget or similar.", self)
-        self.label2 = QtGui.QLabel(
-            "At the moment a contact example will be run on ok.", self
-        )
         # init widgets
         self.view = QtGui.QTreeView()
         self.view.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.model = QtGui.QStandardItemModel()
-        # self.model.setHorizontalHeaderLabels(["col1", "col2", "col3"])
         self.view.setModel(self.model)
         self.view.setUniformRowHeights(True)
 
@@ -85,8 +79,7 @@ class FemExamples(QtGui.QWidget):
             all_meshes.appendRow(mesh)
         self.model.appendRow(all_meshes)
 
-        # span container columns
-        # self.view.setFirstColumnSpanned(1, self.view.rootIndex(), True)
+        self.view.setHeaderHidden(True)
 
         # Ok buttons:
         self.ok_button = QtGui.QDialogButtonBox(self)
@@ -95,15 +88,11 @@ class FemExamples(QtGui.QWidget):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok
         )
 
-        # show widget elements
-        self.macrotitle_label.show()
-
         # Layout:
         layout = QtGui.QGridLayout()
-        # layout.addWidget(self.label1, 1, 0)
-        # layout.addWidget(self.label2, 2, 0)
-        layout.addWidget(self.view, 1, 0)
-        layout.addWidget(self.ok_button, 2, 1)
+        layout.addWidget(self.macrotitle_label, 1, 0, 1, 2)
+        layout.addWidget(self.view, 2, 0, 1, 2)
+        layout.addWidget(self.ok_button, 3, 1)
         self.setLayout(layout)
 
         # Connectors:
