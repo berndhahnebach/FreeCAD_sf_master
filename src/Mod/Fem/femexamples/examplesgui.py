@@ -62,10 +62,9 @@ class FemExamples(QtGui.QWidget):
             "__init__.py",
             "__pycache__",
         ]
-        for f in files:
-            for not_file in not_files:
-                if str(f) == not_file:
-                    files.remove(f)
+
+        files = [f for f in files if f not in not_files]
+
         all_examples = QtGui.QStandardItem("All")
         for f in files:
             example = QtGui.QStandardItem(str(f))
@@ -73,6 +72,8 @@ class FemExamples(QtGui.QWidget):
         self.model.appendRow(all_examples)
 
         meshes_files = [f for f in os.listdir(str(meshes_path))]
+        meshes_files = [f for f in meshes_files if f not in not_files]
+
         all_meshes = QtGui.QStandardItem("Meshes")
         for f in meshes_files:
             mesh = QtGui.QStandardItem(str(f))
