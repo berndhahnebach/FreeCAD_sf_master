@@ -42,11 +42,13 @@ SET(FemCommands_SRCS
 
 SET(FemExamples_SRCS
     femexamples/__init__.py
-    femexamples/boxanalysis.py
+    femexamples/boxanalysis_static.py
+    femexamples/boxanalysis_frequency.py
     femexamples/ccx_cantilever_std.py
     femexamples/constraint_contact_shell_shell.py
     femexamples/constraint_contact_solid_solid.py
     femexamples/constraint_tie.py
+    femexamples/constraint_transform_torque.py
     femexamples/examplesgui.py
     femexamples/manager.py
     femexamples/material_multiple_twoboxes.py
@@ -55,7 +57,6 @@ SET(FemExamples_SRCS
     femexamples/thermomech_bimetall.py
     femexamples/thermomech_flow1d.py
     femexamples/thermomech_spine.py
-    femexamples/constraint_transform_torque.py
 )
 
 SET(FemExampleMeshes_SRCS
