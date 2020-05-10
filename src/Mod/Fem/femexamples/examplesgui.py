@@ -46,11 +46,7 @@ class FemExamples(QtGui.QWidget):
         self.macrotitle_label = QtGui.QLabel("<b>FEM Examples</b>", self)
 
         # init widgets
-        self.view = QtGui.QTreeView()
-        self.view.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
-        self.model = QtGui.QStandardItemModel()
-        self.view.setModel(self.model)
-        self.view.setUniformRowHeights(True)
+        self.view = QtGui.QTreeWidget()
 
         path = os.path.dirname(os.path.realpath(__file__))
         meshes_path = str(path) + "/meshes"
@@ -63,23 +59,24 @@ class FemExamples(QtGui.QWidget):
             "__pycache__",
         ]
 
-        files = [f for f in files if f not in not_files]
+        files = [str(f) for f in files if f not in not_files]
 
-        all_examples = QtGui.QStandardItem("All")
+        all_examples = QtGui.QTreeWidgetItem(self.view, ["All"])
         for f in files:
-            example = QtGui.QStandardItem(str(f))
-            all_examples.appendRow(example)
-        self.model.appendRow(all_examples)
+            if f.endswith(".py"):
+                QtGui.QTreeWidgetItem(all_examples, [f[:-3]])
+
+        self.view.addTopLevelItem(all_examples)
 
         meshes_files = [f for f in os.listdir(str(meshes_path))]
-        meshes_files = [f for f in meshes_files if f not in not_files]
+        meshes_files = [str(f) for f in meshes_files if f not in not_files]
 
-        all_meshes = QtGui.QStandardItem("Meshes")
+        all_meshes = QtGui.QTreeWidgetItem(self.view, ["Meshes"])
         for f in meshes_files:
-            mesh = QtGui.QStandardItem(str(f))
-            all_meshes.appendRow(mesh)
-        self.model.appendRow(all_meshes)
+            if f.endswith(".py"):
+                QtGui.QTreeWidgetItem(all_meshes, [f[:-3]])
 
+        self.view.addTopLevelItem(all_meshes)
         self.view.setHeaderHidden(True)
 
         # Ok buttons:
@@ -102,10 +99,10 @@ class FemExamples(QtGui.QWidget):
 
     def accept(self):
         print("\nExample will be run.")
+        item = self.view.selectedItems()[0]
+        example = item.text(0)
         # if done this way the Python commands are printed in Python console
-        FreeCADGui.doCommand(
-            "from femexamples.constraint_contact_solid_solid import setup"
-        )
+        FreeCADGui.doCommand("from femexamples." + str(example) + "  import setup")
         FreeCADGui.doCommand("setup()")
 
     def reject(self):
