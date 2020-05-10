@@ -25,7 +25,7 @@
 """
 doc = App.newDocument("Torque_example")
 from femexamples import constraint_transform_torque as torque
-torque.setup_transformconstraint(doc)
+torque.setup(doc)
 """
 
 import FreeCAD
@@ -144,7 +144,7 @@ def setup_forceonsurface(doc=None, solvertype="ccxtools"):
     return doc
 
 
-def setup_transformconstraint(doc=None, solvertype="ccxtools"):
+def setup(doc=None, solvertype="ccxtools"):
     # Transform the coordinates of the cylinder
 
     doc = setup_forceonsurface(doc, solvertype)
