@@ -32,7 +32,6 @@ canti.setup()
 
 import FreeCAD
 
-import Fem
 import ObjectsFem
 
 from .ccx_cantilever_faceload import setup_cantileverbase
@@ -44,6 +43,7 @@ def init_doc(doc=None):
     if doc is None:
         doc = FreeCAD.newDocument()
     return doc
+
 
 def setup(doc=None, solvertype="ccxtools"):
     # setup CalculiX cantilever, apply 9 MN on the 4 nodes of the front end face

@@ -33,7 +33,6 @@ canti.setup()
 import FreeCAD
 
 import Fem
-import ObjectsFem
 
 from . import ccx_cantilever_faceload as faceload
 
@@ -44,6 +43,7 @@ def init_doc(doc=None):
     if doc is None:
         doc = FreeCAD.newDocument()
     return doc
+
 
 def setup(doc=None, solvertype="ccxtools"):
     doc = faceload.setup(doc, solvertype)
