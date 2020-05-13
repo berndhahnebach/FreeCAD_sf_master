@@ -51,6 +51,7 @@ SET(FemExamples_SRCS
     femexamples/constraint_contact_shell_shell.py
     femexamples/constraint_contact_solid_solid.py
     femexamples/constraint_tie.py
+    femexamples/constraint_transform_beam_hinged.py
     femexamples/constraint_transform_torque.py
     femexamples/examplesgui.py
     femexamples/manager.py
