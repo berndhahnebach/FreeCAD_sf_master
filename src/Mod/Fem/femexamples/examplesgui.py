@@ -1,5 +1,6 @@
 # ***************************************************************************
 # *   Copyright (c) 2020 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *   Copyright (c) 2020 Sudhanshu Dubey <sudhanshu.thethunder@gmail.com>   *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -22,6 +23,8 @@
 # ***************************************************************************
 
 import os
+
+from importlib import import_module
 
 from PySide import QtCore
 from PySide import QtGui
@@ -48,7 +51,6 @@ class FemExamples(QtGui.QWidget):
         self.view = QtGui.QTreeWidget()
 
         path = os.path.dirname(os.path.realpath(__file__))
-        meshes_path = str(path) + "/meshes"
         files = [f for f in os.listdir(str(path))]
         not_files = [
             "examplesgui.py",
@@ -59,23 +61,44 @@ class FemExamples(QtGui.QWidget):
         ]
 
         files = [str(f) for f in files if f not in not_files]
+        # Slicing the .py from every file
+        files = [f[:-3] for f in files if f.endswith(".py")]
         files.sort()
+        files_info = {}
+        constraints = set()
+        meshes = set()
+
+        for f in files:
+            module = import_module("femexamples." + f)
+            if hasattr(module, "get_information"):
+                info = getattr(module, "get_information")()
+                files_info[f] = info
+                meshes.add(info["meshelement"])
+                file_constraints = info["constraints"]
+                for constraint in file_constraints:
+                    constraints.add(constraint)
 
         all_examples = QtGui.QTreeWidgetItem(self.view, ["All"])
         for f in files:
-            if f.endswith(".py"):
-                QtGui.QTreeWidgetItem(all_examples, [f[:-3]])
+            QtGui.QTreeWidgetItem(all_examples, [f])
 
         self.view.addTopLevelItem(all_examples)
+        all_constraints = QtGui.QTreeWidgetItem(self.view, ["Constraints"])
+        for constraint in constraints:
+            constraint_item = QtGui.QTreeWidgetItem(all_constraints, [constraint])
+            for example, info in files_info.items():
+                file_constraints = info["constraints"]
+                if constraint in file_constraints:
+                    QtGui.QTreeWidgetItem(constraint_item, [example])
 
-        meshes_files = [f for f in os.listdir(str(meshes_path))]
-        meshes_files = [str(f) for f in meshes_files if f not in not_files]
-        meshes_files.sort()
+        self.view.addTopLevelItem(all_constraints)
 
         all_meshes = QtGui.QTreeWidgetItem(self.view, ["Meshes"])
-        for f in meshes_files:
-            if f.endswith(".py"):
-                QtGui.QTreeWidgetItem(all_meshes, [f[:-3]])
+        for mesh in meshes:
+            mesh_item = QtGui.QTreeWidgetItem(all_meshes, [mesh])
+            for example, info in files_info.items():
+                if info["meshelement"] == mesh:
+                    QtGui.QTreeWidgetItem(mesh_item, [example])
 
         self.view.addTopLevelItem(all_meshes)
         self.view.setHeaderHidden(True)
