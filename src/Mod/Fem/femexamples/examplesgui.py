@@ -26,7 +26,6 @@ import os
 from PySide import QtCore
 from PySide import QtGui
 
-import FreeCAD
 import FreeCADGui
 
 
@@ -35,9 +34,9 @@ class FemExamples(QtGui.QWidget):
         super(FemExamples, self).__init__()
         self.init_ui()
 
-    def __del__(
-        self,
-    ):  # need as fix for qt event error --> see http://forum.freecadweb.org/viewtopic.php?f=18&t=10732&start=10#p86493
+    def __del__(self,):
+        # need as fix for qt event error
+        # --> see http://forum.freecadweb.org/viewtopic.php?f=18&t=10732&start=10#p86493
         return
 
     def init_ui(self):
@@ -60,6 +59,7 @@ class FemExamples(QtGui.QWidget):
         ]
 
         files = [str(f) for f in files if f not in not_files]
+        files.sort()
 
         all_examples = QtGui.QTreeWidgetItem(self.view, ["All"])
         for f in files:
@@ -70,6 +70,7 @@ class FemExamples(QtGui.QWidget):
 
         meshes_files = [f for f in os.listdir(str(meshes_path))]
         meshes_files = [str(f) for f in meshes_files if f not in not_files]
+        meshes_files.sort()
 
         all_meshes = QtGui.QTreeWidgetItem(self.view, ["Meshes"])
         for f in meshes_files:

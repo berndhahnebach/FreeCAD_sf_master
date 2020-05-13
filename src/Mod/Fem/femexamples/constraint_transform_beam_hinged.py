@@ -32,7 +32,6 @@ import FreeCAD
 from FreeCAD import Rotation
 from FreeCAD import Vector
 
-import Fem
 import ObjectsFem
 
 mesh_name = "Mesh"  # needs to be Mesh to work with unit tests

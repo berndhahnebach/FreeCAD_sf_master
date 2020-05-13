@@ -32,7 +32,6 @@ box.setup()
 
 import FreeCAD
 
-import Fem
 import ObjectsFem
 
 from .boxanalysis_static import setup_base
