@@ -23,10 +23,12 @@
 
 # to run the example use:
 """
-doc = App.newDocument("Hinged_Beam_example")
 from femexamples import constraint_transform_beam_hinged as hinged_beam
-hinged_beam.setup_beambase(doc)
+hinged_beam.setup_beambase()
+
 """
+# Constraint transform on a beam
+# https://forum.freecadweb.org/viewtopic.php?f=18&t=20238#p157643
 
 import FreeCAD
 from FreeCAD import Rotation
@@ -41,6 +43,19 @@ def init_doc(doc=None):
     if doc is None:
         doc = FreeCAD.newDocument()
     return doc
+
+
+def get_information():
+    info = {
+            "name": "Constraint Transform Beam Hinged",
+            "meshtype": "",
+            "meshelement": "",
+            "constraints": [],
+            "solver_ccx": True,
+            "solver_z88": True,
+            "solver_elmer": True
+            }
+    return info
 
 
 def setup_beambase(doc=None, solvertype="ccxtools"):

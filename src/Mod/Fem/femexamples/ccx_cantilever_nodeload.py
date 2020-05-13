@@ -45,6 +45,19 @@ def init_doc(doc=None):
     return doc
 
 
+def get_information():
+    info = {
+            "name": "CCX cantilever node load",
+            "meshtype": "solid",
+            "meshelement": "Tet10",
+            "constraints": ["fixed", "force"],
+            "solver_ccx": True,
+            "solver_z88": True,
+            "solver_elmer": True
+            }
+    return info
+
+
 def setup(doc=None, solvertype="ccxtools"):
     # setup CalculiX cantilever, apply 9 MN on the 4 nodes of the front end face
 

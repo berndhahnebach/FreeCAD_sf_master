@@ -1,5 +1,6 @@
 # ***************************************************************************
 # *   Copyright (c) 2019 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *   Copyright (c) 2020 Sudhanshu Dubey <sudhanshu.thethunder@gmail.com    *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -41,6 +42,19 @@ def init_doc(doc=None):
     if doc is None:
         doc = FreeCAD.newDocument()
     return doc
+
+
+def get_information():
+    info = {
+            "name": "CCX cantilever face load",
+            "meshtype": "solid",
+            "meshelement": "Tet10",
+            "constraints": ["fixed", "force"],
+            "solver_ccx": True,
+            "solver_z88": True,
+            "solver_elmer": True
+            }
+    return info
 
 
 def setup_cantileverbase(doc=None, solvertype="ccxtools"):
