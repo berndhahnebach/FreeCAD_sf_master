@@ -1,5 +1,6 @@
 # ***************************************************************************
 # *   Copyright (c) 2019 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *   Copyright (c) 2020 Sudhanshu Dubey <sudhanshu.thethunder@gmail.com    *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -45,6 +46,19 @@ def init_doc(doc=None):
     if doc is None:
         doc = FreeCAD.newDocument()
     return doc
+
+
+def get_information():
+    info = {
+            "name": "Thermomech Flow 1D",
+            "meshtype": "solid",
+            "meshelement": "Seg3",
+            "constraints": ["self weight"],
+            "solver_ccx": True,
+            "solver_z88": False,
+            "solver_elmer": False
+            }
+    return info
 
 
 def setup(doc=None, solvertype="ccxtools"):
@@ -235,6 +249,7 @@ def setup(doc=None, solvertype="ccxtools"):
     outlet.OutletPressure = 0.1
     outlet.References = [(geom_obj, "Edge13")]
 
+    # self_weight_constraint
     self_weight = analysis.addObject(
         ObjectsFem.makeConstraintSelfWeight(doc, "ConstraintSelfWeight")
     )[0]

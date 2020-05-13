@@ -48,6 +48,19 @@ def init_doc(doc=None):
     return doc
 
 
+def get_information():
+    info = {
+            "name": "Constraint Transform Torque",
+            "meshtype": "",
+            "meshelement": "",
+            "constraints": ["fixed", "force", "transform"],
+            "solver_ccx": True,
+            "solver_z88": True,
+            "solver_elmer": True
+            }
+    return info
+
+
 def setup(doc=None, solvertype="ccxtools"):
 
     if doc is None:

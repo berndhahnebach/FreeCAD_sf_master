@@ -45,6 +45,19 @@ def init_doc(doc=None):
     return doc
 
 
+def get_information():
+    info = {
+            "name": "Box Analysis Frequency",
+            "meshtype": "solid",
+            "meshelement": "Tet10",
+            "constraints": [],
+            "solver_ccx": True,
+            "solver_z88": False,
+            "solver_elmer": False
+            }
+    return info
+
+
 def setup(doc=None, solvertype="ccxtools"):
     # setup box frequency, change solver attributes
 

@@ -1,5 +1,6 @@
 # ***************************************************************************
 # *   Copyright (c) 2020 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *   Copyright (c) 2020 Sudhanshu Dubey <sudhanshu.thethunder@gmail.com    *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -20,7 +21,7 @@
 # *   USA                                                                   *
 # *                                                                         *
 # ***************************************************************************
-
+# to run the example use:
 """
 from femexamples.thermomech_bimetall import setup
 setup()
@@ -32,7 +33,6 @@ setup()
 # analytical solution 7.05 mm deflection in the invar material direction
 # see post in the forum link
 # this file has 7.15 mm max deflection
-# to run the example use:
 
 import FreeCAD
 from FreeCAD import Rotation
@@ -49,6 +49,19 @@ def init_doc(doc=None):
     if doc is None:
         doc = FreeCAD.newDocument()
     return doc
+
+
+def get_information():
+    info = {
+            "name": "Thermomech Bimetall",
+            "meshtype": "solid",
+            "meshelement": "Tet10",
+            "constraints": ["fixed", "initial temperature", "temperature"],
+            "solver_ccx": True,
+            "solver_z88": False,
+            "solver_elmer": False
+            }
+    return info
 
 
 def setup(doc=None, solvertype="ccxtools"):

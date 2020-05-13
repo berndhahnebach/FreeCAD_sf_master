@@ -45,6 +45,19 @@ def init_doc(doc=None):
     return doc
 
 
+def get_information():
+    info = {
+            "name": "CCX cantilever prescibed displacement",
+            "meshtype": "solid",
+            "meshelement": "Tet10",
+            "constraints": ["fixed", "displacement"],
+            "solver_ccx": True,
+            "solver_z88": True,
+            "solver_elmer": True
+            }
+    return info
+
+
 def setup(doc=None, solvertype="ccxtools"):
     # setup CalculiX cantilever
     # apply a prescribed displacement of 250 mm in -z on the front end face
