@@ -54,9 +54,9 @@ def get_information():
             "meshtype": "solid",
             "meshelement": "Seg3",
             "constraints": ["self weight"],
-            "solver_ccx": True,
-            "solver_z88": False,
-            "solver_elmer": False
+            "solvers": ["ccx"],
+            "material": "fluid",
+            "equation": "thermomechanical"
             }
     return info
 

@@ -67,6 +67,9 @@ class FemExamples(QtGui.QWidget):
         files_info = {}
         constraints = set()
         meshes = set()
+        solvers = set()
+        equations = set()
+        materials = set()
 
         for f in files:
             module = import_module("femexamples." + f)
@@ -74,6 +77,11 @@ class FemExamples(QtGui.QWidget):
                 info = getattr(module, "get_information")()
                 files_info[f] = info
                 meshes.add(info["meshelement"])
+                equations.add(info["equation"])
+                materials.add(info["material"])
+                file_solvers = info["solvers"]
+                for solver in file_solvers:
+                    solvers.add(solver)
                 file_constraints = info["constraints"]
                 for constraint in file_constraints:
                     constraints.add(constraint)
@@ -92,6 +100,15 @@ class FemExamples(QtGui.QWidget):
                     QtGui.QTreeWidgetItem(constraint_item, [example])
 
         self.view.addTopLevelItem(all_constraints)
+        all_solvers = QtGui.QTreeWidgetItem(self.view, ["Solvers"])
+        for solver in solvers:
+            solver_item = QtGui.QTreeWidgetItem(all_solvers, [solver])
+            for example, info in files_info.items():
+                file_solvers = info["solvers"]
+                if solver in file_solvers:
+                    QtGui.QTreeWidgetItem(solver_item, [example])
+
+        self.view.addTopLevelItem(all_solvers)
 
         all_meshes = QtGui.QTreeWidgetItem(self.view, ["Meshes"])
         for mesh in meshes:
@@ -101,6 +118,23 @@ class FemExamples(QtGui.QWidget):
                     QtGui.QTreeWidgetItem(mesh_item, [example])
 
         self.view.addTopLevelItem(all_meshes)
+        all_equations = QtGui.QTreeWidgetItem(self.view, ["Equations"])
+        for equation in equations:
+            equation_item = QtGui.QTreeWidgetItem(all_equations, [equation])
+            for example, info in files_info.items():
+                if info["equation"] == equation:
+                    QtGui.QTreeWidgetItem(equation_item, [example])
+
+        self.view.addTopLevelItem(all_equations)
+        all_materials = QtGui.QTreeWidgetItem(self.view, ["materials"])
+        for material in materials:
+            material_item = QtGui.QTreeWidgetItem(all_materials, [material])
+            for example, info in files_info.items():
+                if info["material"] == material:
+                    QtGui.QTreeWidgetItem(material_item, [example])
+
+        self.view.addTopLevelItem(all_materials)
+
         self.view.setHeaderHidden(True)
 
         # Ok buttons:

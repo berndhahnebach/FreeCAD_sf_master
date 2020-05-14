@@ -50,9 +50,9 @@ def get_information():
             "meshtype": "solid",
             "meshelement": "Tet10",
             "constraints": ["fixed", "force", "pressure"],
-            "solver_ccx": True,
-            "solver_z88": True,
-            "solver_elmer": True
+            "solvers": ["ccx", "z88", "elmer"],
+            "material": "solid",
+            "equation": "mechanical"
             }
     return info
 

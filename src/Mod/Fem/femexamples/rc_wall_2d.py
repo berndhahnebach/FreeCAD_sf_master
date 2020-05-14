@@ -55,9 +55,9 @@ def get_information():
             "meshtype": "solid",
             "meshelement": "Tria6",
             "constraints": ["fixed", "force", "displacement"],
-            "solver_ccx": True,
-            "solver_z88": False,
-            "solver_elmer": False
+            "solvers": ["ccx"],
+            "material": "reinforced",
+            "equation": "mechanical"
             }
     return info
 

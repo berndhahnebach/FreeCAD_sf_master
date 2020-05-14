@@ -49,9 +49,9 @@ def get_information():
             "meshtype": "solid",
             "meshelement": "Tet10",
             "constraints": ["fixed", "initial temperature", "temperature", "heatflux"],
-            "solver_ccx": True,
-            "solver_z88": False,
-            "solver_elmer": False
+            "solvers": ["ccx"],
+            "material": "solid",
+            "equation": "thermomechanical"
             }
     return info
 
