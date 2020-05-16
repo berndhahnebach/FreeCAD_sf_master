@@ -51,8 +51,8 @@ def init_doc(doc=None):
 def get_information():
     info = {
             "name": "Constraint Transform Torque",
-            "meshtype": "",
-            "meshelement": "",
+            "meshtype": "solid",
+            "meshelement": "Tet10",
             "constraints": ["fixed", "force", "transform"],
             "solvers": ["ccx", "z88", "elmer"],
             "material": "solid",
@@ -153,7 +153,7 @@ def setup(doc=None, solvertype="ccxtools"):
     transform_constraint.Z_rot = 0.0
 
     # mesh
-    from .meshes.mesh_transform_torque import create_nodes, create_elements
+    from .meshes.mesh_transform_torque_tetra10 import create_nodes, create_elements
     fem_mesh = Fem.FemMesh()
     control = create_nodes(fem_mesh)
     if not control:
