@@ -411,7 +411,7 @@ class Writer(object):
                     self._addSolver(body, solverSection)
 
     def _getElectricforceSolver(self, equation):
-        s = self._createLinearSolver(equation)
+        s = self._createEmptySolver(equation)
         s["Equation"] = "Electric Force"  # equation.Name
         s["Procedure"] = sifio.FileAttr("ElectricForce/StatElecForce")
         return s
@@ -697,6 +697,10 @@ class Writer(object):
     def _handleFlowEquation(self, bodies):
         for b in bodies:
             self._equation(b, "Convection", "Computed")
+
+    def _createEmptySolver(self, equation):
+        s = sifio.createSection(sifio.SOLVER)
+        return s
 
     def _createLinearSolver(self, equation):
         s = sifio.createSection(sifio.SOLVER)
