@@ -115,6 +115,7 @@ class Writer(object):
         self._handleElasticity()
         self._handleElectrostatic()
         self._handleFluxsolver()
+        self._handleElectricforce()
         self._handleFlow()
         self._addOutputSolver()
 
@@ -395,6 +396,24 @@ class Writer(object):
         s["Flux Variable"] = equation.FluxVariable
         s["Calculate Flux"] = equation.CalculateFlux
         s["Calculate Grad"] = equation.CalculateGrad
+        return s
+
+    def _handleElectricforce(self):
+        activeIn = []
+        for equation in self.solver.Group:
+            if femutils.is_of_type(equation, "Fem::EquationElmerElectricforce"):
+                if equation.References:
+                    activeIn = equation.References[0][1]
+                else:
+                    activeIn = self._getAllBodies()
+                solverSection = self._getElectricforceSolver(equation)
+                for body in activeIn:
+                    self._addSolver(body, solverSection)
+
+    def _getElectricforceSolver(self, equation):
+        s = self._createLinearSolver(equation)
+        s["Equation"] = "Electric Force"  # equation.Name
+        s["Procedure"] = sifio.FileAttr("ElectricForce/StatElecForce")
         return s
 
     def _handleElasticity(self):
