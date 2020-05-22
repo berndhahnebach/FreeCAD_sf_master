@@ -232,6 +232,27 @@ class TestCcxTools(unittest.TestCase):
         )
 
     # ********************************************************************************************
+    def test_static_constraint_transform_torque(
+        self
+    ):
+        # set up
+        from femexamples.constraint_transform_torque import setup
+        setup(self.document, "ccxtools")
+        test_name = "constraint transform torque"
+        base_name = "constraint_transform_torque"
+        analysis_dir = testtools.get_unit_test_tmp_dir(
+            self.temp_dir,
+            "FEM_ccx_constraint_transform_torque",
+        )
+
+        # test input file writing
+        self.input_file_writing_test(
+            test_name=test_name,
+            base_name=base_name,
+            analysis_dir=analysis_dir,
+        )
+
+    # ********************************************************************************************
     def test_static_material_multiple(
         self
     ):
