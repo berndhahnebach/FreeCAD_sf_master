@@ -34,6 +34,7 @@ import FreeCAD
 from FreeCAD import Rotation
 from FreeCAD import Vector
 
+import Fem
 import ObjectsFem
 
 mesh_name = "Mesh"  # needs to be Mesh to work with unit tests
@@ -58,7 +59,7 @@ def get_information():
     return info
 
 
-def setup_beambase(doc=None, solvertype="ccxtools"):
+def setup(doc=None, solvertype="ccxtools"):
     # setup cylinder base model
 
     if doc is None:
@@ -132,5 +133,62 @@ def setup_beambase(doc=None, solvertype="ccxtools"):
     mat["Density"] = "7900 kg/m^3"
     mat["ThermalExpansionCoefficient"] = "0.012 mm/m/K"
     material_object.Material = mat
+
+    # constraint pressure
+    pressure_constraint = analysis.addObject(
+        ObjectsFem.makeConstraintPressure(doc, name="FemConstraintPressure")
+    )[0]
+    pressure_constraint.References = [(geom_obj, "Face10"), (geom_obj, "Face5")]
+    pressure_constraint.Pressure = 10.0
+    pressure_constraint.Reversed = False
+    # pressure_constraint.Scale = 6
+
+    # constraint displacement
+    displacement_constraint = doc.Analysis.addObject(
+        ObjectsFem.makeConstraintDisplacement(doc, name="FemConstraintDisplacment")
+    )[0]
+    displacement_constraint.References = [(geom_obj, "Face7"), (geom_obj, "Face12")]
+    # displacement_constraint.xDisplacement = 0.000000
+    # displacement_constraint.yDisplacement = 0.000000
+    # displacement_constraint.zDisplacement = 0.000000
+    # displacement_constraint.xRotation = 0.000000
+    # displacement_constraint.yRotation = 0.000000
+    # displacement_constraint.zRotation = 0.000000
+    displacement_constraint.xFree = False
+    displacement_constraint.xFix = True
+    # displacement_constraint.yFree = True
+    # displacement_constraint.yFix = False
+    # displacement_constraint.zFree = True
+    # displacement_constraint.zFix = False
+    # displacement_constraint.rotxFree = True
+    # displacement_constraint.rotxFix = False
+    # displacement_constraint.rotyFree = True
+    # displacement_constraint.rotyFix = False
+    # displacement_constraint.rotzFree = True
+    # displacement_constraint.rotzFix = False
+
+    # constraint transform
+    transform_constraint = doc.Analysis.addObject(
+        ObjectsFem.makeConstraintTransform(doc, name="FemConstraintTransform")
+    )[0]
+    transform_constraint.References = [(geom_obj, "Face7"), (geom_obj, "Face12")]
+    transform_constraint.TransformType = "Cylindrical"
+    transform_constraint.X_rot = 0.0
+    transform_constraint.Y_rot = 0.0
+    transform_constraint.Z_rot = 0.0
+
+    # mesh
+    from .meshes.mesh_transform_beam_hinged_tetra10 import create_nodes, create_elements
+    fem_mesh = Fem.FemMesh()
+    control = create_nodes(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating nodes.\n")
+    control = create_elements(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating elements.\n")
+    femmesh_obj = analysis.addObject(
+        doc.addObject("Fem::FemMeshObject", mesh_name)
+    )[0]
+    femmesh_obj.FemMesh = fem_mesh
 
     return doc
