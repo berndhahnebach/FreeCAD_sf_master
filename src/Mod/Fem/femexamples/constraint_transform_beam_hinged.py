@@ -49,9 +49,9 @@ def init_doc(doc=None):
 def get_information():
     info = {
             "name": "Constraint Transform Beam Hinged",
-            "meshtype": "",
-            "meshelement": "",
-            "constraints": [],
+            "meshtype": "solid",
+            "meshelement": "Tet10",
+            "constraints": ["pressure", "displacement", "transform"],
             "solvers": ["ccx", "z88", "elmer"],
             "material": "solid",
             "equation": "mechanical"
