@@ -470,6 +470,7 @@ SET(FemGuiTaskPanels_SRCS
 
 SET(FemGuiTests_SRCS
     femtest/gui/__init__.py
+    femtest/gui/test_gmsh.py
     femtest/gui/test_open.py
 )
 
