@@ -223,6 +223,7 @@ SET(FemTestsCcx_SRCS
     femtest/data/ccx/constraint_contact_solid_solid.FCStd
     femtest/data/ccx/constraint_contact_solid_solid.inp
     femtest/data/ccx/constraint_tie.inp
+    femtest/data/ccx/constraint_transform_beam_hinged.inp
     femtest/data/ccx/constraint_transform_torque.inp
     femtest/data/ccx/cube_frequency.inp
     femtest/data/ccx/cube_frequency.dat
