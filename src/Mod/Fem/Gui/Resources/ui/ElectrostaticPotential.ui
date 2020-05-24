@@ -120,7 +120,7 @@
    <item row="4" column="0">
     <widget class="QCheckBox" name="electricForcecalculationBox">
      <property name="text">
-      <string>CheckBox</string>
+      <string>Calculate Electric Force</string>
      </property>
     </widget>
    </item>
