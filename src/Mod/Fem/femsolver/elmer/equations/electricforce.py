@@ -1,5 +1,5 @@
 # ***************************************************************************
-# *   Copyright (c) 2017 Markus Hovorka <m.hovorka@live.de>                 *
+# *   Copyright (c) 2020 Wilfried Hortschitz  <w.hortschitz@gmail.com>      *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -22,7 +22,7 @@
 # ***************************************************************************
 
 __title__ = "FreeCAD FEM solver Elmer equation object Electricforce"
-__author__ = "Markus Hovorka"
+__author__ = "Wilfried Hortschitz"
 __url__ = "http://www.freecadweb.org"
 
 ## \addtogroup FEM
