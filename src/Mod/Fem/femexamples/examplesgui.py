@@ -65,6 +65,7 @@ class FemExamples(QtGui.QWidget):
         files = [f[:-3] for f in files if f.endswith(".py")]
         files.sort()
         files_info = {}
+        self.files_name = {}
         constraints = set()
         meshes = set()
         solvers = set()
@@ -76,6 +77,7 @@ class FemExamples(QtGui.QWidget):
             if hasattr(module, "get_information"):
                 info = getattr(module, "get_information")()
                 files_info[f] = info
+                self.files_name[info["name"]] = f
                 meshes.add(info["meshelement"])
                 equations.add(info["equation"])
                 materials.add(info["material"])
@@ -87,8 +89,8 @@ class FemExamples(QtGui.QWidget):
                     constraints.add(constraint)
 
         all_examples = QtGui.QTreeWidgetItem(self.view, ["All"])
-        for f in files:
-            QtGui.QTreeWidgetItem(all_examples, [f])
+        for example, info in files_info.items():
+            QtGui.QTreeWidgetItem(all_examples, [info["name"]])
 
         self.view.addTopLevelItem(all_examples)
         all_constraints = QtGui.QTreeWidgetItem(self.view, ["Constraints"])
@@ -97,7 +99,7 @@ class FemExamples(QtGui.QWidget):
             for example, info in files_info.items():
                 file_constraints = info["constraints"]
                 if constraint in file_constraints:
-                    QtGui.QTreeWidgetItem(constraint_item, [example])
+                    QtGui.QTreeWidgetItem(constraint_item, [info["name"]])
 
         self.view.addTopLevelItem(all_constraints)
         all_solvers = QtGui.QTreeWidgetItem(self.view, ["Solvers"])
@@ -106,7 +108,7 @@ class FemExamples(QtGui.QWidget):
             for example, info in files_info.items():
                 file_solvers = info["solvers"]
                 if solver in file_solvers:
-                    QtGui.QTreeWidgetItem(solver_item, [example])
+                    QtGui.QTreeWidgetItem(solver_item, [info["name"]])
 
         self.view.addTopLevelItem(all_solvers)
 
@@ -115,7 +117,7 @@ class FemExamples(QtGui.QWidget):
             mesh_item = QtGui.QTreeWidgetItem(all_meshes, [mesh])
             for example, info in files_info.items():
                 if info["meshelement"] == mesh:
-                    QtGui.QTreeWidgetItem(mesh_item, [example])
+                    QtGui.QTreeWidgetItem(mesh_item, [info["name"]])
 
         self.view.addTopLevelItem(all_meshes)
         all_equations = QtGui.QTreeWidgetItem(self.view, ["Equations"])
@@ -123,15 +125,15 @@ class FemExamples(QtGui.QWidget):
             equation_item = QtGui.QTreeWidgetItem(all_equations, [equation])
             for example, info in files_info.items():
                 if info["equation"] == equation:
-                    QtGui.QTreeWidgetItem(equation_item, [example])
+                    QtGui.QTreeWidgetItem(equation_item, [info["name"]])
 
         self.view.addTopLevelItem(all_equations)
-        all_materials = QtGui.QTreeWidgetItem(self.view, ["materials"])
+        all_materials = QtGui.QTreeWidgetItem(self.view, ["Materials"])
         for material in materials:
             material_item = QtGui.QTreeWidgetItem(all_materials, [material])
             for example, info in files_info.items():
                 if info["material"] == material:
-                    QtGui.QTreeWidgetItem(material_item, [example])
+                    QtGui.QTreeWidgetItem(material_item, [info["name"]])
 
         self.view.addTopLevelItem(all_materials)
 
@@ -158,7 +160,8 @@ class FemExamples(QtGui.QWidget):
     def accept(self):
         print("\nExample will be run.")
         item = self.view.selectedItems()[0]
-        example = item.text(0)
+        name = item.text(0)
+        example = self.files_name[name]
         # if done this way the Python commands are printed in Python console
         FreeCADGui.doCommand("from femexamples." + str(example) + "  import setup")
         FreeCADGui.doCommand("setup()")
