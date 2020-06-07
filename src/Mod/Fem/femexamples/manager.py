@@ -36,6 +36,8 @@ doc = setup_cantileverhexa20faceload()
 doc = run_constraint_contact_shell_shell()
 doc = run_constraint_contact_solid_solid()
 doc = run_constraint_tie()
+doc = run_constraint_transform_beam_hinged()
+doc = run_constraint_transform_torque()
 doc = run_material_nl_platewithhole()
 doc = run_material_multiple_twoboxes()
 doc = run_rcwall2d()
@@ -100,7 +102,7 @@ def run_analysis(doc, base_name, filepath=""):
 
 def run_boxanalysisstatic(solver=None, base_name=None):
 
-    from .boxanalysis import setup_static as setup
+    from .boxanalysis_static import setup
     doc = setup()
 
     if base_name is None:
@@ -115,7 +117,7 @@ def run_boxanalysisstatic(solver=None, base_name=None):
 
 def run_boxanalysisfrequency(solver=None, base_name=None):
 
-    from .boxanalysis import setup_frequency as setup
+    from .boxanalysis_frequency import setup
     doc = setup()
 
     if base_name is None:
@@ -130,7 +132,7 @@ def run_boxanalysisfrequency(solver=None, base_name=None):
 
 def run_ccx_cantileverfaceload(solver=None, base_name=None):
 
-    from .ccx_cantilever_std import setup_cantileverfaceload as setup
+    from .ccx_cantilever_faceload import setup
     doc = setup()
 
     if base_name is None:
@@ -145,7 +147,7 @@ def run_ccx_cantileverfaceload(solver=None, base_name=None):
 
 def run_ccx_cantilevernodeload(solver=None, base_name=None):
 
-    from .ccx_cantilever_std import setup_cantilevernodeload as setup
+    from .ccx_cantilever_nodeload import setup
     doc = setup()
 
     if base_name is None:
@@ -160,7 +162,7 @@ def run_ccx_cantilevernodeload(solver=None, base_name=None):
 
 def run_ccx_cantileverprescribeddisplacement(solver=None, base_name=None):
 
-    from .ccx_cantilever_std import setup_cantileverprescribeddisplacement as setup
+    from .ccx_cantilever_prescribeddisplacement import setup
     doc = setup()
 
     if base_name is None:
@@ -175,7 +177,7 @@ def run_ccx_cantileverprescribeddisplacement(solver=None, base_name=None):
 
 def setup_cantileverhexa20faceload(solver=None, base_name=None):
 
-    from .ccx_cantilever_std import setup_cantileverhexa20faceload as setup
+    from .ccx_cantilever_hexa20faceload import setup
     doc = setup()
 
     if base_name is None:
@@ -225,6 +227,36 @@ def run_constraint_tie(solver=None, base_name=None):
 
     if base_name is None:
         base_name = "Constraint_Tie"
+        if solver is not None:
+            base_name += "_" + solver
+    run_analysis(doc, base_name)
+    doc.recompute()
+
+    return doc
+
+
+def run_constraint_transform_beam_hinged(solver=None, base_name=None):
+
+    from .constraint_transform_beam_hinged import setup
+    doc = setup()
+
+    if base_name is None:
+        base_name = "Constraint_Transform_Beam_Hinged"
+        if solver is not None:
+            base_name += "_" + solver
+    run_analysis(doc, base_name)
+    doc.recompute()
+
+    return doc
+
+
+def run_constraint_transform_torque(solver=None, base_name=None):
+
+    from .constraint_transform_torque import setup
+    doc = setup()
+
+    if base_name is None:
+        base_name = "Constraint_Transform_Torque"
         if solver is not None:
             base_name += "_" + solver
     run_analysis(doc, base_name)
@@ -331,6 +363,9 @@ def run_all():
     run_ccx_cantileverprescribeddisplacement()
     run_constraint_contact_shell_shell()
     run_constraint_contact_solid_solid()
+    run_constraint_tie()
+    run_constraint_transform_beam_hinged()
+    run_constraint_transform_torque()
     run_material_nl_platewithhole()
     run_material_multiple_twoboxes()
     run_rcwall2d()
