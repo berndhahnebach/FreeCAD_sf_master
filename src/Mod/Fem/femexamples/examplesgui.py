@@ -145,6 +145,8 @@ class FemExamples(QtGui.QWidget):
         self.ok_button.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok
         )
+        self.ok_button.addButton("Run", QtGui.QDialogButtonBox.ApplyRole)
+        self.ok_button.clicked.connect(self.clicked)
 
         # Layout:
         layout = QtGui.QGridLayout()
@@ -153,12 +155,19 @@ class FemExamples(QtGui.QWidget):
         layout.addWidget(self.ok_button, 3, 1)
         self.setLayout(layout)
 
-        # Connectors:
-        QtCore.QObject.connect(self.ok_button, QtCore.SIGNAL("accepted()"), self.accept)
-        QtCore.QObject.connect(self.ok_button, QtCore.SIGNAL("rejected()"), self.reject)
+    def clicked(self, button):
+        if self.ok_button.buttonRole(button) == QtGui.QDialogButtonBox.AcceptRole:
+            print("AcceptRole")
+            self.accept()
+        elif self.ok_button.buttonRole(button) == QtGui.QDialogButtonBox.ApplyRole:
+            print("ApplyRole")
+            self.run()
+        elif self.ok_button.buttonRole(button) == QtGui.QDialogButtonBox.RejectRole:
+            print("RejectRole")
+            self.reject()
 
     def accept(self):
-        print("\nExample will be run.")
+        print("\nExample will be setup.")
         item = self.view.selectedItems()[0]
         name = item.text(0)
         example = self.files_name[name]
@@ -170,6 +179,16 @@ class FemExamples(QtGui.QWidget):
         print("\nWe close the widget.")
         self.close()
         d.close()
+
+    def run(self):
+        print("\nExamples will be run.")
+        item = self.view.selectedItems()[0]
+        name = item.text(0)
+        example = self.files_name[name]
+        function = "run_" + str(example)
+        # if done this way the Python commands are printed in Python console
+        FreeCADGui.doCommand("from femexamples.manager import " + function)
+        FreeCADGui.doCommand(function + "()")
 
 
 def show_examplegui():
