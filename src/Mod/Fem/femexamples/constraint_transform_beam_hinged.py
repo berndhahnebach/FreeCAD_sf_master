@@ -24,7 +24,7 @@
 # to run the example use:
 """
 from femexamples import constraint_transform_beam_hinged as hinged_beam
-hinged_beam.setup_beambase()
+hinged_beam.setup()
 
 """
 # Constraint transform on a beam
