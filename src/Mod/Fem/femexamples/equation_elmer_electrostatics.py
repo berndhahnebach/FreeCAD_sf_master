@@ -23,7 +23,8 @@
 
 # to run the example use:
 """
-
+from femexamples.equation_elmer_electrostatics import setup
+setup()
 """
 # Electrostatics equation in FreeCAD FEM-Elmer
 # https://forum.freecadweb.org/viewtopic.php?f=18&t=41488&start=40#p373292
@@ -166,23 +167,43 @@ def setup(doc=None, solvertype="elmer"):
         )[0]
         solver_object.WorkingDir = u""
     elif solvertype == "elmer":
-        analysis.addObject(ObjectsFem.makeSolverElmer(doc, "SolverElmer"))
+        solver_object = analysis.addObject(ObjectsFem.makeSolverElmer(doc, "SolverElmer"))[0]
+        eq_electrostatic = analysis.addObject(
+                ObjectsFem.makeEquationElectrostatic(doc, solver_object)
+                )[0]
+        eq_electrostatic.CalculateCapacitanceMatrix = True
+        solver_object.addObject(ObjectsFem.makeEquationElectricforce(doc, solver_object))
     elif solvertype == "z88":
         analysis.addObject(ObjectsFem.makeSolverZ88(doc, "SolverZ88"))
-    if solvertype == "calculix" or solvertype == "ccxtools":
-        solver_object.SplitInputWriter = False
-        solver_object.AnalysisType = "static"
-        solver_object.GeometricalNonlinearity = "linear"
-        solver_object.ThermoMechSteadyState = False
-        solver_object.MatrixSolverType = "default"
-        solver_object.IterationsControlParameterTimeUse = False
 
     # material
     material_object = analysis.addObject(
-        ObjectsFem.makeMaterialSolid(doc, "FemMaterial")
+        ObjectsFem.makeMaterialFluid(doc, "FemMaterial")
     )[0]
     mat = material_object.Material
-    mat["Name"] = "Air"
+    mat["Name"] = "Air-Generic"
+    mat["Density"] = "1.20 kg/m^3"
+    mat["KinematicViscosity"] = "15.11 mm^2/s"
+    mat["VolumetricThermalExpansionCoefficient"] = "0.00 µm/m/K"
+    mat["ThermalConductivity"] = "0.03 W/m/K"
+    mat["ThermalExpansionCoefficient"] = ""
+    mat["SpecificHeat"] = "1.00 J/kg/K"
     material_object.Material = mat
+
+    # mesh
+    from .meshes.mesh_electrostatic_tetra10 import create_nodes, create_elements
+    fem_mesh = Fem.FemMesh()
+    control = create_nodes(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating nodes.\n")
+    control = create_elements(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating elements.\n")
+    femmesh_obj = analysis.addObject(
+        ObjectsFem.makeMeshGmsh(doc, mesh_name)
+    )[0]
+    femmesh_obj.FemMesh = fem_mesh
+    femmesh_obj.Part = geom_obj
+    femmesh_obj.SecondOrderLinear = False
 
     return doc
