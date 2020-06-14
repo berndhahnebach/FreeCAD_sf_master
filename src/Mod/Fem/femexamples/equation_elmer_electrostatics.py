@@ -168,11 +168,9 @@ def setup(doc=None, solvertype="elmer"):
         solver_object.WorkingDir = u""
     elif solvertype == "elmer":
         solver_object = analysis.addObject(ObjectsFem.makeSolverElmer(doc, "SolverElmer"))[0]
-        eq_electrostatic = analysis.addObject(
-                ObjectsFem.makeEquationElectrostatic(doc, solver_object)
-                )[0]
+        eq_electrostatic = ObjectsFem.makeEquationElectrostatic(doc, solver_object)
         eq_electrostatic.CalculateCapacitanceMatrix = True
-        solver_object.addObject(ObjectsFem.makeEquationElectricforce(doc, solver_object))
+        ObjectsFem.makeEquationElectricforce(doc, solver_object)
     elif solvertype == "z88":
         analysis.addObject(ObjectsFem.makeSolverZ88(doc, "SolverZ88"))
 
@@ -186,7 +184,7 @@ def setup(doc=None, solvertype="elmer"):
     mat["KinematicViscosity"] = "15.11 mm^2/s"
     mat["VolumetricThermalExpansionCoefficient"] = "0.00 µm/m/K"
     mat["ThermalConductivity"] = "0.03 W/m/K"
-    mat["ThermalExpansionCoefficient"] = ""
+    mat["ThermalExpansionCoefficient"] = "0.0034/K"
     mat["SpecificHeat"] = "1.00 J/kg/K"
     material_object.Material = mat
 
