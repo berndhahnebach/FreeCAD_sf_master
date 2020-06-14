@@ -51,12 +51,12 @@ def init_doc(doc=None):
 def get_information():
     info = {
             "name": "Equation Elmer Electrostatics",
-            "meshtype": "",
-            "meshelement": "",
-            "constraints": [],
+            "meshtype": "solid",
+            "meshelement": "tet10",
+            "constraints": ["electrostaticPotential"],
             "solvers": ["elmer"],
-            "material": "",
-            "equation": ""
+            "material": "fluid",
+            "equation": "electrostatic"
             }
     return info
 
@@ -187,6 +187,27 @@ def setup(doc=None, solvertype="elmer"):
     mat["ThermalExpansionCoefficient"] = "0.0034/K"
     mat["SpecificHeat"] = "1.00 J/kg/K"
     material_object.Material = mat
+
+    # 0V_potential_constraint
+    constraint_elect_pot0 = analysis.addObject(
+            ObjectsFem.makeConstraintElectrostaticPotential(doc)
+            )[0]
+    constraint_elect_pot0.References = [(doc.Pocket, "Face2")]
+    constraint_elect_pot0.Potential = 0.00
+    constraint_elect_pot0.CapacitanceBody = 1
+    constraint_elect_pot0.CapacitanceBodyEnabled = True
+    constraint_elect_pot0.PotentialEnabled = True
+
+    # 1e6V_potential_constraint
+    constraint_elect_pot1 = analysis.addObject(
+            ObjectsFem.makeConstraintElectrostaticPotential(doc)
+            )[0]
+    constraint_elect_pot1.References = [(doc.Pocket, "Face7")]
+    constraint_elect_pot1.Potential = 1000000.00
+    constraint_elect_pot1.CapacitanceBody = 2
+    constraint_elect_pot1.CapacitanceBodyEnabled = True
+    constraint_elect_pot1.PotentialEnabled = True
+    constraint_elect_pot1.ElectricForcecalculation = True
 
     # mesh
     from .meshes.mesh_electrostatic_tetra10 import create_nodes, create_elements
