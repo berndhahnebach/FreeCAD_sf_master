@@ -32,7 +32,6 @@
 import FreeCAD
 from FreeCAD import Rotation
 from FreeCAD import Vector
-from FreeCAD import Units
 
 import Fem
 import ObjectsFem
@@ -53,12 +52,12 @@ def init_doc(doc=None):
 def get_information():
     info = {
             "name": "Constraint Section Print",
-            "meshtype": "",
-            "meshelement": "",
-            "constraints": ["", "", ""],
+            "meshtype": "solid",
+            "meshelement": "Tet10",
+            "constraints": ["section_print", "fixed", "pressure"],
             "solvers": ["ccx"],
-            "material": "",
-            "equation": ""
+            "material": "solid",
+            "equation": "mechanical"
             }
     return info
 
@@ -71,11 +70,20 @@ def setup(doc=None, solvertype="ccxtools"):
     # geometry object
     # name is important because the other method in this module use obj name
     arc_sketch = doc.addObject('Sketcher::SketchObject', 'Arc_Sketch')
-    arc_sketch.Placement = FreeCAD.Placement(Vector(0.000000, 0.000000, 0.000000),  Rotation(0.000000, 0.000000, 0.000000, 1.000000))
+    arc_sketch.Placement = FreeCAD.Placement(
+            Vector(0.000000, 0.000000, 0.000000),
+            Rotation(0.000000, 0.000000, 0.000000, 1.000000)
+            )
     arc_sketch.MapMode = "Deactivated"
     geoList = [
-        Part.ArcOfCircle(Part.Circle(Vector(0.000000, 0.000000, 0), Vector(0, 0, 1), 80.453387), 0.005226, 3.139832),
-        Part.ArcOfCircle(Part.Circle(Vector(16.713875, -0.141644, 0), Vector(0, 0, 1), 47.309633), -0.005988, 3.131067),
+        Part.ArcOfCircle(
+            Part.Circle(Vector(0.000000, 0.000000, 0), Vector(0, 0, 1), 80.453387),
+            0.005226,
+            3.139832),
+        Part.ArcOfCircle(
+            Part.Circle(Vector(16.713875, -0.141644, 0), Vector(0, 0, 1), 47.309633),
+            -0.005988,
+            3.131067),
         Part.LineSegment(Vector(-80.452286, -0.000000, 0), Vector(-30.593138, -0.000000, 0)),
         Part.LineSegment(Vector(64.022659, -0.000000, 0), Vector(80.452286, -0.000000, 0))
         ]
@@ -111,7 +119,10 @@ def setup(doc=None, solvertype="ccxtools"):
     extrude_part.TaperAngleRev = 0.00
 
     section_sketch = doc.addObject('Sketcher::SketchObject', 'Section_Sketch')
-    section_sketch.Placement = FreeCAD.Placement(Vector(0.000000, 0.000000, 0.000000),  Rotation(0.000000, 0.000000, 0.000000, 1.000000))
+    section_sketch.Placement = FreeCAD.Placement(
+            Vector(0.000000, 0.000000, 0.000000),
+            Rotation(0.000000, 0.000000, 0.000000, 1.000000)
+            )
     section_sketch.MapMode = "Deactivated"
     section_sketch.addGeometry(
             Part.LineSegment(Vector(-6.691961, -16.840161, 0), Vector(75.156087, 79.421394, 0)),
@@ -165,5 +176,76 @@ def setup(doc=None, solvertype="ccxtools"):
         geom_obj.ViewObject.Document.activeView().fitAll()
 
     doc.recompute()
+
+    # analysis
+    analysis = ObjectsFem.makeAnalysis(doc, "Analysis")
+
+    # solver
+    if solvertype == "calculix":
+        solver_object = analysis.addObject(
+            ObjectsFem.makeSolverCalculix(doc, "SolverCalculiX")
+        )[0]
+    elif solvertype == "ccxtools":
+        solver_object = analysis.addObject(
+            ObjectsFem.makeSolverCalculixCcxTools(doc, "CalculiXccxTools")
+        )[0]
+        solver_object.WorkingDir = u""
+    elif solvertype == "elmer":
+        analysis.addObject(ObjectsFem.makeSolverElmer(doc, "SolverElmer"))
+    elif solvertype == "z88":
+        analysis.addObject(ObjectsFem.makeSolverZ88(doc, "SolverZ88"))
+    if solvertype == "calculix" or solvertype == "ccxtools":
+        solver_object.SplitInputWriter = False
+        solver_object.AnalysisType = "static"
+        solver_object.GeometricalNonlinearity = "linear"
+        solver_object.ThermoMechSteadyState = False
+        solver_object.MatrixSolverType = "default"
+        solver_object.IterationsControlParameterTimeUse = False
+
+    # material
+    material_object = analysis.addObject(
+        ObjectsFem.makeMaterialSolid(doc, "FemMaterial")
+    )[0]
+    mat = material_object.Material
+    mat["Name"] = "CalculiX-Steel"
+    mat["YoungsModulus"] = "210000 MPa"
+    mat["PoissonRatio"] = "0.30"
+    material_object.Material = mat
+
+    # constraint fixed
+    fixed_constraint = analysis.addObject(
+        ObjectsFem.makeConstraintFixed(doc, name="ConstraintFixed")
+    )[0]
+    fixed_constraint.References = [(geom_obj, "Face3")]
+
+    # constraint pressure
+    pressure_constraint = analysis.addObject(
+        ObjectsFem.makeConstraintPressure(doc, name="FemConstraintPressure")
+    )[0]
+    pressure_constraint.References = [(geom_obj, "Face7")]
+    pressure_constraint.Pressure = 100.0
+    pressure_constraint.Reversed = False
+
+    # constraint section print
+    section_constraint = analysis.addObject(
+        ObjectsFem.makeConstraintSectionPrint(doc, name="ConstraintSectionPrint")
+    )[0]
+    section_constraint.References = [(geom_obj, "Face5")]
+
+    # mesh
+    from .meshes.mesh_section_print_tetra10 import create_nodes, create_elements
+    fem_mesh = Fem.FemMesh()
+    control = create_nodes(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating nodes.\n")
+    control = create_elements(fem_mesh)
+    if not control:
+        FreeCAD.Console.PrintError("Error on creating elements.\n")
+    femmesh_obj = analysis.addObject(
+        ObjectsFem.makeMeshGmsh(doc, mesh_name)
+    )[0]
+    femmesh_obj.FemMesh = fem_mesh
+    femmesh_obj.Part = geom_obj
+    femmesh_obj.SecondOrderLinear = False
 
     return doc
