@@ -38,6 +38,7 @@ doc = run_constraint_contact_solid_solid()
 doc = run_constraint_tie()
 doc = run_constraint_transform_beam_hinged()
 doc = run_constraint_transform_torque()
+doc = run_equation_elmer_electrostatics()
 doc = run_material_nl_platewithhole()
 doc = run_material_multiple_twoboxes()
 doc = run_rcwall2d()
@@ -265,6 +266,21 @@ def run_constraint_transform_torque(solver=None, base_name=None):
     return doc
 
 
+def run_equation_elmer_electrostatics(solver=None, base_name=None):
+
+    from .equation_elmer_electrostatics import setup
+    doc = setup()
+
+    if base_name is None:
+        base_name = "Equation_Elmer_Electrostatics"
+        if solver is not None:
+            base_name += "_" + solver
+    run_analysis(doc, base_name)
+    doc.recompute()
+
+    return doc
+
+
 def run_material_multiple_twoboxes(solver=None, base_name=None):
 
     from .material_multiple_twoboxes import setup
@@ -366,6 +382,7 @@ def run_all():
     run_constraint_tie()
     run_constraint_transform_beam_hinged()
     run_constraint_transform_torque()
+    run_equation_elmer_electrostatics()
     run_material_nl_platewithhole()
     run_material_multiple_twoboxes()
     run_rcwall2d()
