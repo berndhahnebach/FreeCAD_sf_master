@@ -186,6 +186,7 @@ def setup(doc=None, solvertype="elmer"):
     mat["ThermalConductivity"] = "0.03 W/m/K"
     mat["ThermalExpansionCoefficient"] = "0.0034/K"
     mat["SpecificHeat"] = "1.00 J/kg/K"
+    mat["RelativePermittivity"] = "1.00"
     material_object.Material = mat
 
     # 0V_potential_constraint
