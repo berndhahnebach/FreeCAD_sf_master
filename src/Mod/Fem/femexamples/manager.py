@@ -32,7 +32,7 @@ doc = run_boxanalysisfrequency()
 doc = run_ccx_cantileverfaceload()
 doc = run_ccx_cantilevernodeload()
 doc = run_ccx_cantileverprescribeddisplacement()
-doc = setup_cantileverhexa20faceload()
+doc = run_ccx_cantilever_hexa20faceload()
 doc = run_constraint_contact_shell_shell()
 doc = run_constraint_contact_solid_solid()
 doc = run_constraint_tie()
@@ -176,7 +176,7 @@ def run_ccx_cantileverprescribeddisplacement(solver=None, base_name=None):
     return doc
 
 
-def setup_cantileverhexa20faceload(solver=None, base_name=None):
+def run_ccx_cantilever_hexa20faceload(solver=None, base_name=None):
 
     from .ccx_cantilever_hexa20faceload import setup
     doc = setup()
@@ -377,6 +377,7 @@ def run_all():
     run_ccx_cantileverfaceload()
     run_ccx_cantilevernodeload()
     run_ccx_cantileverprescribeddisplacement()
+    run_ccx_cantilever_hexa20faceload()
     run_constraint_contact_shell_shell()
     run_constraint_contact_solid_solid()
     run_constraint_tie()
