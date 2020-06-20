@@ -59,6 +59,7 @@ SET(FemExamples_SRCS
     femexamples/manager.py
     femexamples/material_multiple_twoboxes.py
     femexamples/material_nl_platewithhole.py
+    femexamples/multibody_analysis.py
     femexamples/rc_wall_2d.py
     femexamples/thermomech_bimetall.py
     femexamples/thermomech_flow1d.py
@@ -75,6 +76,7 @@ SET(FemExampleMeshes_SRCS
     femexamples/meshes/mesh_contact_box_halfcylinder_tetra10.py
     femexamples/meshes/mesh_contact_tube_tube_tria3.py
     femexamples/meshes/mesh_electrostatic_tetra10.py
+    femexamples/meshes/mesh_multibodybeam_tetra10.py
     femexamples/meshes/mesh_rc_wall_2d_tria6.py
     femexamples/meshes/mesh_section_print_tetra10.py
     femexamples/meshes/mesh_platewithhole_tetra10.py
