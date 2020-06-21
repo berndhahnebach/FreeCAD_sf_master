@@ -161,7 +161,7 @@ def setup(doc=None, solvertype="ccxtools"):
     force_constraint4.Reversed = True
 
     # mesh
-    from .meshes.mesh_z88_bsp25_shell_tria6.py import create_nodes, create_elements
+    from .meshes.mesh_z88_bsp25_shell_tria6 import create_nodes, create_elements
     fem_mesh = Fem.FemMesh()
     control = create_nodes(fem_mesh)
     if not control:
