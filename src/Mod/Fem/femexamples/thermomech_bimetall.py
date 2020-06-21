@@ -57,7 +57,7 @@ def get_information():
             "meshtype": "solid",
             "meshelement": "Tet10",
             "constraints": ["fixed", "initial temperature", "temperature"],
-            "solvers": ["ccx"],
+            "solvers": ["ccx", "elmer"],
             "material": "multimaterial",
             "equation": "thermomechanical"
             }
@@ -114,6 +114,15 @@ def setup(doc=None, solvertype="ccxtools"):
             ObjectsFem.makeSolverCalculixCcxTools(doc, "CalculiXccxTools")
         )[0]
         solver_object.WorkingDir = u""
+    elif solvertype == "elmer":
+        solver_object = analysis.addObject(ObjectsFem.makeSolverElmer(doc, "SolverElmer"))[0]
+        solver_object.SteadyStateMinIterations = 1
+        eq_heat = ObjectsFem.makeEquationHeat(doc, solver_object)
+        eq_heat.Bubbles = True
+        eq_heat.Priority = 10
+        eq_elasticity = ObjectsFem.makeEquationElasticity(doc, solver_object)
+        eq_elasticity.Bubbles = True
+        eq_elasticity.Priority = 20
     if solvertype == "calculix" or solvertype == "ccxtools":
         solver_object.AnalysisType = "thermomech"
         solver_object.GeometricalNonlinearity = "linear"
@@ -135,6 +144,7 @@ def setup(doc=None, solvertype="ccxtools"):
     mat["SpecificHeat"] = "385 J/kg/K"
     mat["ThermalConductivity"] = "200 W/m/K"
     mat["ThermalExpansionCoefficient"] = "0.00002 m/m/K"
+    mat["Density"] = "1.00 kg/m^3"
     material_obj_bottom.Material = mat
     material_obj_bottom.References = [(geom_obj, "Solid1")]
     analysis.addObject(material_obj_bottom)
@@ -149,6 +159,7 @@ def setup(doc=None, solvertype="ccxtools"):
     mat["SpecificHeat"] = "510 J/kg/K"
     mat["ThermalConductivity"] = "13 W/m/K"
     mat["ThermalExpansionCoefficient"] = "0.0000012 m/m/K"
+    mat["Density"] = "1.00 kg/m^3"
     material_obj_top.Material = mat
     material_obj_top.References = [(geom_obj, "Solid2")]
     analysis.addObject(material_obj_top)
