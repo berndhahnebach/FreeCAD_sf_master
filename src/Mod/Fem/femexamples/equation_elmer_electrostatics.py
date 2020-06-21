@@ -52,7 +52,7 @@ def get_information():
     info = {
             "name": "Equation Elmer Electrostatics",
             "meshtype": "solid",
-            "meshelement": "tet10",
+            "meshelement": "Tet10",
             "constraints": ["electrostaticPotential"],
             "solvers": ["elmer"],
             "material": "fluid",
