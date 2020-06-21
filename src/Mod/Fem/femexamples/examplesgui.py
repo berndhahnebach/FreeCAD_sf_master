@@ -140,34 +140,30 @@ class FemExamples(QtGui.QWidget):
         self.view.setHeaderHidden(True)
 
         # Ok buttons:
-        self.ok_button = QtGui.QDialogButtonBox(self)
-        self.ok_button.setOrientation(QtCore.Qt.Horizontal)
-        self.ok_button.setStandardButtons(
+        self.button_box = QtGui.QDialogButtonBox(self)
+        self.button_box.setOrientation(QtCore.Qt.Horizontal)
+        self.button_box.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok
         )
-        self.ok_button.addButton("Run", QtGui.QDialogButtonBox.ApplyRole)
-        self.ok_button.clicked.connect(self.clicked)
+        self.button_box.addButton("Run", QtGui.QDialogButtonBox.ApplyRole)
+        self.button_box.clicked.connect(self.clicked)
 
         # Layout:
         layout = QtGui.QGridLayout()
         layout.addWidget(self.macrotitle_label, 1, 0, 1, 2)
         layout.addWidget(self.view, 2, 0, 1, 2)
-        layout.addWidget(self.ok_button, 3, 1)
+        layout.addWidget(self.button_box, 3, 1)
         self.setLayout(layout)
 
     def clicked(self, button):
-        if self.ok_button.buttonRole(button) == QtGui.QDialogButtonBox.AcceptRole:
-            print("AcceptRole")
+        if self.button_box.buttonRole(button) == QtGui.QDialogButtonBox.AcceptRole:
             self.accept()
-        elif self.ok_button.buttonRole(button) == QtGui.QDialogButtonBox.ApplyRole:
-            print("ApplyRole")
+        elif self.button_box.buttonRole(button) == QtGui.QDialogButtonBox.ApplyRole:
             self.run()
-        elif self.ok_button.buttonRole(button) == QtGui.QDialogButtonBox.RejectRole:
-            print("RejectRole")
+        elif self.button_box.buttonRole(button) == QtGui.QDialogButtonBox.RejectRole:
             self.reject()
 
     def accept(self):
-        print("\nExample will be setup.")
         item = self.view.selectedItems()[0]
         name = item.text(0)
         example = self.files_name[name]
@@ -176,12 +172,10 @@ class FemExamples(QtGui.QWidget):
         FreeCADGui.doCommand("setup()")
 
     def reject(self):
-        print("\nWe close the widget.")
         self.close()
         d.close()
 
     def run(self):
-        print("\nExamples will be run.")
         item = self.view.selectedItems()[0]
         name = item.text(0)
         example = self.files_name[name]
