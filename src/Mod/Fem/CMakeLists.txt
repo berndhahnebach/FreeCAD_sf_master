@@ -54,6 +54,7 @@ SET(FemExamples_SRCS
     femexamples/constraint_tie.py
     femexamples/constraint_transform_beam_hinged.py
     femexamples/constraint_transform_torque.py
+    femexamples/edge_load_calculation.py
     femexamples/examplesgui.py
     femexamples/equation_elmer_electrostatics.py
     femexamples/manager.py
@@ -85,6 +86,7 @@ SET(FemExampleMeshes_SRCS
     femexamples/meshes/mesh_thermomech_spine_tetra10.py
     femexamples/meshes/mesh_transform_torque_tetra10.py
     femexamples/meshes/mesh_transform_beam_hinged_tetra10.py
+    femexamples/meshes/mesh_z88_bsp25_shell_tria6.py
 )
 
 SET(FemInOut_SRCS
