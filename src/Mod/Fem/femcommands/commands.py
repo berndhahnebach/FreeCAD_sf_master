@@ -169,6 +169,18 @@ class _ConstraintElectrostaticPotential(CommandManager):
         self.do_activated = "add_obj_on_gui_set_edit"
 
 
+class _BodyForceElmerFreetextinput(CommandManager):
+    "The FEM_ConstraintBodyForceElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_BodyForceElmerFreetextinput, self).__init__()
+        self.pixmap = "FEM_BodyForceElmerFreetextinput.svg"
+        self.menuetext = "Body Force Freetextinput"
+        self.tooltip = "Creates a FEM BodyForceFreetextinput"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_noset_edit"
+
+
 class _ConstraintFlowVelocity(CommandManager):
     "The FEM_ConstraintFlowVelocity command definition"
 
@@ -825,6 +837,10 @@ FreeCADGui.addCommand(
 FreeCADGui.addCommand(
     "FEM_ConstraintElectrostaticPotential",
     _ConstraintElectrostaticPotential()
+)
+FreeCADGui.addCommand(
+    "FEM_BodyForceElmerFreetextinput",
+    _BodyForceElmerFreetextinput()
 )
 FreeCADGui.addCommand(
     "FEM_ConstraintFlowVelocity",

@@ -13,6 +13,7 @@
         <file>icons/FEM_ConstraintContact.svg</file>
         <file>icons/FEM_ConstraintDisplacement.svg</file>
         <file>icons/FEM_ConstraintElectrostaticPotential.svg</file>
+        <file>icons/FEM_BodyForceElmerFreetextinput.svg</file>
         <file>icons/FEM_ConstraintFixed.svg</file>
         <file>icons/FEM_ConstraintFlowVelocity.svg</file>
         <file>icons/FEM_ConstraintFluidBoundary.svg</file>
@@ -144,6 +145,7 @@
 
         <!-- task panels -->
         <file>ui/ConstraintTie.ui</file>
+        <file>ui/BodyForceElmerFreetextinput.ui</file>
         <file>ui/ElectrostaticPotential.ui</file>
         <file>ui/ElementFluid1D.ui</file>
         <file>ui/ElementGeometry1D.ui</file>

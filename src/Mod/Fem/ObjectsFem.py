@@ -133,15 +133,15 @@ def makeConstraintElectrostaticPotential(
     return obj
 
 
-def makeBodyForceBodyForceElmerFreetextinput(
+def makeBodyForceElmerFreetextinput(
     doc,
-    name="BodyForceBodyForceElmerFreetextinput"
+    name="BodyForceElmerFreetextinput"
 ):
-    """BodyForceBodyForceElmerFreetextinput(document, [name]):
+    """BodyForceElmerFreetextinput(document, [name]):
     makes a Fem BodyForceElmerFreetextinput object"""
     obj = doc.addObject("Fem::ConstraintPython", name)
     from femobjects import body_force_elmer_freetextinput
-    body_force_elmer_freetextinput.BodyforceElmerFreetextinput(obj)
+    body_force_elmer_freetextinput.BodyForceElmerFreetextinput(obj)
     if FreeCAD.GuiUp:
         from femviewprovider import view_body_force_elmer_freetextinput
         view_body_force_elmer_freetextinput.VPBodyForceElmerFreetextinput(obj.ViewObject)

@@ -21,11 +21,11 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM mesh region task panel for the document object"
+__title__ = "FreeCAD FEM body force elmer freetextinput task panel for the document object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-## @package task_mesh_region
+## @package task_body_force_elmer_freetextinput
 #  \ingroup FEM
 #  \brief task panel for mesh region object
 
@@ -48,7 +48,7 @@ class _TaskPanel:
 
         # parameter widget
         self.parameterWidget = FreeCADGui.PySideUic.loadUi(
-            FreeCAD.getHomePath() + "Mod/Fem/Resources/ui/BodyforceElmerFreetextinput.ui"
+            FreeCAD.getHomePath() + "Mod/Fem/Resources/ui/BodyForceElmerFreetextinput.ui"
         )
         QtCore.QObject.connect(
             self.parameterWidget.plainTextEdit_elmer_freetextinput,
@@ -68,7 +68,7 @@ class _TaskPanel:
         self.form = [self.parameterWidget, self.selectionWidget]
 
     def accept(self):
-	self.obj.ElmerFreetextinput = self.parameterWidget.plainTextEdit_elmer_freetextinput.getText()
+        self.obj.ElmerFreetextinput = self.parameterWidget.plainTextEdit_elmer_freetextinput.toPlainText()
         self.obj.References = self.selectionWidget.references
         self.recompute_and_set_back_all()
         return True
@@ -86,7 +86,7 @@ class _TaskPanel:
         doc.resetEdit()
 
     def init_parameter_widget(self):
-        self.parameterWidget.plainTextEdit_elmer_freetextinput.setText(self.obj.ElmerFreetextinput)
+        self.parameterWidget.plainTextEdit_elmer_freetextinput.insertPlainText(self.obj.ElmerFreetextinput)
 	
 
     def elmer_freetextinput_changed(self):

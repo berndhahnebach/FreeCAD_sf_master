@@ -538,6 +538,14 @@ class Writer(object):
 
                 self._handled(obj)
 
+    def _handleStatcurrentsBodyForces(self, bodies):
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                heatSource = self._getFromUi(obj.ElmerFreetextinput)
+                self._bodyForce(name, "Body Force", heatSource)
+            self._handled(obj)
+
     def _handleFlux(self):
         activeIn = []
         for equation in self.solver.Group:

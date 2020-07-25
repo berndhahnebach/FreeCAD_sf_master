@@ -32,20 +32,20 @@ __url__ = "http://www.freecadweb.org"
 from . import base_fempythonobject
 
 
-class BodyforceElmerFreetextinput(base_fempythonobject.BaseFemPythonObject):
+class BodyForceElmerFreetextinput(base_fempythonobject.BaseFemPythonObject):
     """
-    The FEM BodyforceElmerFreetextinput object
+    The FEM BodyForceElmerFreetextinput object
     """
 
-    Type = "Fem::BodyforceElmerFreetextinput"
+    Type = "Fem::BodyForceElmerFreetextinput"
 
     def __init__(self, obj):
-        super(BodyforceElmerFreetextinput, self).__init__(obj)
+        super(BodyForceElmerFreetextinput, self).__init__(obj)
 
         obj.addProperty(
-            "App::PropertyStringList",
+            "App::PropertyString",
 	    "ElmerFreetextinput",
 	    "Parameter",
 	    "Elmer Free text input",
         )
-    )
+    

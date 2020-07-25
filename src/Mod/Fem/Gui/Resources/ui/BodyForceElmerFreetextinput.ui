@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Mesh region</string>
+   <string>Body Force Elmer Freetextinput</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
