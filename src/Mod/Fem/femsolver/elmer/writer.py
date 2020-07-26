@@ -486,6 +486,7 @@ class Writer(object):
             self._handleStatcurrentBndConditions()
             # self._handleElectrostaticInitial(activeIn)
             # self._handleElectrostaticBodyForces(activeIn)
+            self._handleStatcurrentsBodyForcesFreetextinput(activeIn)
             self._handleStatcurrentMaterial(activeIn)
 
     def _getStatcurrentSolver(self, equation):
@@ -538,12 +539,17 @@ class Writer(object):
 
                 self._handled(obj)
 
-    def _handleStatcurrentsBodyForces(self, bodies):
+    def _handleStatcurrentsBodyForcesFreetextinput(self, bodies):
         obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        Console.PrintMessage("After the test")
         if obj is not None:
+            Console.PrintMessage("obj is not none")
             for name in bodies:
-                heatSource = self._getFromUi(obj.ElmerFreetextinput)
-                self._bodyForce(name, "Body Force", heatSource)
+                Console.PrintMessage(obj.ElmerFreetextinput)
+                Console.PrintMessage(name)
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+#                self._bodyForce(name, "Heat Source", heatSource)
             self._handled(obj)
 
     def _handleFlux(self):
@@ -989,6 +995,9 @@ class Writer(object):
 
     def _bodyForce(self, body, key, attr):
         self._builder.bodyForce(body, key, attr)
+
+    def _bodyForceFreetextinput(self, body, freetextinput):
+        self._builder.bodyForceFreetextinput(body, freetextinput)
 
     def _addSolver(self, body, solverSection):
         self._builder.addSolver(body, solverSection)
