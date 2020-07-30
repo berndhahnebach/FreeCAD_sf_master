@@ -352,6 +352,13 @@ class Writer(object):
                 self._bodyForce(name, "Heat Source", heatSource)
             self._handled(obj)
 
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
+
     def _handleHeatMaterial(self, bodies):
         tempObj = self._getSingleMember("Fem::ConstraintInitialTemperature")
         if tempObj is not None:
@@ -390,7 +397,7 @@ class Writer(object):
             self._handleElectrostaticConstants()
             self._handleElectrostaticBndConditions()
             # self._handleElectrostaticInitial(activeIn)
-            # self._handleElectrostaticBodyForces(activeIn)
+            self._handleElectrostaticBodyForces(activeIn)
             self._handleElectrostaticMaterial(activeIn)
 
     def _getElectrostaticSolver(self, equation):
@@ -452,6 +459,14 @@ class Writer(object):
                             self._boundary(name, "Capacitance Body", obj.CapacitanceBody)
                 self._handled(obj)
 
+    def _handleElectrostaticBodyForces(self, bodies):
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
+
     def _handleElectrostatic(self):
         activeIn = []
         for equation in self.solver.Group:
@@ -467,7 +482,7 @@ class Writer(object):
             self._handleElectrostaticConstants()
             self._handleElectrostaticBndConditions()
             # self._handleElectrostaticInitial(activeIn)
-            # self._handleElectrostaticBodyForces(activeIn)
+            self._handleElectrostaticBodyForces(activeIn)
             self._handleElectrostaticMaterial(activeIn)
 
     def _handleStatcurrent(self):
@@ -486,7 +501,7 @@ class Writer(object):
             self._handleStatcurrentBndConditions()
             # self._handleElectrostaticInitial(activeIn)
             # self._handleElectrostaticBodyForces(activeIn)
-            self._handleStatcurrentsBodyForcesFreetextinput(activeIn)
+            self._handleStatcurrentsBodyForces(activeIn)
             self._handleStatcurrentMaterial(activeIn)
 
     def _getStatcurrentSolver(self, equation):
@@ -539,17 +554,12 @@ class Writer(object):
 
                 self._handled(obj)
 
-    def _handleStatcurrentsBodyForcesFreetextinput(self, bodies):
+    def _handleStatcurrentsBodyForces(self, bodies):
         obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
-        Console.PrintMessage("After the test")
         if obj is not None:
-            Console.PrintMessage("obj is not none")
             for name in bodies:
-                Console.PrintMessage(obj.ElmerFreetextinput)
-                Console.PrintMessage(name)
                 freetextinput = obj.ElmerFreetextinput
                 self._bodyForceFreetextinput(name, freetextinput)
-#                self._bodyForce(name, "Heat Source", heatSource)
             self._handled(obj)
 
     def _handleFlux(self):
@@ -705,6 +715,13 @@ class Writer(object):
                 self._bodyForce(name, "Stress Bodyforce 3", force3)
             self._handled(obj)
 
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
+
     def _getBodyMaterial(self, name):
         for obj in self._getMember("App::MaterialObject"):
             if not obj.References or name in obj.References[0][1]:
@@ -773,7 +790,7 @@ class Writer(object):
             self._handleFlowBndConditions()
             self._handleFlowInitialVelocity(activeIn)
             # self._handleFlowInitial(activeIn)
-            # self._handleFlowBodyForces(activeIn)
+            self._handleFlowBodyForces(activeIn)
             self._handleFlowMaterial(activeIn)
             self._handleFlowEquation(activeIn)
 
@@ -869,6 +886,14 @@ class Writer(object):
                     if obj.NormalToBoundary:
                         self._boundary(name, "Normal-Tangential Velocity", True)
                 self._handled(obj)
+
+    def _handleFlowBodyForces(self, bodies):
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
 
     def _handleFlowEquation(self, bodies):
         for b in bodies:
