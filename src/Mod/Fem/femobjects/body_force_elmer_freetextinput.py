@@ -21,11 +21,11 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM mesh region document object"
+__title__ = "FreeCAD FEM body force document object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-## @package mesh_region
+## @package body_force_elmer_freetextinput
 #  \ingroup FEM
 #  \brief BodyforceElmerFreetextinput object
 
