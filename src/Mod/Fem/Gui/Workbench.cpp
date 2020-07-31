@@ -243,7 +243,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     elec->setCommand("&Electrostatic Constraints");
     *elec
         << "FEM_ConstraintElectrostaticPotential"
-        << "FEM_BodyForceElmerFreetextinput";
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* fluid = new Gui::MenuItem;
     fluid->setCommand("&Fluid Constraints");
@@ -251,7 +252,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "FEM_ConstraintInitialFlowVelocity"
         << "Separator"
         << "FEM_ConstraintFlowVelocity"
-        << "FEM_BodyForceElmerFreetextinput";
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* geom = new Gui::MenuItem;
     geom->setCommand("&Geometrical Constraints");
@@ -271,7 +273,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "FEM_ConstraintForce"
         << "FEM_ConstraintPressure"
         << "FEM_ConstraintSelfWeight"
-        << "FEM_BodyForceElmerFreetextinput";
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* thermal = new Gui::MenuItem;
     thermal->setCommand("&Thermal Constraints");
@@ -281,7 +284,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "FEM_ConstraintHeatflux"
         << "FEM_ConstraintTemperature"
         << "FEM_ConstraintBodyHeatSource"
-        << "FEM_BodyForceElmerFreetextinput";
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* nosolver = new Gui::MenuItem;
     nosolver->setCommand("&Constraints without solver");

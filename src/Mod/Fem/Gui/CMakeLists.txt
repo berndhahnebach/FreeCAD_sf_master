@@ -408,6 +408,7 @@ SET(FemGuiPythonUI_SRCS
     Resources/ui/ConstraintSectionPrint.ui
     Resources/ui/ElectrostaticPotential.ui
     Resources/ui/BodyForceElmerFreetextinput.ui
+    Resources/ui/ConstraintFaceElmerFreetextinput.ui
     Resources/ui/ElementFluid1D.ui
     Resources/ui/ElementGeometry1D.ui
     Resources/ui/ElementGeometry2D.ui

@@ -152,6 +152,11 @@ class Builder(object):
         section = self._getFromBody(body, BODY_FORCE)
         section['freetextinput'] = freetextinput
 
+    def boundaryFreetextinput(self, boundary, freetextinput):
+        if boundary not in self._boundaries:
+            self._boundaries[boundary] = createSection(BOUNDARY_CONDITION)
+        self._boundaries[boundary]['freetextinput'] = freetextinput
+
     def addSolver(self, body, solverSection):
         section = self._getFromBody(body, EQUATION)
         if self._ACTIVE_SOLVERS not in section:

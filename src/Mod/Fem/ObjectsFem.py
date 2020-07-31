@@ -148,6 +148,21 @@ def makeBodyForceElmerFreetextinput(
     return obj
 
 
+def makeConstraintFaceElmerFreetextinput(
+    doc,
+    name="ConstraintFaceElmerFreetextinput"
+):
+    """ConstraintFaceElmerFreetextinput(document, [name]):
+    makes a Fem ConstraintFaceElmerFreetextinput object"""
+    obj = doc.addObject("Fem::ConstraintPython", name)
+    from femobjects import constraint_face_elmer_freetextinput
+    constraint_face_elmer_freetextinput.ConstraintFaceElmerFreetextinput(obj)
+    if FreeCAD.GuiUp:
+        from femviewprovider import view_constraint_face_elmer_freetextinput
+        view_constraint_face_elmer_freetextinput.VPConstraintFaceElmerFreetextinput(obj.ViewObject)
+    return obj
+
+
 def makeConstraintFixed(
     doc,
     name="ConstraintFixed"

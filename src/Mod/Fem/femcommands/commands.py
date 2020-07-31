@@ -181,6 +181,18 @@ class _BodyForceElmerFreetextinput(CommandManager):
         self.do_activated = "add_obj_on_gui_noset_edit"
 
 
+class _ConstraintFaceElmerFreetextinput(CommandManager):
+    "The FEM_ConstraintFaceElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_ConstraintFaceElmerFreetextinput, self).__init__()
+        self.pixmap = "FEM_ConstraintFaceElmerFreetextinput.svg"
+        self.menuetext = "Constraint Face Freetextinput"
+        self.tooltip = "Creates a FEM ConstraintFaceFreetextinput"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_noset_edit"
+
+
 class _ConstraintFlowVelocity(CommandManager):
     "The FEM_ConstraintFlowVelocity command definition"
 
@@ -841,6 +853,10 @@ FreeCADGui.addCommand(
 FreeCADGui.addCommand(
     "FEM_BodyForceElmerFreetextinput",
     _BodyForceElmerFreetextinput()
+)
+FreeCADGui.addCommand(
+    "FEM_ConstraintFaceElmerFreetextinput",
+    _ConstraintFaceElmerFreetextinput()
 )
 FreeCADGui.addCommand(
     "FEM_ConstraintFlowVelocity",

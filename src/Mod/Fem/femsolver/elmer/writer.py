@@ -332,6 +332,11 @@ class Writer(object):
                         self._boundary(name, "Heat Flux BC", True)
                         self._boundary(name, "Heat Flux", flux)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
 
     def _handleHeatInitial(self, bodies):
         obj = self._getSingleMember("Fem::ConstraintInitialTemperature")
@@ -458,6 +463,11 @@ class Writer(object):
                         if hasattr(obj, "CapacitanceBody"):
                             self._boundary(name, "Capacitance Body", obj.CapacitanceBody)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
 
     def _handleElectrostaticBodyForces(self, bodies):
         obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
@@ -553,6 +563,11 @@ class Writer(object):
                         self._boundary(name, "Potential Constant", True)
 
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
 
     def _handleStatcurrentsBodyForces(self, bodies):
         obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
@@ -687,6 +702,11 @@ class Writer(object):
                     elif obj.zFix:
                         self._boundary(name, "Displacement 3", 0.0)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
 
     def _handleElasticityInitial(self, bodies):
         pass
@@ -886,6 +906,11 @@ class Writer(object):
                     if obj.NormalToBoundary:
                         self._boundary(name, "Normal-Tangential Velocity", True)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
 
     def _handleFlowBodyForces(self, bodies):
         obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
@@ -1024,11 +1049,17 @@ class Writer(object):
     def _bodyForceFreetextinput(self, body, freetextinput):
         self._builder.bodyForceFreetextinput(body, freetextinput)
 
+    def _constraintFaceFreetextinput(self, boundary, freetextinput):
+        self._builder.boundaryFreetextinput(boundary, freetextinput)
+
     def _addSolver(self, body, solverSection):
         self._builder.addSolver(body, solverSection)
 
     def _boundary(self, boundary, key, attr):
         self._builder.boundary(boundary, key, attr)
+
+    def _boundaryFreetextinput(self, boundary, freetextinput):
+        self._builder.boundaryFreetextinput(boundary, freetextinput)
 
     def _addSection(self, section):
         self._builder.addSection(section)

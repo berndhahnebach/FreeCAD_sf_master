@@ -313,6 +313,9 @@ class AnalysisMember():
         self.cons_bfelmerfreetextinput = self.get_several_member(
             "Fem::BodyForceElmerFreetextinput"
         )
+        self.cons_bfelmerfreetextinput = self.get_several_member(
+            "Fem::ConstraintFaceElmerFreetextinput"
+        )
 
     def get_several_member(self, t):
         return get_several_member(self.analysis, t)
