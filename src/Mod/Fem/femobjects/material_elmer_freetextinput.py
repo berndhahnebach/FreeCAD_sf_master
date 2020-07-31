@@ -1,5 +1,5 @@
 # ***************************************************************************
-# *   Copyright (c) 2016 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *   Copyright (c) 2019 Bernd Hahnebach <bernd@bimstatik.org>              *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -21,26 +21,33 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM mesh region document object"
+__title__ = "FreeCAD FEM Elmer freetextinput material"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-## @package constraint_face_elmer_freetextinput
+## @package material_elmer_freetextinput
 #  \ingroup FEM
-#  \brief ConstraintFaceElmerFreetextinput object
+#  \brief material freetextinput object
 
 from . import base_fempythonobject
 
 
-class ConstraintFaceElmerFreetextinput(base_fempythonobject.BaseFemPythonObject):
+class MaterialElmerFreetextinput(base_fempythonobject.BaseFemPythonObject):
     """
-    The FEM ConstraintFaceElmerFreetextinput object
+    The MaterialElmerFreetextinput object
     """
 
-    Type = "Fem::ConstraintFaceElmerFreetextinput"
+    Type = "Fem::MaterialElmerFreetextinput"
 
     def __init__(self, obj):
-        super(ConstraintFaceElmerFreetextinput, self).__init__(obj)
+        super(MaterialElmerFreetextinput, self).__init__(obj)
+
+        obj.addProperty(
+            "App::PropertyLinkSubList",
+            "References",
+            "Material",
+            "List of material shapes"
+        )
 
         obj.addProperty(
             "App::PropertyString",

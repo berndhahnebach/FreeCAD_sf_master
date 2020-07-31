@@ -417,6 +417,7 @@ SET(FemGuiPythonUI_SRCS
     Resources/ui/InitialFlowVelocity.ui
     Resources/ui/Material.ui
     Resources/ui/MaterialReinforcement.ui
+    Resources/ui/MaterialElmerFreetextinput.ui
     Resources/ui/MeshBoundaryLayer.ui
     Resources/ui/MeshGmsh.ui
     Resources/ui/MeshGroup.ui

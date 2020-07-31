@@ -44,8 +44,7 @@ class BodyForceElmerFreetextinput(base_fempythonobject.BaseFemPythonObject):
 
         obj.addProperty(
             "App::PropertyString",
-	    "ElmerFreetextinput",
-	    "Parameter",
-	    "Elmer Free text input",
+            "ElmerFreetextinput",
+            "Parameter",
+            "Elmer Free text input",
         )
-    

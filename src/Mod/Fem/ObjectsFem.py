@@ -494,6 +494,21 @@ def makeMaterialSolid(
     return obj
 
 
+def makeMaterialElmerFreetextinput(
+    doc,
+    name="MaterialElmerFreetextinput"
+):
+    """MaterialElmerFreetextinput(document, [name]):
+    makes a Fem MaterialElmerFreetextinput object"""
+    obj = doc.addObject("App::MaterialObjectPython", name)
+    from femobjects import material_elmer_freetextinput
+    material_elmer_freetextinput.MaterialElmerFreetextinput(obj)
+    if FreeCAD.GuiUp:
+        from femviewprovider import view_material_elmer_freetextinput
+        view_material_elmer_freetextinput.VPMaterialElmerFreetextinput(obj.ViewObject)
+    return obj
+
+
 # ********* mesh objects *************************************************************************
 def makeMeshBoundaryLayer(
     doc,

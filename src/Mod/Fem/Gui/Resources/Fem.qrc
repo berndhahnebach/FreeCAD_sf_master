@@ -61,6 +61,7 @@
         <file>icons/FEM_MaterialMechanicalNonlinear.svg</file>
         <file>icons/FEM_MaterialReinforced.svg</file>
         <file>icons/FEM_MaterialSolid.svg</file>
+        <file>icons/FEM_MaterialElmerFreetextinput.svg</file>
 
         <!-- gui command icons: post processing -->
         <file>icons/FEM_PostPipelineFromResult.svg</file>
@@ -157,6 +158,7 @@
         <file>ui/InitialFlowVelocity.ui</file>
         <file>ui/Material.ui</file>
         <file>ui/MaterialReinforcement.ui</file>
+        <file>ui/MaterialElmerFreetextinput.ui</file>
         <file>ui/MeshBoundaryLayer.ui</file>
         <file>ui/MeshGmsh.ui</file>
         <file>ui/MeshGroup.ui</file>

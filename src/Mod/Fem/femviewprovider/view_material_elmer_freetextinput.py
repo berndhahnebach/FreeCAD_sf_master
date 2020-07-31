@@ -1,5 +1,5 @@
 # ***************************************************************************
-# *   Copyright (c) 2016 Bernd Hahnebach <bernd@bimstatik.org>              *
+# *   Copyright (c) 2019 Bernd Hahnebach <bernd@bimstatik.org>              *
 # *                                                                         *
 # *   This file is part of the FreeCAD CAx development system.              *
 # *                                                                         *
@@ -21,30 +21,30 @@
 # *                                                                         *
 # ***************************************************************************
 
-__title__ = "FreeCAD FEM mesh region document object"
+__title__ = "FreeCAD FEM material Elmer freetextinput ViewProvider for the document object"
 __author__ = "Bernd Hahnebach"
 __url__ = "http://www.freecadweb.org"
 
-## @package constraint_face_elmer_freetextinput
+## @package view_material_elmer_freetextinput
 #  \ingroup FEM
-#  \brief ConstraintFaceElmerFreetextinput object
+#  \brief view provider for elmer freetextinput material object
 
-from . import base_fempythonobject
+from femtaskpanels import task_material_elmer_freetextinput
+from . import view_base_femconstraint
 
 
-class ConstraintFaceElmerFreetextinput(base_fempythonobject.BaseFemPythonObject):
+class VPMaterialElmerFreetextinput(view_base_femconstraint.VPBaseFemConstraint):
     """
-    The FEM ConstraintFaceElmerFreetextinput object
+    A View Provider for the MaterialElmerFreetextinput object
     """
 
-    Type = "Fem::ConstraintFaceElmerFreetextinput"
-
-    def __init__(self, obj):
-        super(ConstraintFaceElmerFreetextinput, self).__init__(obj)
-
-        obj.addProperty(
-            "App::PropertyString",
-            "ElmerFreetextinput",
-            "Parameter",
-            "Elmer Free text input",
+    def setEdit(self, vobj, mode=0):
+        view_base_femconstraint.VPBaseFemConstraint.setEdit(
+            self,
+            vobj,
+            mode,
+            task_material_elmer_freetextinput._TaskPanel
         )
+
+    def getIcon(self):
+        return ":/icons/FEM_MaterialElmerFreetextinput.svg"

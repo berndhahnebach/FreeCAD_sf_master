@@ -497,6 +497,18 @@ class _MaterialSolid(CommandManager):
         self.do_activated = "add_obj_on_gui_set_edit"
 
 
+class _MaterialElmerFreetextinput(CommandManager):
+    "The FEM_MaterialElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_MaterialElmerFreetextinput, self).__init__()
+        self.menuetext = "Material with freetextinput for Elmer"
+        self.accel = "M, F, E"
+        self.tooltip = "Creates a freetextinput material for Elmer"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_set_edit"
+
+
 class _FEMMesh2Mesh(CommandManager):
     "The FEM_FEMMesh2Mesh command definition"
 
@@ -945,6 +957,10 @@ FreeCADGui.addCommand(
 FreeCADGui.addCommand(
     "FEM_MaterialSolid",
     _MaterialSolid()
+)
+FreeCADGui.addCommand(
+    "FEM_MaterialElmerFreetextinput",
+    _MaterialElmerFreetextinput()
 )
 FreeCADGui.addCommand(
     "FEM_FEMMesh2Mesh",
