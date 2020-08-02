@@ -233,6 +233,14 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "Separator"
         << "FEM_MaterialElmerFreetextinput";
 
+    Gui::MenuItem* freetextelmer = new Gui::MenuItem;
+    freetextelmer->setCommand("&Freetextinputs for Elmer");
+    *freetextelmer
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput"
+        << "FEM_MaterialElmerFreetextinput"
+        << "FEM_EquationElmerFreetextinput";
+
     Gui::MenuItem* elegeom = new Gui::MenuItem;
     elegeom->setCommand("&Element Geometry");
     *elegeom
@@ -314,6 +322,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "Separator"
         << material
         << elegeom
+        << freetextelmer
         << "Separator"
         << elec
         << fluid

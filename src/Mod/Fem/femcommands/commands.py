@@ -325,6 +325,18 @@ class _EquationElasticity(CommandManager):
         self.do_activated = "add_obj_on_gui_selobj_noset_edit"
 
 
+class _EquationElmerFreetextinput(CommandManager):
+    "The FEM_EquationElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_EquationElmerFreetextinput, self).__init__()
+        self.menuetext = "Equation with freetextinput for Elmer"
+        self.accel = "E, F, E"
+        self.tooltip = "Creates a freetextinput equation for Elmer"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_set_edit"
+
+
 class _EquationFlow(CommandManager):
     "The FEM_EquationFlow command definition"
 
@@ -917,6 +929,10 @@ FreeCADGui.addCommand(
 FreeCADGui.addCommand(
     "FEM_EquationElasticity",
     _EquationElasticity()
+)
+FreeCADGui.addCommand(
+    "FEM_EquationElmerFreetextinput",
+    _EquationElmerFreetextinput()
 )
 FreeCADGui.addCommand(
     "FEM_EquationFlow",

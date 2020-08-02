@@ -148,6 +148,10 @@ class Builder(object):
         section = self._getFromBody(body, EQUATION)
         section[key] = attr
 
+    def equationFreetextinput(self, body, freetextinput):
+        section = self._getFromBody(body, EQUATION)
+        section['freetextinput'] = freetextinput
+
     def bodyForce(self, body, key, attr):
         section = self._getFromBody(body, BODY_FORCE)
         section[key] = attr

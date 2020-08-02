@@ -44,6 +44,7 @@
         <file>icons/FEM_EquationFlow.svg</file>
         <file>icons/FEM_EquationFlux.svg</file>
         <file>icons/FEM_EquationHeat.svg</file>
+        <file>icons/FEM_EquationElmerFreetextinput.svg</file>
 
         <!-- gui command icons: meshes -->
         <file>icons/FEM_CreateNodesSet.svg</file>
@@ -159,6 +160,7 @@
         <file>ui/Material.ui</file>
         <file>ui/MaterialReinforcement.ui</file>
         <file>ui/MaterialElmerFreetextinput.ui</file>
+        <file>ui/EquationElmerFreetextinput.ui</file>
         <file>ui/MeshBoundaryLayer.ui</file>
         <file>ui/MeshGmsh.ui</file>
         <file>ui/MeshGroup.ui</file>

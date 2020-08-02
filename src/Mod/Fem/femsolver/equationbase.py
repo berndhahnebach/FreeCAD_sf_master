@@ -89,6 +89,16 @@ class ElasticityViewProxy(BaseViewProxy):
         return ":/icons/FEM_EquationElasticity.svg"
 
 
+class EquationElmerFreetextinputProxy(BaseProxy):
+    pass
+
+
+class EquationElmerFreetextinputViewProxy(BaseViewProxy):
+
+    def getIcon(self):
+        return ":/icons/FEM_EquationElmerFreetextinput.svg"
+
+
 class ElectrostaticViewProxy(BaseViewProxy):
 
     def getIcon(self):

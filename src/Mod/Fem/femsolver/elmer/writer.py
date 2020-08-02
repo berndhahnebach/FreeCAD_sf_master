@@ -274,6 +274,15 @@ class Writer(object):
             "Steady State Min Iterations",
             self.solver.SteadyStateMinIterations)
 
+    def _handleEquationFreetextinput(self):
+        activeIn = []
+        for equation in self.solver.Group:
+            if femutils.is_of_type(equation, "Fem::EquationElmerFreetextinput"):
+                if equation.References:
+                    for name in obj.References[0][1]:
+                        freetextinput = obj.ElmerFreetextinput
+                        self._equationFreetextinput(name, freetextinput)
+
     def _handleHeat(self):
         activeIn = []
         for equation in self.solver.Group:
@@ -1088,6 +1097,9 @@ class Writer(object):
 
     def _equation(self, body, key, attr):
         self._builder.equation(body, key, attr)
+
+    def _equationFreetextinput(self, body, freetextinput):
+        self._builder.equationFreetextinput(body, freetextinput)
 
     def _bodyForce(self, body, key, attr):
         self._builder.bodyForce(body, key, attr)

@@ -708,6 +708,25 @@ def makePostVtkResult(
 
 
 # ********* solver objects ***********************************************************************
+def makeEquationElmerFreetextinput(
+    doc,
+    base_solver=None,
+    name="EquationElmerFreetextinput"
+):
+    """EquationElmerFreetextinput(document, [base_solver], [name]):
+    creates a FEM freetextinput equation for a Elmer solver"""
+    obj = doc.addObject("App::EquationObjectPython", name)
+    from femsolver.elmer.equations import equation_elmer_freetextinput
+    obj = equation_elmer_freetextinput.create(doc, name)
+    if base_solver:
+        base_solver.addObject(obj)
+#    equation_elmer_freetextinput.EquationElmerFreetextinput(obj)
+#    if FreeCAD.GuiUp:
+#        from femviewprovider import view_equation_elmer_freetextinput
+#        view_equation_elmer_freetextinput.VPEquationElmerFreetextinput(obj.ViewObject)
+    return obj
+
+
 def makeEquationElasticity(
     doc,
     base_solver=None,

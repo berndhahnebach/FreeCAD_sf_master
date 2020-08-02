@@ -141,6 +141,7 @@ SET(FemObjects_SRCS
     femobjects/material_mechanicalnonlinear.py
     femobjects/material_reinforced.py
     femobjects/material_elmer_freetextinput.py
+    femobjects/equation_elmer_freetextinput.py
     femobjects/mesh_boundarylayer.py
     femobjects/mesh_gmsh.py
     femobjects/mesh_group.py
@@ -456,6 +457,7 @@ SET(FemGuiTaskPanels_SRCS
     femtaskpanels/task_material_common.py
     femtaskpanels/task_material_reinforced.py
     femtaskpanels/task_material_elmer_freetextinput.py
+    femtaskpanels/task_equation_elmer_freetextinput.py
     femtaskpanels/task_mesh_boundarylayer.py
     femtaskpanels/task_mesh_gmsh.py
     femtaskpanels/task_mesh_group.py
@@ -497,6 +499,7 @@ SET(FemGuiViewProvider_SRCS
     femviewprovider/view_material_mechanicalnonlinear.py
     femviewprovider/view_material_reinforced.py
     femviewprovider/view_material_elmer_freetextinput.py
+    femviewprovider/view_equation_elmer_freetextinput.py
     femviewprovider/view_mesh_boundarylayer.py
     femviewprovider/view_mesh_gmsh.py
     femviewprovider/view_mesh_group.py
