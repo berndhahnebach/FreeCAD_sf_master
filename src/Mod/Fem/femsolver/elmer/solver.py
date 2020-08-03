@@ -36,6 +36,7 @@ from .equations import flow
 from .equations import flux
 from .equations import electricforce
 from .equations import heat
+from .equations import equation_elmer_freetextinput
 from .. import run
 from .. import solverbase
 from femtools import femutils
@@ -59,6 +60,7 @@ class Proxy(solverbase.Proxy):
         "Flux": flux,
         "Electricforce": electricforce,
         "Flow": flow,
+        "ElmerFreetextinput": equation_elmer_freetextinput,
     }
 
     def __init__(self, obj):

@@ -42,6 +42,7 @@ using namespace FemGui;
     qApp->translate("Workbench", "M&odel");
     qApp->translate("Workbench", "Materials");
     qApp->translate("Workbench", "&Materials");
+    qApp->translate("Workbench", "&Freetextinputs for Elmer");
     qApp->translate("Workbench", "Element Geometry");
     qApp->translate("Workbench", "&Element Geometry");
     qApp->translate("Workbench", "Electrostatic Constraints");
