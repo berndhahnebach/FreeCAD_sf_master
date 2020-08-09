@@ -141,7 +141,6 @@ SET(FemObjects_SRCS
     femobjects/material_mechanicalnonlinear.py
     femobjects/material_reinforced.py
     femobjects/material_elmer_freetextinput.py
-    femobjects/equation_elmer_freetextinput.py
     femobjects/mesh_boundarylayer.py
     femobjects/mesh_gmsh.py
     femobjects/mesh_group.py
@@ -197,6 +196,7 @@ SET(FemSolverElmerEquations_SRCS
     femsolver/elmer/equations/heat.py
     femsolver/elmer/equations/linear.py
     femsolver/elmer/equations/nonlinear.py
+    femsolver/elmer/equations/equation_elmer_freetextinput.py
 )
 
 SET(FemSolverFenics_SRCS

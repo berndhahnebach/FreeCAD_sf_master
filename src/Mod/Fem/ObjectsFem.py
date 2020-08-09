@@ -715,7 +715,6 @@ def makeEquationElmerFreetextinput(
 ):
     """EquationElmerFreetextinput(document, [base_solver], [name]):
     creates a FEM freetextinput equation for a Elmer solver"""
-    obj = doc.addObject("App::EquationObjectPython", name)
     from femsolver.elmer.equations import equation_elmer_freetextinput
     obj = equation_elmer_freetextinput.create(doc, name)
     if base_solver:

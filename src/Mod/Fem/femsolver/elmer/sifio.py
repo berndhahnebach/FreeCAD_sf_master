@@ -171,6 +171,15 @@ class Builder(object):
             section[self._ACTIVE_SOLVERS] = []
         section[self._ACTIVE_SOLVERS].append(solverSection)
 
+#    def addSolverFreetextinput(self, body, solverSection):
+#        from FreeCAD import Console
+#        Console.PrintMessage("Handling Freetext addSolverFreetextinput\n")
+#        section = self._getFromBody(body, EQUATION)
+#        if self._ACTIVE_SOLVERS not in section:
+#            section[self._ACTIVE_SOLVERS] = []
+#        section[self._ACTIVE_SOLVERS].append(solverSection)
+##        section['freetextinput'] = freetextinput
+
     def boundary(self, boundary, key, attr):
         if boundary not in self._boundaries:
             self._boundaries[boundary] = createSection(BOUNDARY_CONDITION)
@@ -335,7 +344,6 @@ class _Writer(object):
 
     def _writefreetextinput(self, freetextinput):
         self._stream.write(_NEWLINE)
-#        self._stream.write(_INDENT)
         self._stream.write(freetextinput)
 
     def _writeAttribute(self, key, data):

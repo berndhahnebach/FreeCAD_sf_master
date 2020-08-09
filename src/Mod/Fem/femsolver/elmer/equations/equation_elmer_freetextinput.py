@@ -54,7 +54,21 @@ class Proxy(linear.Proxy, equationbase.EquationElmerFreetextinputProxy):
 
 
 
+from femtaskpanels import task_equation_elmer_freetextinput
+from femviewprovider import view_base_femconstraint
+
 class ViewProxy(linear.ViewProxy, equationbase.EquationElmerFreetextinputViewProxy):
-    pass
+#    pass
+    
+    def setEdit(self, vobj, mode=0):
+        view_base_femconstraint.VPBaseFemConstraint.setEdit(
+            self,
+            vobj,
+            mode,
+            task_equation_elmer_freetextinput._TaskPanel
+        )
+
+    def getIcon(self):
+        return ":/icons/FEM_EquationElmerFreetextinput.svg"
 
 ##  @}

@@ -95,6 +95,7 @@ class Writer(object):
         self._handleFlux()
         self._handleElectricforce()
         self._handleFlow()
+        self._handleEquationFreetextinput()
         self._addOutputSolver()
 
         self._writeSif()
@@ -274,14 +275,19 @@ class Writer(object):
             "Steady State Min Iterations",
             self.solver.SteadyStateMinIterations)
 
-    def _handleEquationFreetextinput(self):
+    def _handleEquationFreetextinput(self):  # the FC equation is meant; a Elmer solver is created
         activeIn = []
+        Console.PrintMessage("Handling Freetext equation\n")
         for equation in self.solver.Group:
             if femutils.is_of_type(equation, "Fem::EquationElmerFreetextinput"):
                 if equation.References:
-                    for name in obj.References[0][1]:
-                        freetextinput = obj.ElmerFreetextinput
-                        self._equationFreetextinput(name, freetextinput)
+                    activeIn = equation.References[0][1]
+                else:
+                    activeIn = self._getAllBodies()
+                freetextinput = equation.ElmerFreetextinput
+                solverSection = self._createSolverFreetextinput(equation, freetextinput)
+                for body in activeIn:
+                    self._addSolver(body, solverSection)
 
     def _handleHeat(self):
         activeIn = []
@@ -976,8 +982,10 @@ class Writer(object):
         for b in bodies:
             self._equation(b, "Convection", "Computed")
 
-    def _createEmptySolver(self, equation):
+    def _createSolverFreetextinput(self, equation, freetextinput):
         s = sifio.createSection(sifio.SOLVER)
+        s.priority = equation.Priority
+        s["freetextinput"] = freetextinput
         return s
 
     def _createLinearSolver(self, equation):
