@@ -60,6 +60,7 @@ SET(FemExamples_SRCS
     femexamples/equation_electrostatics_capacitance_two_balls.py
     femexamples/equation_electrostatics_cube_capacitor.py
     femexamples/equation_electrostatics_electricforce_elmer_nongui6.py
+    femexamples/equation_heat_temp_field_elmer_gui1.py
     femexamples/equation_navierstokes_laminar_flow_elmer_gui9.py
     femexamples/manager.py
     femexamples/material_multiple_bendingbeam_fiveboxes.py
@@ -94,6 +95,7 @@ SET(FemExampleMeshes_SRCS
     femexamples/meshes/mesh_section_print_tetra10.py
     femexamples/meshes/mesh_selfweight_cantilever_tetra10.py
     femexamples/meshes/mesh_square_pipe_end_twisted_tria6.py
+    femexamples/meshes/mesh_temp_field_elmer_gui1_tetra10.py
     femexamples/meshes/mesh_thermomech_bimetall_tetra10.py
     femexamples/meshes/mesh_thermomech_flow1d_seg3.py
     femexamples/meshes/mesh_thermomech_spine_tetra10.py
