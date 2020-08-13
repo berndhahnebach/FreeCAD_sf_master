@@ -288,6 +288,19 @@ class Writer(object):
                 solverSection = self._createSolverFreetextinput(equation, freetextinput)
                 for body in activeIn:
                     self._addSolver(body, solverSection)
+        if activeIn:
+            self._handleHeatConstants()
+            self._handleHeatBndConditions()
+            self._handleHeatInitial(activeIn)
+            self._handleHeatBodyForces(activeIn)
+            self._handleHeatMaterial(activeIn)
+            
+            self._handleStatcurrentConstants()
+            self._handleStatcurrentBndConditions()
+            # self._handleElectrostaticInitial(activeIn)
+            # self._handleElectrostaticBodyForces(activeIn)
+            self._handleStatcurrentsBodyForces(activeIn)
+            self._handleStatcurrentMaterial(activeIn)
 
     def _handleHeat(self):
         activeIn = []
@@ -566,12 +579,6 @@ class Writer(object):
             self._getConstant("PermittivityOfVacuum", "T^4*I^2/(L^3*M)")
         )
         # https://forum.freecadweb.org/viewtopic.php?f=18&p=400959#p400959
-        obj = self._getSingleMember("Fem::MaterialElmerFreetextinput")
-        if obj is not None:
-            for name in bodies:
-                freetextinput = obj.ElmerFreetextinput
-                self._materialFreetextinput(name, freetextinput)
-            self._handled(obj)
 
     def _handleStatcurrentMaterial(self, bodies):
         for obj in self._getMember("App::MaterialObject"):
@@ -593,7 +600,7 @@ class Writer(object):
                         freetextinput = obj.ElmerFreetextinput
                         self._materialFreetextinput(name, freetextinput)
                     self._handled(obj)
-                    
+
     def _handleStatcurrentBndConditions(self):
         for obj in self._getMember("Fem::ConstraintElectrostaticPotential"):
             if obj.References:
