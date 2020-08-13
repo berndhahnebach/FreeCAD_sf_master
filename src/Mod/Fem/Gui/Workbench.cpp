@@ -42,6 +42,7 @@ using namespace FemGui;
     qApp->translate("Workbench", "M&odel");
     qApp->translate("Workbench", "Materials");
     qApp->translate("Workbench", "&Materials");
+    qApp->translate("Workbench", "&Freetextinputs for Elmer");
     qApp->translate("Workbench", "Element Geometry");
     qApp->translate("Workbench", "&Element Geometry");
     qApp->translate("Workbench", "Electrostatic Constraints");
@@ -177,6 +178,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
         << "Separator"
         << "FEM_EquationElasticity"
         << "FEM_EquationElectrostatic"
+        << "FEM_EquationStatcurrent"
         << "FEM_EquationFlow"
         << "FEM_EquationFlux"
         << "FEM_EquationElectricforce"
@@ -228,7 +230,17 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "FEM_MaterialFluid"
         << "FEM_MaterialMechanicalNonlinear"
         << "FEM_MaterialReinforced"
-        << "FEM_MaterialEditor";
+        << "FEM_MaterialEditor"
+        << "Separator"
+        << "FEM_MaterialElmerFreetextinput";
+
+    Gui::MenuItem* freetextelmer = new Gui::MenuItem;
+    freetextelmer->setCommand("&Freetextinputs for Elmer");
+    *freetextelmer
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput"
+        << "FEM_MaterialElmerFreetextinput"
+        << "FEM_EquationElmerFreetextinput";
 
     Gui::MenuItem* elegeom = new Gui::MenuItem;
     elegeom->setCommand("&Element Geometry");
@@ -241,14 +253,20 @@ Gui::MenuItem* Workbench::setupMenuBar() const
     Gui::MenuItem* elec = new Gui::MenuItem;
     elec->setCommand("&Electrostatic Constraints");
     *elec
-        << "FEM_ConstraintElectrostaticPotential";
+        << "FEM_ConstraintElectrostaticPotential"
+        << "Separator"
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* fluid = new Gui::MenuItem;
     fluid->setCommand("&Fluid Constraints");
     *fluid
         << "FEM_ConstraintInitialFlowVelocity"
         << "Separator"
-        << "FEM_ConstraintFlowVelocity";
+        << "FEM_ConstraintFlowVelocity"
+        << "Separator"
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* geom = new Gui::MenuItem;
     geom->setCommand("&Geometrical Constraints");
@@ -267,7 +285,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "Separator"
         << "FEM_ConstraintForce"
         << "FEM_ConstraintPressure"
-        << "FEM_ConstraintSelfWeight";
+        << "FEM_ConstraintSelfWeight"
+        << "Separator"
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* thermal = new Gui::MenuItem;
     thermal->setCommand("&Thermal Constraints");
@@ -276,7 +297,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "Separator"
         << "FEM_ConstraintHeatflux"
         << "FEM_ConstraintTemperature"
-        << "FEM_ConstraintBodyHeatSource";
+        << "FEM_ConstraintBodyHeatSource"
+        << "Separator"
+        << "FEM_BodyForceElmerFreetextinput"
+        << "FEM_ConstraintFaceElmerFreetextinput";
 
     Gui::MenuItem* nosolver = new Gui::MenuItem;
     nosolver->setCommand("&Constraints without solver");
@@ -299,6 +323,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "Separator"
         << material
         << elegeom
+        << freetextelmer
         << "Separator"
         << elec
         << fluid
@@ -338,6 +363,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
         << "Separator"
         << "FEM_EquationElasticity"
         << "FEM_EquationElectrostatic"
+        << "FEM_EquationStatcurrent"
         << "FEM_EquationFlow"
         << "FEM_EquationFlux"
         << "FEM_EquationElectricforce"

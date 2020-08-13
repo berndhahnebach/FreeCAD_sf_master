@@ -169,6 +169,30 @@ class _ConstraintElectrostaticPotential(CommandManager):
         self.do_activated = "add_obj_on_gui_set_edit"
 
 
+class _BodyForceElmerFreetextinput(CommandManager):
+    "The FEM_ConstraintBodyForceElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_BodyForceElmerFreetextinput, self).__init__()
+        self.pixmap = "FEM_BodyForceElmerFreetextinput.svg"
+        self.menuetext = "Body Force Freetextinput"
+        self.tooltip = "Creates a FEM BodyForceFreetextinput"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_noset_edit"
+
+
+class _ConstraintFaceElmerFreetextinput(CommandManager):
+    "The FEM_ConstraintFaceElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_ConstraintFaceElmerFreetextinput, self).__init__()
+        self.pixmap = "FEM_ConstraintFaceElmerFreetextinput.svg"
+        self.menuetext = "Constraint Face Freetextinput"
+        self.tooltip = "Creates a FEM ConstraintFaceFreetextinput"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_noset_edit"
+
+
 class _ConstraintFlowVelocity(CommandManager):
     "The FEM_ConstraintFlowVelocity command definition"
 
@@ -279,6 +303,17 @@ class _EquationElectrostatic(CommandManager):
         self.do_activated = "add_obj_on_gui_selobj_noset_edit"
 
 
+class _EquationStatcurrent(CommandManager):
+    "The FEM_EquationStatcurrent command definition"
+
+    def __init__(self):
+        super(_EquationStatcurrent, self).__init__()
+        self.menuetext = "Static current equation"
+        self.tooltip = "Creates a FEM equation for static current"
+        self.is_active = "with_solver_elmer"
+        self.do_activated = "add_obj_on_gui_selobj_noset_edit"
+
+
 class _EquationElasticity(CommandManager):
     "The FEM_EquationElasticity command definition"
 
@@ -288,6 +323,18 @@ class _EquationElasticity(CommandManager):
         self.tooltip = "Creates a FEM equation for elasticity"
         self.is_active = "with_solver_elmer"
         self.do_activated = "add_obj_on_gui_selobj_noset_edit"
+
+
+class _EquationElmerFreetextinput(CommandManager):
+    "The FEM_EquationElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_EquationElmerFreetextinput, self).__init__()
+        self.menuetext = "Equation with freetextinput for Elmer"
+        self.accel = "E, F, E"
+        self.tooltip = "Creates a freetextinput equation for Elmer"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_set_edit"
 
 
 class _EquationFlow(CommandManager):
@@ -458,6 +505,18 @@ class _MaterialSolid(CommandManager):
         self.menuetext = "Material for solid"
         self.accel = "M, S"
         self.tooltip = "Creates a FEM material for solid"
+        self.is_active = "with_analysis"
+        self.do_activated = "add_obj_on_gui_set_edit"
+
+
+class _MaterialElmerFreetextinput(CommandManager):
+    "The FEM_MaterialElmerFreetextinput command definition"
+
+    def __init__(self):
+        super(_MaterialElmerFreetextinput, self).__init__()
+        self.menuetext = "Material with freetextinput for Elmer"
+        self.accel = "M, F, E"
+        self.tooltip = "Creates a freetextinput material for Elmer"
         self.is_active = "with_analysis"
         self.do_activated = "add_obj_on_gui_set_edit"
 
@@ -816,6 +875,14 @@ FreeCADGui.addCommand(
     _ConstraintElectrostaticPotential()
 )
 FreeCADGui.addCommand(
+    "FEM_BodyForceElmerFreetextinput",
+    _BodyForceElmerFreetextinput()
+)
+FreeCADGui.addCommand(
+    "FEM_ConstraintFaceElmerFreetextinput",
+    _ConstraintFaceElmerFreetextinput()
+)
+FreeCADGui.addCommand(
     "FEM_ConstraintFlowVelocity",
     _ConstraintFlowVelocity()
 )
@@ -856,8 +923,16 @@ FreeCADGui.addCommand(
     _EquationElectrostatic()
 )
 FreeCADGui.addCommand(
+    "FEM_EquationStatcurrent",
+    _EquationStatcurrent()
+)
+FreeCADGui.addCommand(
     "FEM_EquationElasticity",
     _EquationElasticity()
+)
+FreeCADGui.addCommand(
+    "FEM_EquationElmerFreetextinput",
+    _EquationElmerFreetextinput()
 )
 FreeCADGui.addCommand(
     "FEM_EquationFlow",
@@ -898,6 +973,10 @@ FreeCADGui.addCommand(
 FreeCADGui.addCommand(
     "FEM_MaterialSolid",
     _MaterialSolid()
+)
+FreeCADGui.addCommand(
+    "FEM_MaterialElmerFreetextinput",
+    _MaterialElmerFreetextinput()
 )
 FreeCADGui.addCommand(
     "FEM_FEMMesh2Mesh",

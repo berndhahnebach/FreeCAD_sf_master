@@ -85,9 +85,11 @@ class Writer(object):
         self._handleHeat()
         self._handleElasticity()
         self._handleElectrostatic()
+        self._handleStatcurrent()
         self._handleFlux()
         self._handleElectricforce()
         self._handleFlow()
+        self._handleEquationFreetextinput()
         self._addOutputSolver()
 
         self._writeSif()
@@ -295,6 +297,33 @@ class Writer(object):
             "Steady State Min Iterations",
             self.solver.SteadyStateMinIterations)
 
+    def _handleEquationFreetextinput(self):  # the FC equation is meant; a Elmer solver is created
+        activeIn = []
+        Console.PrintMessage("Handling Freetext equation\n")
+        for equation in self.solver.Group:
+            if femutils.is_of_type(equation, "Fem::EquationElmerFreetextinput"):
+                if equation.References:
+                    activeIn = equation.References[0][1]
+                else:
+                    activeIn = self._getAllBodies()
+                freetextinput = equation.ElmerFreetextinput
+                solverSection = self._createSolverFreetextinput(equation, freetextinput)
+                for body in activeIn:
+                    self._addSolver(body, solverSection)
+        if activeIn:
+            self._handleHeatConstants()
+            self._handleHeatBndConditions()
+            self._handleHeatInitial(activeIn)
+            self._handleHeatBodyForces(activeIn)
+            self._handleHeatMaterial(activeIn)
+            
+            self._handleStatcurrentConstants()
+            self._handleStatcurrentBndConditions()
+            # self._handleElectrostaticInitial(activeIn)
+            # self._handleElectrostaticBodyForces(activeIn)
+            self._handleStatcurrentsBodyForces(activeIn)
+            self._handleStatcurrentMaterial(activeIn)
+
     def _handleHeat(self):
         activeIn = []
         for equation in self.solver.Group:
@@ -353,6 +382,11 @@ class Writer(object):
                         self._boundary(name, "Heat Flux BC", True)
                         self._boundary(name, "Heat Flux", flux)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
 
     def _handleHeatInitial(self, bodies):
         obj = self._getSingleMember("Fem::ConstraintInitialTemperature")
@@ -373,6 +407,13 @@ class Writer(object):
                 self._bodyForce(name, "Heat Source", heatSource)
             self._handled(obj)
 
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
+
     def _handleHeatMaterial(self, bodies):
         tempObj = self._getSingleMember("Fem::ConstraintInitialTemperature")
         if tempObj is not None:
@@ -380,21 +421,29 @@ class Writer(object):
             for name in bodies:
                 self._material(name, "Reference Temperature", refTemp)
         for obj in self._getMember("App::MaterialObject"):
-            m = obj.Material
-            refs = (
-                obj.References[0][1]
-                if obj.References
-                else self._getAllBodies())
-            for name in (n for n in refs if n in bodies):
-                self._material(
-                    name, "Density",
-                    self._getDensity(m))
-                self._material(
-                    name, "Heat Conductivity",
-                    self._convert(m["ThermalConductivity"], "M*L/(T^3*O)"))
-                self._material(
-                    name, "Heat Capacity",
-                    self._convert(m["SpecificHeat"], "L^2/(T^2*O)"))
+            if not femutils.is_of_type(obj, "Fem::MaterialElmerFreetextinput"):
+                m = obj.Material
+                refs = (
+                    obj.References[0][1]
+                    if obj.References
+                    else self._getAllBodies())
+                for name in (n for n in refs if n in bodies):
+                    self._material(
+                        name, "Density",
+                        self._getDensity(m))
+                    self._material(
+                        name, "Heat Conductivity",
+                        self._convert(m["ThermalConductivity"], "M*L/(T^3*O)"))
+                    self._material(
+                        name, "Heat Capacity",
+                        self._convert(m["SpecificHeat"], "L^2/(T^2*O)"))
+            else:
+                if obj is not None:
+                    for name in bodies:
+                        freetextinput = obj.ElmerFreetextinput
+                        self._materialFreetextinput(name, freetextinput)
+                    self._handled(obj)
+
 
     def _handleElectrostatic(self):
         activeIn = []
@@ -411,7 +460,7 @@ class Writer(object):
             self._handleElectrostaticConstants()
             self._handleElectrostaticBndConditions()
             # self._handleElectrostaticInitial(activeIn)
-            # self._handleElectrostaticBodyForces(activeIn)
+            self._handleElectrostaticBodyForces(activeIn)
             self._handleElectrostaticMaterial(activeIn)
 
     def _getElectrostaticSolver(self, equation):
@@ -441,17 +490,25 @@ class Writer(object):
 
     def _handleElectrostaticMaterial(self, bodies):
         for obj in self._getMember("App::MaterialObject"):
-            m = obj.Material
-            refs = (
-                obj.References[0][1]
-                if obj.References
-                else self._getAllBodies())
-            for name in (n for n in refs if n in bodies):
-                if "RelativePermittivity" in m:
-                    self._material(
-                        name, "Relative Permittivity",
-                        float(m["RelativePermittivity"])
-                    )
+            if not femutils.is_of_type(obj, "Fem::MaterialElmerFreetextinput"):
+                m = obj.Material
+                refs = (
+                    obj.References[0][1]
+                    if obj.References
+                    else self._getAllBodies())
+                for name in (n for n in refs if n in bodies):
+                    if "RelativePermittivity" in m:
+                        self._material(
+                            name, "Relative Permittivity",
+                            float(m["RelativePermittivity"])
+                        )
+            else:
+                if obj is not None:
+                    for name in bodies:
+                        freetextinput = obj.ElmerFreetextinput
+                        self._materialFreetextinput(name, freetextinput)
+                    self._handled(obj)
+
 
     def _handleElectrostaticBndConditions(self):
         for obj in self._getMember("Fem::ConstraintElectrostaticPotential"):
@@ -472,6 +529,126 @@ class Writer(object):
                         if hasattr(obj, "CapacitanceBody"):
                             self._boundary(name, "Capacitance Body", obj.CapacitanceBody)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
+
+    def _handleElectrostaticBodyForces(self, bodies):
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
+
+    def _handleElectrostatic(self):
+        activeIn = []
+        for equation in self.solver.Group:
+            if femutils.is_of_type(equation, "Fem::EquationElmerElectrostatic"):
+                if equation.References:
+                    activeIn = equation.References[0][1]
+                else:
+                    activeIn = self._getAllBodies()
+                solverSection = self._getElectrostaticSolver(equation)
+                for body in activeIn:
+                    self._addSolver(body, solverSection)
+        if activeIn:
+            self._handleElectrostaticConstants()
+            self._handleElectrostaticBndConditions()
+            # self._handleElectrostaticInitial(activeIn)
+            self._handleElectrostaticBodyForces(activeIn)
+            self._handleElectrostaticMaterial(activeIn)
+
+    def _handleStatcurrent(self):
+        activeIn = []
+        for equation in self.solver.Group:
+            if femutils.is_of_type(equation, "Fem::EquationElmerStatcurrent"):
+                if equation.References:
+                    activeIn = equation.References[0][1]
+                else:
+                    activeIn = self._getAllBodies()
+                solverSection = self._getStatcurrentSolver(equation)
+                for body in activeIn:
+                    self._addSolver(body, solverSection)
+        if activeIn:
+            self._handleStatcurrentConstants()
+            self._handleStatcurrentBndConditions()
+            # self._handleElectrostaticInitial(activeIn)
+            # self._handleElectrostaticBodyForces(activeIn)
+            self._handleStatcurrentsBodyForces(activeIn)
+            self._handleStatcurrentMaterial(activeIn)
+
+    def _getStatcurrentSolver(self, equation):
+        s = self._createNonlinearSolver(equation)
+        s["Equation"] = "Stat Current Solver"  # equation.Name
+        s["Procedure"] = sifio.FileAttr("StatCurrentSolve/StatCurrentSolver")
+        s["Variable"] = self._getUniqueVarName("Potential")
+        s["Variable DOFs"] = 1
+        s["Calculate Volume Current"] = equation.CalculateVolumeCurrent
+        s["Calculate Joule Heating"] = equation.CalculateJouleHeating
+        s["Displace mesh"] = False
+        s["Exec Solver"] = "Always"
+        s["Stabilize"] = equation.Stabilize
+        s["Bubbles"] = equation.Bubbles
+        s["Optimize Bandwidth"] = True
+        return s
+
+    def _handleStatcurrentConstants(self):
+        self._constant(
+            "Permittivity Of Vacuum",
+            self._getConstant("PermittivityOfVacuum", "T^4*I^2/(L^3*M)")
+        )
+        # https://forum.freecadweb.org/viewtopic.php?f=18&p=400959#p400959
+
+    def _handleStatcurrentMaterial(self, bodies):
+        for obj in self._getMember("App::MaterialObject"):
+            if not femutils.is_of_type(obj, "Fem::MaterialElmerFreetextinput"):
+                m = obj.Material
+                refs = (
+                    obj.References[0][1]
+                    if obj.References
+                    else self._getAllBodies())
+                for name in (n for n in refs if n in bodies):
+                    if "ElectricConductivity" in m:
+                        self._material(
+                            name, "Electric Conductivity",
+                            float(m["ElectricConductivity"])
+                            )
+            else:
+                if obj is not None:
+                    for name in bodies:
+                        freetextinput = obj.ElmerFreetextinput
+                        self._materialFreetextinput(name, freetextinput)
+                    self._handled(obj)
+
+    def _handleStatcurrentBndConditions(self):
+        for obj in self._getMember("Fem::ConstraintElectrostaticPotential"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    # https://forum.freecadweb.org/viewtopic.php?f=18&t=41488&start=10#p369454  ff
+                    if obj.PotentialEnabled:
+                        if hasattr(obj, "Potential"):
+                            potential = self._getFromUi(obj.Potential, "V", "M*L^2/(T^3 * I)")
+                            self._boundary(name, "Potential", potential)
+                    if obj.PotentialConstant:
+                        self._boundary(name, "Potential Constant", True)
+
+                self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
+
+    def _handleStatcurrentsBodyForces(self, bodies):
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
 
     def _handleFlux(self):
         activeIn = []
@@ -598,6 +775,11 @@ class Writer(object):
                     elif obj.zFix:
                         self._boundary(name, "Displacement 3", 0.0)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
 
     def _handleElasticityInitial(self, bodies):
         pass
@@ -626,6 +808,13 @@ class Writer(object):
                 self._bodyForce(name, "Stress Bodyforce 3", force3)
             self._handled(obj)
 
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
+
     def _getBodyMaterial(self, name):
         for obj in self._getMember("App::MaterialObject"):
             if not obj.References or name in obj.References[0][1]:
@@ -640,31 +829,38 @@ class Writer(object):
             for name in bodies:
                 self._material(name, "Reference Temperature", refTemp)
         for obj in self._getMember("App::MaterialObject"):
-            m = obj.Material
-            refs = (
-                obj.References[0][1]
-                if obj.References
-                else self._getAllBodies()
-            )
-            for name in (n for n in refs if n in bodies):
-                if gravObj:
-                    self._material(
-                        name, "Density",
-                        self._getDensity(m)
-                    )
-                self._material(
-                    name, "Youngs Modulus",
-                    self._getYoungsModulus(m)
+            if not femutils.is_of_type(obj, "Fem::MaterialElmerFreetextinput"):
+                m = obj.Material
+                refs = (
+                    obj.References[0][1]
+                    if obj.References
+                    else self._getAllBodies()
                 )
-                self._material(
-                    name, "Poisson ratio",
-                    float(m["PoissonRatio"])
-                )
-                if tempObj:
+                for name in (n for n in refs if n in bodies):
+                    if gravObj:
+                        self._material(
+                            name, "Density",
+                            self._getDensity(m)
+                        )
                     self._material(
-                        name, "Heat expansion Coefficient",
-                        self._convert(m["ThermalExpansionCoefficient"], "O^-1")
+                        name, "Youngs Modulus",
+                        self._getYoungsModulus(m)
                     )
+                    self._material(
+                        name, "Poisson ratio",
+                        float(m["PoissonRatio"])
+                    )
+                    if tempObj:
+                        self._material(
+                            name, "Heat expansion Coefficient",
+                            self._convert(m["ThermalExpansionCoefficient"], "O^-1")
+                        )
+            else:
+                if obj is not None:
+                    for name in bodies:
+                        freetextinput = obj.ElmerFreetextinput
+                        self._materialFreetextinput(name, freetextinput)
+                    self._handled(obj)
 
     def _getDensity(self, m):
         density = self._convert(m["Density"], "M/L^3")
@@ -694,7 +890,7 @@ class Writer(object):
             self._handleFlowBndConditions()
             self._handleFlowInitialVelocity(activeIn)
             # self._handleFlowInitial(activeIn)
-            # self._handleFlowBodyForces(activeIn)
+            self._handleFlowBodyForces(activeIn)
             self._handleFlowMaterial(activeIn)
             self._handleFlowEquation(activeIn)
 
@@ -720,44 +916,51 @@ class Writer(object):
             for name in bodies:
                 self._material(name, "Reference Temperature", refTemp)
         for obj in self._getMember("App::MaterialObject"):
-            m = obj.Material
-            refs = (
-                obj.References[0][1]
-                if obj.References
-                else self._getAllBodies())
-            for name in (n for n in refs if n in bodies):
-                if "Density" in m:
-                    self._material(
-                        name, "Density",
-                        self._getDensity(m)
-                    )
-                if "ThermalConductivity" in m:
-                    self._material(
-                        name, "Heat Conductivity",
-                        self._convert(m["ThermalConductivity"], "M*L/(T^3*O)")
-                    )
-                if "KinematicViscosity" in m:
-                    density = self._getDensity(m)
-                    kViscosity = self._convert(m["KinematicViscosity"], "L^2/T")
-                    self._material(
-                        name, "Viscosity", kViscosity * density)
-                if "ThermalExpansionCoefficient" in m:
-                    value = self._convert(m["ThermalExpansionCoefficient"], "O^-1")
-                    if value > 0:
+            if not femutils.is_of_type(obj, "Fem::MaterialElmerFreetextinput"):
+                m = obj.Material
+                refs = (
+                    obj.References[0][1]
+                    if obj.References
+                    else self._getAllBodies())
+                for name in (n for n in refs if n in bodies):
+                    if "Density" in m:
                         self._material(
-                            name, "Heat expansion Coefficient", value)
-                if "ReferencePressure" in m:
-                    pressure = self._convert(m["ReferencePressure"], "M/(L*T^2)")
-                    self._material(name, "Reference Pressure", pressure)
-                if "SpecificHeatRatio" in m:
-                    self._material(
-                        name, "Specific Heat Ratio",
-                        float(m["SpecificHeatRatio"])
-                    )
-                if "CompressibilityModel" in m:
-                    self._material(
-                        name, "Compressibility Model",
-                        m["CompressibilityModel"])
+                            name, "Density",
+                            self._getDensity(m)
+                        )
+                    if "ThermalConductivity" in m:
+                        self._material(
+                            name, "Heat Conductivity",
+                            self._convert(m["ThermalConductivity"], "M*L/(T^3*O)")
+                        )
+                    if "KinematicViscosity" in m:
+                        density = self._getDensity(m)
+                        kViscosity = self._convert(m["KinematicViscosity"], "L^2/T")
+                        self._material(
+                            name, "Viscosity", kViscosity * density)
+                    if "ThermalExpansionCoefficient" in m:
+                        value = self._convert(m["ThermalExpansionCoefficient"], "O^-1")
+                        if value > 0:
+                            self._material(
+                                name, "Heat expansion Coefficient", value)
+                    if "ReferencePressure" in m:
+                        pressure = self._convert(m["ReferencePressure"], "M/(L*T^2)")
+                        self._material(name, "Reference Pressure", pressure)
+                    if "SpecificHeatRatio" in m:
+                        self._material(
+                            name, "Specific Heat Ratio",
+                            float(m["SpecificHeatRatio"])
+                        )
+                    if "CompressibilityModel" in m:
+                        self._material(
+                            name, "Compressibility Model",
+                            m["CompressibilityModel"])
+            else:
+                if obj is not None:
+                    for name in bodies:
+                        freetextinput = obj.ElmerFreetextinput
+                        self._materialFreetextinput(name, freetextinput)
+                    self._handled(obj)
 
     def _handleFlowInitialVelocity(self, bodies):
         obj = self._getSingleMember("Fem::ConstraintInitialFlowVelocity")
@@ -790,13 +993,28 @@ class Writer(object):
                     if obj.NormalToBoundary:
                         self._boundary(name, "Normal-Tangential Velocity", True)
                 self._handled(obj)
+        for obj in self._getMember("Fem::ConstraintFaceElmerFreetextinput"):
+            if obj.References:
+                for name in obj.References[0][1]:
+                    freetextinput = obj.ElmerFreetextinput
+                    self._constraintFaceFreetextinput(name, freetextinput)
+
+    def _handleFlowBodyForces(self, bodies):
+        obj = self._getSingleMember("Fem::BodyForceElmerFreetextinput")
+        if obj is not None:
+            for name in bodies:
+                freetextinput = obj.ElmerFreetextinput
+                self._bodyForceFreetextinput(name, freetextinput)
+            self._handled(obj)
 
     def _handleFlowEquation(self, bodies):
         for b in bodies:
             self._equation(b, "Convection", "Computed")
 
-    def _createEmptySolver(self, equation):
+    def _createSolverFreetextinput(self, equation, freetextinput):
         s = sifio.createSection(sifio.SOLVER)
+        s.priority = equation.Priority
+        s["freetextinput"] = freetextinput
         return s
 
     def _createLinearSolver(self, equation):
@@ -911,17 +1129,32 @@ class Writer(object):
     def _material(self, body, key, attr):
         self._builder.material(body, key, attr)
 
+    def _materialFreetextinput(self, body, freetextinput):
+        self._builder.materialFreetextinput(body, freetextinput)
+
     def _equation(self, body, key, attr):
         self._builder.equation(body, key, attr)
 
+    def _equationFreetextinput(self, body, freetextinput):
+        self._builder.equationFreetextinput(body, freetextinput)
+
     def _bodyForce(self, body, key, attr):
         self._builder.bodyForce(body, key, attr)
+
+    def _bodyForceFreetextinput(self, body, freetextinput):
+        self._builder.bodyForceFreetextinput(body, freetextinput)
+
+    def _constraintFaceFreetextinput(self, boundary, freetextinput):
+        self._builder.boundaryFreetextinput(boundary, freetextinput)
 
     def _addSolver(self, body, solverSection):
         self._builder.addSolver(body, solverSection)
 
     def _boundary(self, boundary, key, attr):
         self._builder.boundary(boundary, key, attr)
+
+    def _boundaryFreetextinput(self, boundary, freetextinput):
+        self._builder.boundaryFreetextinput(boundary, freetextinput)
 
     def _addSection(self, section):
         self._builder.addSection(section)

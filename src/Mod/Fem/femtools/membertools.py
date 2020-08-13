@@ -255,6 +255,9 @@ class AnalysisMember():
         self.mats_nonlinear = self.get_several_member(
             "Fem::MaterialMechanicalNonlinear"
         )
+        self.mats_elmerfreetext = self.get_several_member(
+            "Fem::MaterialElmerFreetextinput"
+        )
 
         # geometries
         self.geos_beamsection = self.get_several_member(
@@ -309,6 +312,12 @@ class AnalysisMember():
         )
         self.cons_transform = self.get_several_member(
             "Fem::ConstraintTransform"
+        )
+        self.cons_bfelmerfreetextinput = self.get_several_member(
+            "Fem::BodyForceElmerFreetextinput"
+        )
+        self.cons_faceelmerfreetextinput = self.get_several_member(
+            "Fem::ConstraintFaceElmerFreetextinput"
         )
 
     def get_several_member(self, t):

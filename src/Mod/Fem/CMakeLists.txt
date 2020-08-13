@@ -126,6 +126,8 @@ SET(FemObjects_SRCS
     femobjects/constant_vacuumpermittivity.py
     femobjects/constraint_bodyheatsource.py
     femobjects/constraint_electrostaticpotential.py
+    femobjects/body_force_elmer_freetextinput.py
+    femobjects/constraint_face_elmer_freetextinput.py
     femobjects/constraint_flowvelocity.py
     femobjects/constraint_initialflowvelocity.py
     femobjects/constraint_sectionprint.py
@@ -138,6 +140,7 @@ SET(FemObjects_SRCS
     femobjects/material_common.py
     femobjects/material_mechanicalnonlinear.py
     femobjects/material_reinforced.py
+    femobjects/material_elmer_freetextinput.py
     femobjects/mesh_boundarylayer.py
     femobjects/mesh_gmsh.py
     femobjects/mesh_group.py
@@ -185,6 +188,7 @@ SET(FemSolverElmerEquations_SRCS
     femsolver/elmer/equations/__init__.py
     femsolver/elmer/equations/electricforce.py
     femsolver/elmer/equations/electrostatic.py
+    femsolver/elmer/equations/statcurrent.py
     femsolver/elmer/equations/elasticity.py
     femsolver/elmer/equations/equation.py
     femsolver/elmer/equations/flow.py
@@ -192,6 +196,7 @@ SET(FemSolverElmerEquations_SRCS
     femsolver/elmer/equations/heat.py
     femsolver/elmer/equations/linear.py
     femsolver/elmer/equations/nonlinear.py
+    femsolver/elmer/equations/equation_elmer_freetextinput.py
 )
 
 SET(FemSolverFenics_SRCS
@@ -439,6 +444,8 @@ SET(FemGuiObjects_SRCS
 SET(FemGuiTaskPanels_SRCS
     femtaskpanels/__init__.py
     femtaskpanels/task_constraint_electrostaticpotential.py
+    femtaskpanels/task_body_force_elmer_freetextinput.py
+    femtaskpanels/task_constraint_face_elmer_freetextinput.py
     femtaskpanels/task_constraint_flowvelocity.py
     femtaskpanels/task_constraint_initialflowvelocity.py
     femtaskpanels/task_constraint_sectionprint.py
@@ -449,6 +456,8 @@ SET(FemGuiTaskPanels_SRCS
     femtaskpanels/task_element_rotation1D.py
     femtaskpanels/task_material_common.py
     femtaskpanels/task_material_reinforced.py
+    femtaskpanels/task_material_elmer_freetextinput.py
+    femtaskpanels/task_equation_elmer_freetextinput.py
     femtaskpanels/task_mesh_boundarylayer.py
     femtaskpanels/task_mesh_gmsh.py
     femtaskpanels/task_mesh_group.py
@@ -475,6 +484,8 @@ SET(FemGuiViewProvider_SRCS
     femviewprovider/view_constant_vacuumpermittivity.py
     femviewprovider/view_constraint_bodyheatsource.py
     femviewprovider/view_constraint_electrostaticpotential.py
+    femviewprovider/view_body_force_elmer_freetextinput.py
+    femviewprovider/view_constraint_face_elmer_freetextinput.py
     femviewprovider/view_constraint_flowvelocity.py
     femviewprovider/view_constraint_initialflowvelocity.py
     femviewprovider/view_constraint_sectionprint.py
@@ -487,6 +498,8 @@ SET(FemGuiViewProvider_SRCS
     femviewprovider/view_material_common.py
     femviewprovider/view_material_mechanicalnonlinear.py
     femviewprovider/view_material_reinforced.py
+    femviewprovider/view_material_elmer_freetextinput.py
+    femviewprovider/view_equation_elmer_freetextinput.py
     femviewprovider/view_mesh_boundarylayer.py
     femviewprovider/view_mesh_gmsh.py
     femviewprovider/view_mesh_group.py

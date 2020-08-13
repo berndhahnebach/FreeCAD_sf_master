@@ -13,6 +13,8 @@
         <file>icons/FEM_ConstraintContact.svg</file>
         <file>icons/FEM_ConstraintDisplacement.svg</file>
         <file>icons/FEM_ConstraintElectrostaticPotential.svg</file>
+        <file>icons/FEM_BodyForceElmerFreetextinput.svg</file>
+        <file>icons/FEM_ConstraintFaceElmerFreetextinput.svg</file>
         <file>icons/FEM_ConstraintFixed.svg</file>
         <file>icons/FEM_ConstraintFlowVelocity.svg</file>
         <file>icons/FEM_ConstraintFluidBoundary.svg</file>
@@ -38,9 +40,11 @@
         <file>icons/FEM_EquationElasticity.svg</file>
         <file>icons/FEM_EquationElectricforce.svg</file>
         <file>icons/FEM_EquationElectrostatic.svg</file>
+        <file>icons/FEM_EquationStatcurrent.svg</file>
         <file>icons/FEM_EquationFlow.svg</file>
         <file>icons/FEM_EquationFlux.svg</file>
         <file>icons/FEM_EquationHeat.svg</file>
+        <file>icons/FEM_EquationElmerFreetextinput.svg</file>
 
         <!-- gui command icons: meshes -->
         <file>icons/FEM_CreateNodesSet.svg</file>
@@ -58,6 +62,7 @@
         <file>icons/FEM_MaterialMechanicalNonlinear.svg</file>
         <file>icons/FEM_MaterialReinforced.svg</file>
         <file>icons/FEM_MaterialSolid.svg</file>
+        <file>icons/FEM_MaterialElmerFreetextinput.svg</file>
 
         <!-- gui command icons: post processing -->
         <file>icons/FEM_PostPipelineFromResult.svg</file>
@@ -143,6 +148,8 @@
 
         <!-- task panels -->
         <file>ui/ConstraintTie.ui</file>
+        <file>ui/BodyForceElmerFreetextinput.ui</file>
+        <file>ui/ConstraintFaceElmerFreetextinput.ui</file>
         <file>ui/ElectrostaticPotential.ui</file>
         <file>ui/ElementFluid1D.ui</file>
         <file>ui/ElementGeometry1D.ui</file>
@@ -152,6 +159,8 @@
         <file>ui/InitialFlowVelocity.ui</file>
         <file>ui/Material.ui</file>
         <file>ui/MaterialReinforcement.ui</file>
+        <file>ui/MaterialElmerFreetextinput.ui</file>
+        <file>ui/EquationElmerFreetextinput.ui</file>
         <file>ui/MeshBoundaryLayer.ui</file>
         <file>ui/MeshGmsh.ui</file>
         <file>ui/MeshGroup.ui</file>
@@ -161,4 +170,4 @@
         <file>ui/ResultShow.ui</file>
         <file>ui/SolverCalculix.ui</file>
     </qresource>
-</RCC> 
+</RCC>

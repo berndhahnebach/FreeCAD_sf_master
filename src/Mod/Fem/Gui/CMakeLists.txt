@@ -407,6 +407,8 @@ SET(FemGuiPythonUI_SRCS
     Resources/ui/ConstraintTie.ui
     Resources/ui/ConstraintSectionPrint.ui
     Resources/ui/ElectrostaticPotential.ui
+    Resources/ui/BodyForceElmerFreetextinput.ui
+    Resources/ui/ConstraintFaceElmerFreetextinput.ui
     Resources/ui/ElementFluid1D.ui
     Resources/ui/ElementGeometry1D.ui
     Resources/ui/ElementGeometry2D.ui
@@ -415,6 +417,8 @@ SET(FemGuiPythonUI_SRCS
     Resources/ui/InitialFlowVelocity.ui
     Resources/ui/Material.ui
     Resources/ui/MaterialReinforcement.ui
+    Resources/ui/MaterialElmerFreetextinput.ui
+    Resources/ui/EquationElmerFreetextinput.ui
     Resources/ui/MeshBoundaryLayer.ui
     Resources/ui/MeshGmsh.ui
     Resources/ui/MeshGroup.ui

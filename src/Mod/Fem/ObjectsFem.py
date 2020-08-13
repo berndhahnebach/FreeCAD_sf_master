@@ -133,6 +133,36 @@ def makeConstraintElectrostaticPotential(
     return obj
 
 
+def makeBodyForceElmerFreetextinput(
+    doc,
+    name="BodyForceElmerFreetextinput"
+):
+    """BodyForceElmerFreetextinput(document, [name]):
+    makes a Fem BodyForceElmerFreetextinput object"""
+    obj = doc.addObject("Fem::ConstraintPython", name)
+    from femobjects import body_force_elmer_freetextinput
+    body_force_elmer_freetextinput.BodyForceElmerFreetextinput(obj)
+    if FreeCAD.GuiUp:
+        from femviewprovider import view_body_force_elmer_freetextinput
+        view_body_force_elmer_freetextinput.VPBodyForceElmerFreetextinput(obj.ViewObject)
+    return obj
+
+
+def makeConstraintFaceElmerFreetextinput(
+    doc,
+    name="ConstraintFaceElmerFreetextinput"
+):
+    """ConstraintFaceElmerFreetextinput(document, [name]):
+    makes a Fem ConstraintFaceElmerFreetextinput object"""
+    obj = doc.addObject("Fem::ConstraintPython", name)
+    from femobjects import constraint_face_elmer_freetextinput
+    constraint_face_elmer_freetextinput.ConstraintFaceElmerFreetextinput(obj)
+    if FreeCAD.GuiUp:
+        from femviewprovider import view_constraint_face_elmer_freetextinput
+        view_constraint_face_elmer_freetextinput.VPConstraintFaceElmerFreetextinput(obj.ViewObject)
+    return obj
+
+
 def makeConstraintFixed(
     doc,
     name="ConstraintFixed"
@@ -464,6 +494,21 @@ def makeMaterialSolid(
     return obj
 
 
+def makeMaterialElmerFreetextinput(
+    doc,
+    name="MaterialElmerFreetextinput"
+):
+    """MaterialElmerFreetextinput(document, [name]):
+    makes a Fem MaterialElmerFreetextinput object"""
+    obj = doc.addObject("App::MaterialObjectPython", name)
+    from femobjects import material_elmer_freetextinput
+    material_elmer_freetextinput.MaterialElmerFreetextinput(obj)
+    if FreeCAD.GuiUp:
+        from femviewprovider import view_material_elmer_freetextinput
+        view_material_elmer_freetextinput.VPMaterialElmerFreetextinput(obj.ViewObject)
+    return obj
+
+
 # ********* mesh objects *************************************************************************
 def makeMeshBoundaryLayer(
     doc,
@@ -663,6 +708,24 @@ def makePostVtkResult(
 
 
 # ********* solver objects ***********************************************************************
+def makeEquationElmerFreetextinput(
+    doc,
+    base_solver=None,
+    name="EquationElmerFreetextinput"
+):
+    """EquationElmerFreetextinput(document, [base_solver], [name]):
+    creates a FEM freetextinput equation for a Elmer solver"""
+    from femsolver.elmer.equations import equation_elmer_freetextinput
+    obj = equation_elmer_freetextinput.create(doc, name)
+    if base_solver:
+        base_solver.addObject(obj)
+#    equation_elmer_freetextinput.EquationElmerFreetextinput(obj)
+#    if FreeCAD.GuiUp:
+#        from femviewprovider import view_equation_elmer_freetextinput
+#        view_equation_elmer_freetextinput.VPEquationElmerFreetextinput(obj.ViewObject)
+    return obj
+
+
 def makeEquationElasticity(
     doc,
     base_solver=None,
@@ -700,6 +763,20 @@ def makeEquationElectrostatic(
     creates a FEM electrostatic equation for a solver"""
     from femsolver.elmer.equations import electrostatic
     obj = electrostatic.create(doc, name)
+    if base_solver:
+        base_solver.addObject(obj)
+    return obj
+
+
+def makeEquationStatcurrent(
+    doc,
+    base_solver=None,
+    name="Statcurrent"
+):
+    """makeEquationStatcurrent(document, [base_solver], [name]):
+    creates a FEM StaticCurrent equation for a solver"""
+    from femsolver.elmer.equations import statcurrent
+    obj = statcurrent.create(doc, name)
     if base_solver:
         base_solver.addObject(obj)
     return obj

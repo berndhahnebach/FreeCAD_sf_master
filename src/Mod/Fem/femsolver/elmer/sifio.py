@@ -140,19 +140,45 @@ class Builder(object):
         section = self._getFromBody(body, MATERIAL)
         section[key] = attr
 
+    def materialFreetextinput(self, body, freetextinput):
+        section = self._getFromBody(body, MATERIAL)
+        section['freetextinput'] = freetextinput
+
     def equation(self, body, key, attr):
         section = self._getFromBody(body, EQUATION)
         section[key] = attr
 
+    def equationFreetextinput(self, body, freetextinput):
+        section = self._getFromBody(body, EQUATION)
+        section['freetextinput'] = freetextinput
+
     def bodyForce(self, body, key, attr):
         section = self._getFromBody(body, BODY_FORCE)
         section[key] = attr
+
+    def bodyForceFreetextinput(self, body, freetextinput):
+        section = self._getFromBody(body, BODY_FORCE)
+        section['freetextinput'] = freetextinput
+
+    def boundaryFreetextinput(self, boundary, freetextinput):
+        if boundary not in self._boundaries:
+            self._boundaries[boundary] = createSection(BOUNDARY_CONDITION)
+        self._boundaries[boundary]['freetextinput'] = freetextinput
 
     def addSolver(self, body, solverSection):
         section = self._getFromBody(body, EQUATION)
         if self._ACTIVE_SOLVERS not in section:
             section[self._ACTIVE_SOLVERS] = []
         section[self._ACTIVE_SOLVERS].append(solverSection)
+
+#    def addSolverFreetextinput(self, body, solverSection):
+#        from FreeCAD import Console
+#        Console.PrintMessage("Handling Freetext addSolverFreetextinput\n")
+#        section = self._getFromBody(body, EQUATION)
+#        if self._ACTIVE_SOLVERS not in section:
+#            section[self._ACTIVE_SOLVERS] = []
+#        section[self._ACTIVE_SOLVERS].append(solverSection)
+##        section['freetextinput'] = freetextinput
 
     def boundary(self, boundary, key, attr):
         if boundary not in self._boundaries:
@@ -311,7 +337,14 @@ class _Writer(object):
 
     def _writeSectionBody(self, s):
         for key in sorted(s.keys()):  # def keys() from class sifio.Section is called
-            self._writeAttribute(key, s[key])
+            if key is not 'freetextinput':
+                self._writeAttribute(key, s[key])
+            else:
+                self._writefreetextinput(s[key])
+
+    def _writefreetextinput(self, freetextinput):
+        self._stream.write(_NEWLINE)
+        self._stream.write(freetextinput)
 
     def _writeAttribute(self, key, data):
         if isinstance(data, Section):
