@@ -71,6 +71,7 @@ SET(FemExamples_SRCS
     femexamples/square_pipe_end_twisted_edgeforces.py
     femexamples/square_pipe_end_twisted_nodeforces.py
     femexamples/thermomech_bimetall.py
+    femexamples/thermomech_clamped_cantilever.py
     femexamples/thermomech_flow1d.py
     femexamples/thermomech_spine.py
 )
@@ -82,6 +83,7 @@ SET(FemExampleMeshes_SRCS
     femexamples/meshes/mesh_canticcx_hexa20.py
     femexamples/meshes/mesh_canticcx_tetra10.py
     femexamples/meshes/mesh_capacitance_two_balls_tetra10.py
+    femexamples/meshes/mesh_clamped_cantilever_tetra10.py
     femexamples/meshes/mesh_constraint_tie_tetra10.py
     femexamples/meshes/mesh_contact_box_halfcylinder_tetra10.py
     femexamples/meshes/mesh_contact_tube_tube_tria3.py
