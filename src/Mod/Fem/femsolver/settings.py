@@ -34,6 +34,7 @@ are supported:
 
     - Calculix
     - ElmerSolver
+    - Mystran
     - Z88
 
 To query settings about those solver the solver name must be given exactly in
@@ -224,6 +225,11 @@ _SOLVER_PARAM = {
         param_path=_PARAM_PATH + "Elmer",
         use_default="UseStandardGridLocation",
         custom_path="gridBinaryPath"),
+    "Mystran": _SolverDlg(
+        default="z88r",
+        param_path=_PARAM_PATH + "Mystran",
+        use_default="UseStandardMystranLocation",
+        custom_path="mystranBinaryPath"),
     "Z88": _SolverDlg(
         default="z88r",
         param_path=_PARAM_PATH + "Z88",
